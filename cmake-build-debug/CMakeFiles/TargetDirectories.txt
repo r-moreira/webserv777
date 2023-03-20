@@ -1,0 +1,3 @@
+/home/dev/projects/webserv777/cmake-build-debug/CMakeFiles/webserv.dir
+/home/dev/projects/webserv777/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/dev/projects/webserv777/cmake-build-debug/CMakeFiles/rebuild_cache.dir

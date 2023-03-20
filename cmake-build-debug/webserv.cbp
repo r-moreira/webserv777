@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="webserv"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/dev/projects/webserv777/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/dev/projects/webserv777/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/dev/projects/webserv777/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/dev/projects/webserv777/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/dev/projects/webserv777/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="webserv">
+				<Option output="/home/dev/projects/webserv777/cmake-build-debug/webserv" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/dev/projects/webserv777/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/dev/projects/webserv777/cmake-build-debug/Makefile&quot;  VERBOSE=1 webserv"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/dev/projects/webserv777/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/dev/projects/webserv777/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/dev/projects/webserv777/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="webserv/fast">
+				<Option output="/home/dev/projects/webserv777/cmake-build-debug/webserv" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/dev/projects/webserv777/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/dev/projects/webserv777/cmake-build-debug/Makefile&quot;  VERBOSE=1 webserv/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/dev/projects/webserv777/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/dev/projects/webserv777/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/dev/projects/webserv777/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/dev/projects/webserv777/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/dev/projects/webserv777/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/dev/projects/webserv777/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/dev/projects/webserv777/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/dev/projects/webserv777/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/dev/projects/webserv777/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/dev/projects/webserv777/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/dev/projects/webserv777/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/dev/projects/webserv777/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/dev/projects/webserv777/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/dev/projects/webserv777/includes/config/Configuration.h">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/includes/domain/Request.h">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/includes/domain/Response.h">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/includes/io/Multiplexer.h">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/includes/network/Location.h">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/includes/network/Network.h">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/includes/network/Server.h">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/includes/network/Socket.h">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/includes/parser/HttpRequestParser.h">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/includes/parser/HttpResponseParser.h">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/includes/parser/UrlParser.h">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/includes/webserv.h">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/srcs/config/Configuration.cpp">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/srcs/domain/Request.cpp">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/srcs/domain/Response.cpp">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/srcs/io/Multiplexer.cpp">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/srcs/network/Location.cpp">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/srcs/network/Network.cpp">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/srcs/network/Server.cpp">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/srcs/network/Socket.cpp">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/srcs/parser/HttpRequestParser.cpp">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/srcs/parser/HttpResponseParser.cpp">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/srcs/parser/UrlParser.cpp">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/srcs/webserv.cpp">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/home/dev/projects/webserv777/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
