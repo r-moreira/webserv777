@@ -26,6 +26,8 @@
 #include <fstream>
 #include <fcntl.h>
 #include "domain/Request.h"
+#include "parser/HttpRequestParser.h"
+#include "parser/UrlParser.h"
 
 #define RESET   "\033[0m"
 #define BLACK   "\033[30m"      /* Black */
@@ -39,8 +41,7 @@
 #define BOLDBLACK   "\033[1m\033[30m"      /* Bold Black */
 
 #define MAX_EPOLL_EVENTS 64
-#define READ_BUFFER_SIZE 120 //Trocar para um valor maior, ex: 8192
-
+#define READ_BUFFER_SIZE 8192
 
 typedef enum EVENT_STATUS {
     Reading,

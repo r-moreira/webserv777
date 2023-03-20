@@ -1,6 +1,5 @@
 #include "../includes/webserv.h"
-#include "../includes/parser/HttpRequestParser.h"
-#include "../includes/parser/UrlParser.h"
+
 
 std::string file_extension[] = {
         "aac", "avi", "bmp", "css", "gif", "ico", "js",
