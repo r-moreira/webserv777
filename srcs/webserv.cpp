@@ -111,6 +111,11 @@ std::string getHeaders(const std::string& file_path, size_t file_size) {
     return "HTTP/1.1 200 Ok\r\n" + content_length + "Content-Type: text/html\r\n\r\n";
 }
 
+//TODO:
+// * ALTERAR A FORMA DE LER O ARQUIVO
+// * A API DE STREAMS() DO C++ NÃO É PERFORMÁTICA
+// * USAR FUNÇÕES COMO READ() E WRITE() É MAIS EFICIENTE
+// * ESTUDAR SOBRE SEND() X SENDFILE() X WRITE()
 void write_response(event_data_t *event_data) {
     UrlParser urlParser;
     std::string file_path = "./public" + event_data->request.getUri();
@@ -142,9 +147,6 @@ void write_response(event_data_t *event_data) {
 
     std::cout << GREEN << "File Transfer Complete." << RESET << std::endl;
 
-    //TODO:
-    // * Adicionar controle para saber quando terminou de enviar o arquivo
-    // * Adicionar possibilidade de enviar em "chunks"
     event_data->event_status = Ended;
 }
 
