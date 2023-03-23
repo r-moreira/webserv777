@@ -1,8 +1,7 @@
 NAME	 			= webserv
 CC 					= c++
-CFLAGS 				=  -std=c++98 #-Wall -Wextra -Werror
+CFLAGS 				=  
 OBJS_DIR			= objs
-OBJS				= $(patsubst $(SRCS_DIR)/%.cpp, $(OBJS_DIR)/%.o, $(SRCS))
 SRCS_DIR			= srcs
 SOCK_DIR = Sockets
 SERV_DIR = Server
@@ -21,13 +20,15 @@ SRCS = $(addprefix ./srcs/, \
 			${SERV_DIR}/Server.cpp \
 			${SERV_DIR}/ServerTemplate.cpp)
 
-all:				$(NAME)
+%.o: %.c
+	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $(<:%.c=%.o)
+
+OBJS = $(SRCS:%.c=%.o)
+
+all:	$(NAME)
 
 $(NAME):			$(OBJS)
-	$(CC) $(OBJS) -o $(NAME)
-
-$(OBJS_DIR)/%.o:	$(SRCS_DIR)/%.cpp
-	$(CC) $(CFLAGS) -I/includes/ -c $< -o $@
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
 clean:
 	$(RM) $(OBJS)

@@ -1,7 +1,10 @@
 #include "../../includes/Server/Server.hpp"
 #include <cstring>
 
-FT::Server::Server(): ServerTemplate(AF_INET, SOCK_STREAM, 0, 8080, INADDR_ANY, 10) {}
+FT::Server::Server(): ServerTemplate(AF_INET, SOCK_STREAM, 0, 8080, INADDR_ANY, 10)
+{
+    launch();
+}
 
 void FT::Server::accepter() {
     struct sockaddr_in address = get_socket()->get_address();
