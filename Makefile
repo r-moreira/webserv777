@@ -1,15 +1,15 @@
 NAME	 			= webserv
-CC 					= c++
-CFLAGS 				=  
+CC 					= g++
+CFLAGS 				=  -g
 OBJS_DIR			= objs
 SRCS_DIR			= srcs
 SOCK_DIR = Sockets
 SERV_DIR = Server
-CONF_DIR			= ${SRCS_DIR}/config
-NETWORK_DIR			= ${SRCS_DIR}/network
-PARSER_DIR			= ${SRCS_DIR}/parser
-DOMAIN_DIR			= ${SRCS_DIR}/domain
-IO_DIR				= ${SRCS_DIR}/io
+# CONF_DIR			= ${SRCS_DIR}/config
+# NETWORK_DIR			= ${SRCS_DIR}/network
+# PARSER_DIR			= ${SRCS_DIR}/parser
+# DOMAIN_DIR			= ${SRCS_DIR}/domain
+# IO_DIR				= ${SRCS_DIR}/io
 
 SRCS = $(addprefix ./srcs/, \
           	main.cpp \
@@ -20,10 +20,10 @@ SRCS = $(addprefix ./srcs/, \
 			${SERV_DIR}/Server.cpp \
 			${SERV_DIR}/ServerTemplate.cpp)
 
-%.o: %.c
-	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $(<:%.c=%.o)
+%.o: %.cpp
+	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $(<:%.cpp=%.o)
 
-OBJS = $(SRCS:%.c=%.o)
+OBJS = $(SRCS:%.cpp=%.o)
 
 all:	$(NAME)
 
