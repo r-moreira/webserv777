@@ -10,7 +10,10 @@ class BindingSocket: public Socket {
 
 public:
     BindingSocket(int domain, int type, int protocol, int port, u_long interface);
-    int connect_to_network(int sock, struct sockaddr_in address);
+
+private:
+    void connect_to_network(int sock, struct sockaddr_in address);
+    int binding;
 
 };
 }

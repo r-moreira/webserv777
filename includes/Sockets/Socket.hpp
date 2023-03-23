@@ -11,12 +11,10 @@ class Socket
 
 public:
     Socket(int domain, int type, int protocol, int port, u_long interface);
-    virtual int connect_to_network(int sock, struct sockaddr_in address) = 0;
+    virtual void connect_to_network(int sock, struct sockaddr_in address) = 0;
     void is_connected(int network);
     int get_socket();
-    int get_connection();
     struct sockaddr_in get_address();
-    void set_connection(int newConnection);
 
 private:
     struct sockaddr_in address;

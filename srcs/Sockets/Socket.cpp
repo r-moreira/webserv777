@@ -16,18 +16,10 @@ void FT::Socket::is_connected(int network) {
     }
 }
 
-int FT::Socket::get_connection(void) {
-    return connection;
-}
-
 int FT::Socket::get_socket(void) {
     return sock;
 }
 
 struct sockaddr_in  FT::Socket::get_address(void) {
     return address;
-}
-
-void FT::Socket::set_connection(int newConnection) {
-    connection = newConnection;
 }
