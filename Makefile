@@ -1,35 +1,38 @@
 NAME	 			= webserv
-CC 					= c++
-CFLAGS 				=  -std=c++98 #-Wall -Wextra -Werror
+CC 					= g++
+CFLAGS 				=  -g
 OBJS_DIR			= objs
-OBJS				= $(patsubst $(SRCS_DIR)/%.cpp, $(OBJS_DIR)/%.o, $(SRCS))
 SRCS_DIR			= srcs
-CONF_DIR			= ${SRCS_DIR}/config
-NETWORK_DIR			= ${SRCS_DIR}/network
-PARSER_DIR			= ${SRCS_DIR}/parser
-DOMAIN_DIR			= ${SRCS_DIR}/domain
-IO_DIR				= ${SRCS_DIR}/io
+SOCK_DIR = Sockets
+SERV_DIR = Server
+HTTP_DIR = http
 
-SRCS				= ${SRCS_DIR}/webserv.cpp\
-					  ${CONF_DIR}/Configuration.cpp\
-					  ${DOMAIN_DIR}/Request.cpp\
-					  ${DOMAIN_DIR}/Response.cpp\
-					  ${NETWORK_DIR}/Network.cpp\
-					  ${NETWORK_DIR}/Socket.cpp\
-					  ${NETWORK_DIR}/Server.cpp\
-					  ${NETWORK_DIR}/Location.cpp\
-					  ${PARSER_DIR}/HttpRequestParser.cpp\
-					  ${PARSER_DIR}/HttpResponseParser.cpp\
-					  ${PARSER_DIR}/UrlParser.cpp\
-					  ${IO_DIR}/Multiplexer.cpp
+# CONF_DIR			= ${SRCS_DIR}/config
+# NETWORK_DIR			= ${SRCS_DIR}/network
+# PARSER_DIR			= ${SRCS_DIR}/parser
+# DOMAIN_DIR			= ${SRCS_DIR}/domain
+# IO_DIR				= ${SRCS_DIR}/io
 
-all:				$(NAME)
+SRCS = $(addprefix ./srcs/, \
+          	main.cpp \
+          	${SOCK_DIR}/BindingSocket.cpp \
+          	${SOCK_DIR}/Connecting.cpp \
+			${SOCK_DIR}/ListeningSocket.cpp \
+			${SOCK_DIR}/Socket.cpp \
+			${SERV_DIR}/Server.cpp \
+			${SERV_DIR}/ServerTemplate.cpp \
+			${HTTP_DIR}/Http.cpp \
+			Reading.cpp)
+
+%.o: %.cpp
+	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $(<:%.cpp=%.o)
+
+OBJS = $(SRCS:%.cpp=%.o)
+
+all:	$(NAME)
 
 $(NAME):			$(OBJS)
-	$(CC) $(OBJS) -o $(NAME)
-
-$(OBJS_DIR)/%.o:	$(SRCS_DIR)/%.cpp
-	$(CC) $(CFLAGS) -I/includes/ -c $< -o $@
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
 clean:
 	$(RM) $(OBJS)
