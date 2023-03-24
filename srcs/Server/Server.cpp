@@ -1,7 +1,7 @@
 #include "../../includes/Server/Server.hpp"
 #include <cstring>
 
-FT::Server::Server(): ServerTemplate(AF_INET, SOCK_STREAM, 0, 8080, INADDR_ANY, 10)
+FT::Server::Server(): ServerTemplate(AF_INET, SOCK_STREAM, 0, 8082, INADDR_ANY, 10)
 {
     launch();
 }
@@ -11,11 +11,11 @@ void FT::Server::accepter() {
     int addrlen = sizeof(address);
     newSocket = accept(get_socket()->get_socket(),
         (struct sockaddr *)&address, (socklen_t*)&addrlen);
-    read(newSocket, buffer, 30000);
+    http = new Http(newSocket);
 }
 
 void FT::Server::handler() {
-    std::cout << buffer << std::endl;
+    std::cout << http->get_text() << std::endl;
 }
 
 void FT::Server::responder() {

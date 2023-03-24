@@ -1,15 +1,17 @@
 #ifndef Server_hpp
 #define Server_hpp
 
-#include "ServerTemplate.hpp"
 #include <unistd.h>
 #include <stdio.h>
+
+#include "ServerTemplate.hpp"
+#include "../http/Http.hpp"
 
 namespace FT {
 class Server : ServerTemplate
 {
 private:
-    char buffer[30000] = {0};
+    FT::Http* http;
     int newSocket;
     void accepter();
     void handler();

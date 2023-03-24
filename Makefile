@@ -5,6 +5,8 @@ OBJS_DIR			= objs
 SRCS_DIR			= srcs
 SOCK_DIR = Sockets
 SERV_DIR = Server
+HTTP_DIR = http
+
 # CONF_DIR			= ${SRCS_DIR}/config
 # NETWORK_DIR			= ${SRCS_DIR}/network
 # PARSER_DIR			= ${SRCS_DIR}/parser
@@ -18,7 +20,9 @@ SRCS = $(addprefix ./srcs/, \
 			${SOCK_DIR}/ListeningSocket.cpp \
 			${SOCK_DIR}/Socket.cpp \
 			${SERV_DIR}/Server.cpp \
-			${SERV_DIR}/ServerTemplate.cpp)
+			${SERV_DIR}/ServerTemplate.cpp \
+			${HTTP_DIR}/Http.cpp \
+			Reading.cpp)
 
 %.o: %.cpp
 	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $(<:%.cpp=%.o)
