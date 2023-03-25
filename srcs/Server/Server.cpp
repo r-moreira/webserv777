@@ -7,6 +7,7 @@ FT::Server::Server(): ServerTemplate(AF_INET, SOCK_STREAM, 0, 8080, INADDR_ANY, 
 }
 
 void FT::Server::accepter() {
+    // TODO: request queue insert newSocket in vector
     struct sockaddr_in address = get_socket()->get_address();
     int addrlen = sizeof(address);
     newSocket = accept(get_socket()->get_socket(),
