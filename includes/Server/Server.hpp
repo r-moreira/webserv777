@@ -10,15 +10,15 @@
 namespace FT {
 class Server : ServerTemplate
 {
+public:
+    Server();
+    void launch();
 private:
     FT::Http* http;
     int newSocket;
     void accepter();
     void handler();
     void responder();
-public:
-    Server();
-    void launch();
 };
 }
 #endif

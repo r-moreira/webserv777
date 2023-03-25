@@ -22,6 +22,7 @@ SRCS = $(addprefix ./srcs/, \
 			${SERV_DIR}/Server.cpp \
 			${SERV_DIR}/ServerTemplate.cpp \
 			${HTTP_DIR}/Http.cpp \
+			${HTTP_DIR}/HttpRequest.cpp \
 			Reading.cpp)
 
 %.o: %.cpp
