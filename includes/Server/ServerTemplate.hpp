@@ -8,6 +8,7 @@ class ServerTemplate
 {
 public:
     ServerTemplate(int domain, int type, int protocol, int port, u_long interface, int bklg);
+    ~ServerTemplate();
     virtual void launch() = 0;
     ListeningSocket *get_socket();
 private:

@@ -9,3 +9,7 @@ FT::ServerTemplate::ServerTemplate(int domain, int type,
 {
     socket = new ListeningSocket(domain, type, protocol, port, interface, bklg);
 }
+
+FT::ServerTemplate::~ServerTemplate() {
+    delete socket;
+}

@@ -7,7 +7,7 @@
 
 namespace FT {
 
-class Http: private Reading
+class Http: public Reading
 {
 public:
     Http(int socket);
