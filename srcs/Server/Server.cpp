@@ -18,7 +18,7 @@ void FT::Server::accepter() {
 }
 
 void FT::Server::handler() {
-    std::cout << http->get_text() << std::endl;
+    std::cout << http->get_request()->get_body() << std::endl;
 }
 
 void FT::Server::responder() {

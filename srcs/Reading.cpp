@@ -12,7 +12,6 @@ void FT::Reading::readig_fd(int fd) {
         std::string aux(buffer, sizeof(buffer));
         text = text + aux;
     }
-    close(fd);
 }
 
 std::string FT::Reading::get_text() {

@@ -1,7 +1,7 @@
 #include "../../includes/http/HttpRequest.hpp"
 
 FT::HttpRequest::HttpRequest(std::string crudeRequest) {
-    //http_parser(crudeRequest);
+    http_parser(crudeRequest);
 }
 
 std::string FT::HttpRequest::get_body() {
@@ -23,7 +23,7 @@ std::string FT::HttpRequest::get_host() {
 void FT::HttpRequest::http_parser(std::string crudeRequest) {
     header_parser(crudeRequest);
     method_parser(header);
-    //host_parser(header);
+    host_parser(header);
     if (method != "GET") {
         body_parser(crudeRequest);
     }
