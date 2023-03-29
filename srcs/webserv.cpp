@@ -1,4 +1,5 @@
 #include "../includes/webserv.h"
+#include "../includes/network/Socket.h"
 
 
 std::string file_extension[] = {
@@ -76,18 +77,18 @@ int create_server_socket(int port) {
     return server_fd;
 }
 
-void set_non_blocking(int fd) {
-    int flags = fcntl(fd, F_GETFL, 0);
-    if (flags == -1) {
-        std::cerr << RED << "Error while getting flags: " << strerror(errno) << RESET << std::endl;
-        exit(EXIT_FAILURE);
-    }
-    flags |= O_NONBLOCK;
-    if (fcntl(fd, F_SETFL, flags) == -1) {
-        std::cerr << RED << "Error while setting flags: " << strerror(errno) << RESET << std::endl;
-        exit(EXIT_FAILURE);
-    }
-}
+//void set_non_blocking(int fd) {
+//    int flags = fcntl(fd, F_GETFL, 0);
+//    if (flags == -1) {
+//        std::cerr << RED << "Error while getting flags: " << strerror(errno) << RESET << std::endl;
+//        exit(EXIT_FAILURE);
+//    }
+//    flags |= O_NONBLOCK;
+//    if (fcntl(fd, F_SETFL, flags) == -1) {
+//        std::cerr << RED << "Error while setting flags: " << strerror(errno) << RESET << std::endl;
+//        exit(EXIT_FAILURE);
+//    }
+//}
 
 std::string getHeaders(const std::string& file_path, size_t file_size) {
     char size_t_byte_buffer[25] = {};
@@ -280,21 +281,9 @@ void io_multiplexing_event_loop(int server_socket_fd) {
 
         for (int i = 0; i < nfds; i++) {
             if (epoll_events[i].data.fd == server_socket_fd) {
-                struct sockaddr_in client_addr = {};
-                socklen_t client_addr_len = sizeof(client_addr);
 
-                int client_fd = accept(server_socket_fd, (struct sockaddr *) &client_addr, &client_addr_len);
-
-                if (client_fd < 0) {
-                    if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                        break;
-                    } else {
-                        std::cerr << RED << "Error while accepting client: " << strerror(errno) << RESET << std::endl;
-                        break;
-                    }
-                }
-
-                set_non_blocking(client_fd);
+                int client_fd = Socket::setupClient(server_socket_fd);
+                if (client_fd < 0) break;
 
                 event_data_t *event_data = new event_data_t;
                 event_data->write_iteration = 0;
@@ -357,9 +346,10 @@ int main(int argc, char **argv, char **env) {
     }
 
     srand(time(NULL));
-    int server_socket_fd = create_server_socket(8080 + (rand() % 10));
-    set_non_blocking(server_socket_fd);
-    io_multiplexing_event_loop(server_socket_fd);
+    //int server_socket_fd = create_server_socket(8080 + (rand() % 10));
+    //set_non_blocking(server_socket_fd);
+
+    io_multiplexing_event_loop(Socket::setupServer(8080 + (rand() % 10)));
 
     return EXIT_SUCCESS;
 }

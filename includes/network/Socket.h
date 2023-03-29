@@ -10,23 +10,16 @@
 class Socket {
 
 private:
-    int _fd;
-    struct sockaddr_in *_addr;
 
 public:
     Socket();
     ~Socket();
 
-    int getFd() const;
+    static int setupClient(int server_socket_fd);
+    static int setupServer(int port);
 
-    void setFd(int fd);
-
-    sockaddr_in *getAddr() const;
-
-    void setAddr(sockaddr_in *addr);
-
-    Socket &operator=(const Socket &rhs);
-
+private:
+    static void set_non_blocking(int fd);
 };
 
 
