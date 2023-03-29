@@ -110,6 +110,24 @@ std::string getHeaders(const std::string& file_path, size_t file_size) {
     return "HTTP/1.1 200 Ok\r\n" + content_length + "Content-Type: text/html\r\n\r\n";
 }
 
+int open_file(event_data_t *event_data) {
+    if (event_data->file == NULL) {
+        event_data->file_path = "./public" + event_data->request.getUri();
+
+        FILE *fptr;
+        fptr = fopen(event_data->file_path.c_str(), "rb");
+        if (fptr == NULL) {
+            std::cerr << RED << "Error while opening file: " << event_data->file_path << " " << strerror(errno) << RESET << std::endl;
+            //return error page, end connection
+            event_data->event_status = Ended;
+            return -1;
+        }
+        event_data->file = fptr;
+        event_data->read_bytes = 0;
+    }
+    return 1;
+}
+
 //TODO:
 // * ALTERAR A FORMA DE LER O ARQUIVO
 // * A API DE STREAMS() DO C++ NÃO É PERFORMÁTICA
@@ -117,25 +135,51 @@ std::string getHeaders(const std::string& file_path, size_t file_size) {
 // * ESTUDAR SOBRE SEND() X SENDFILE() X WRITE()
 void write_response(event_data_t *event_data) {
     UrlParser urlParser;
-    std::string file_path = "./public" + event_data->request.getUri();
 
+    struct stat file_stat;
+    char buffer[10240];
 
-    std::ifstream file;
-    file.open(file_path.c_str(), std::ios::in | std::ios::binary);
+    if (open_file(event_data) == -1)
+        return;
 
-    std::string contents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-    std::cout << YELLOW << " Transmission Data Size " << contents.length() << " Bytes." << RESET << std::endl;
-
-    std::string headers = getHeaders(file_path, contents.length());
-
-    std::cout << CYAN << "Response Headers:\n" << headers << RESET << std::endl;
-
-    if (send(event_data->client_fd, headers.c_str(), headers.size(), 0) < 0) {
-        std::cerr << RED << "Error while writing status header to client: " << strerror(errno) << RESET << std::endl;
+    int fd = fileno(event_data->file);
+    if (fd < 1) {
+        std::cerr << RED << "Error while getting file descriptor: " << strerror(errno) << RESET << std::endl;
         //return error page, end connection
     }
 
-    long bytes_sent = send(event_data->client_fd , contents.c_str() , contents.length() , 0 );
+    fstat(fd, &file_stat);
+
+    if (event_data->write_iteration == 0) {
+        std::string headers = getHeaders(event_data->file_path, file_stat.st_size);
+        std::cout << CYAN << "Response Headers:\n" << headers << RESET << std::endl;
+
+        if (send(event_data->client_fd, headers.c_str(), headers.size(), 0) < 0) {
+            std::cerr << RED << "Error while writing status header to client: " << strerror(errno) << RESET
+                      << std::endl;
+            //return error page, end connection
+        }
+
+        std::cout << GREEN << "Successfully sent headers to client" << RESET << std::endl;
+    }
+
+    size_t read_size;
+    if (file_stat.st_size > 10240) {
+        read_size = event_data->read_left > 10240 ? 10240 : event_data->read_left;
+    } else {
+        read_size = file_stat.st_size;
+    }
+
+    std::cout << YELLOW << "Read Data Size: " << read_size << RESET << std::endl;
+    size_t read_bytes = fread(buffer, 1, read_size, event_data->file);
+
+    event_data->read_bytes += read_bytes;
+    std::cout << YELLOW << "Readed Data Size: " << read_bytes << RESET << std::endl;
+
+    event_data->read_left = file_stat.st_size - event_data->read_bytes;
+    std::cout << YELLOW << "Read Left: " << event_data->read_left << RESET << std::endl;
+
+    long bytes_sent = send(event_data->client_fd ,buffer, read_bytes, 0 );
     if (bytes_sent < 0) {
         std::cerr << RED << "Error while writing to client: " << strerror(errno) << RESET << std::endl;
         //return error page, end connection
@@ -146,7 +190,10 @@ void write_response(event_data_t *event_data) {
 
     std::cout << GREEN << "File Transfer Complete." << RESET << std::endl;
 
-    event_data->event_status = Ended;
+    event_data->write_iteration++;
+    if (event_data->read_left <= 0) {
+        event_data->event_status = Ended;
+    }
 }
 
 Request parse_request(event_data_t *event_data) {
@@ -250,10 +297,13 @@ void io_multiplexing_event_loop(int server_socket_fd) {
                 set_non_blocking(client_fd);
 
                 event_data_t *event_data = new event_data_t;
-                event_data->header = "";
+                event_data->write_iteration = 0;
                 event_data->client_fd = client_fd;
+                event_data->file_path = "";
                 event_data->read_bytes = 0;
+                event_data->read_left = 0;
                 event_data->event_status = Reading;
+                event_data->file = NULL;
 
                 request_event.data.ptr = event_data;
                 request_event.events = EPOLLIN;

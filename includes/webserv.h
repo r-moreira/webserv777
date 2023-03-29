@@ -50,8 +50,9 @@ typedef enum EVENT_STATUS {
 } event_status_t;
 
 typedef struct EventData {
+    int write_iteration;
     int client_fd;
-    std::string header;
+    std::string file_path;
     size_t read_bytes;
     size_t read_left;
     std::string read_buffer;
