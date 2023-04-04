@@ -6,6 +6,7 @@ SRCS_DIR			= srcs
 SOCK_DIR = Sockets
 SERV_DIR = Server
 HTTP_DIR = http
+MULT_DIR = MultPlexing
 
 # CONF_DIR			= ${SRCS_DIR}/config
 # NETWORK_DIR			= ${SRCS_DIR}/network
@@ -19,11 +20,12 @@ SRCS = $(addprefix ./srcs/, \
           	${SOCK_DIR}/Connecting.cpp \
 			${SOCK_DIR}/ListeningSocket.cpp \
 			${SOCK_DIR}/Socket.cpp \
+			${MULT_DIR}/MultPlexing.cpp \
 			${SERV_DIR}/Server.cpp \
 			${SERV_DIR}/ServerTemplate.cpp \
 			${HTTP_DIR}/Http.cpp \
 			${HTTP_DIR}/HttpRequest.cpp \
-			Reading.cpp)
+			Read.cpp)
 
 %.o: %.cpp
 	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $(<:%.cpp=%.o)

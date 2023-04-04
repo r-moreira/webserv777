@@ -2,12 +2,12 @@
 #define Http_hpp
 #include <iostream>
 
-#include "../Reading.hpp"
+#include "../Read.hpp"
 #include "HttpRequest.hpp"
 
 namespace FT {
 
-class Http: public Reading
+class Http: public Read
 {
 public:
     Http(int socket);

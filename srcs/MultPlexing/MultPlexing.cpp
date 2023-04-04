@@ -1,10 +1,12 @@
 #include "../../includes/MultPlexing/MultPlexing.hpp"
+#include <cstring>
 
 FT::Multplexing::Multplexing() {
     epoll = epoll_create1(0);
     isFdValid(epoll);
-    requestEventCount = epoll_wait(epoll, epoll_list, MAX_EPOLL_EVENTS, -1);
 }
+
+FT::Multplexing::~Multplexing(){}
 
 void FT::Multplexing::isFdValid(int fd){
     if (fd == -1) {
@@ -30,19 +32,40 @@ void FT::Multplexing::newRequest(int fd) {
     wait();
 }
 
+void FT::Multplexing::reading(RequestData *data) {
+    Read *request = new Read(data->fd);
+    //http request is here
+    std::cout << request->get_text() << std::endl;
+    data->status = Writing;
+}
+
+void FT::Multplexing::wiriting(RequestData *data) {
+    char *str = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!";
+    write(data->fd , str , strlen(str));
+    data->status = Ended;
+}
+
+void FT::Multplexing::process_event(RequestData *data) {
+    if(data->status == Reading) {
+        reading(data);
+    }
+    if (data->status == Writing) {
+        wiriting(data);
+    }
+}
+
 void FT::Multplexing::wait() {
+    requestEventCount = epoll_wait(epoll, epoll_list, MAX_EPOLL_EVENTS, -1);
     for (int i = 0; i < requestEventCount; i++) {
         RequestData *data = (RequestData *) epoll_list[i].data.ptr;
-
+        process_event(data);
         switch (data->status) {
             case Reading:
                 request_event.events = EPOLLIN;
-                reading(data->fd);
                 register_epoll(EPOLL_CTL_MOD, data->fd, &request_event);
                 break;
             case Writing:
                 request_event.events = EPOLLOUT;
-                wiriting(data->fd);
                 register_epoll(EPOLL_CTL_MOD, data->fd, &request_event);
                 break;
             case Ended:

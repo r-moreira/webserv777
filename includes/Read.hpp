@@ -1,15 +1,15 @@
-#ifndef Reading_hpp
-#define Reading_hpp
+#ifndef Read_hpp
+#define Read_hpp
 #include <unistd.h>
 #include <iostream>
 
 #define BUFFER_SIZE 30
 
 namespace FT {
-class Reading
+class Read
 {
 public:
-    Reading(int fd);
+    Read(int fd);
     std::string get_text();
 private:
     char buffer[BUFFER_SIZE];

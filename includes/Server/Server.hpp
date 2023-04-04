@@ -5,20 +5,17 @@
 #include <stdio.h>
 
 #include "ServerTemplate.hpp"
-#include "../http/Http.hpp"
+#include "../MultPlexing/MultPlexing.hpp"
 
 namespace FT {
-class Server : ServerTemplate
+class Server : ServerTemplate, Multplexing
 {
 public:
     Server();
     void launch();
 private:
-    FT::Http* http;
     int newSocket;
     void accepter();
-    void handler();
-    void responder();
 };
 }
 #endif

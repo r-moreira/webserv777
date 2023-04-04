@@ -1,11 +1,11 @@
-#include "../includes/Reading.hpp"
+#include "../includes/Read.hpp"
 
-FT::Reading::Reading(int fd) {
+FT::Read::Read(int fd) {
     is_read = BUFFER_SIZE;
     readig_fd(fd);
 }
 
-void FT::Reading::readig_fd(int fd) {
+void FT::Read::readig_fd(int fd) {
     while (is_read == BUFFER_SIZE)
     {
         is_read = read(fd, buffer, BUFFER_SIZE);
@@ -14,6 +14,6 @@ void FT::Reading::readig_fd(int fd) {
     }
 }
 
-std::string FT::Reading::get_text() {
+std::string FT::Read::get_text() {
     return text;
 }

@@ -6,7 +6,7 @@
 
 #define MAX_EPOLL_EVENTS 64
 
-#include "../../includes/Reading.hpp"
+#include "../Read.hpp"
 
 namespace FT {
 typedef enum EVENT_STATUS {
@@ -34,9 +34,10 @@ private:
     void isFdValid(int fd);
     void register_epoll(int op, int fd, struct epoll_event *event);
     void wait();
-    void reading(int fd);
-    void wiriting(int fd);
-    void ending(int fd);
+    void reading(RequestData *data);
+    void wiriting(RequestData *data);
+    void ending(RequestData *data);
+    void process_event(RequestData *data);
 };
 }
 #endif
