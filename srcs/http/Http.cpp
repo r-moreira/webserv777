@@ -1,13 +1,9 @@
 #include "../../includes/http/Http.hpp"
 
-FT::Http::Http(int socket): Read(socket) {
-    request = new HttpRequest(get_text());
-}
+FT::Http::Http(int socket): Read(socket) {}
 
-FT::Http::~Http() {
-    delete request;
-}
+FT::Http::~Http() {}
 
-FT::HttpRequest* FT::Http::get_request() {
-    return request;
+std::string FT::Http::getRequest() {
+    return get_text();
 }

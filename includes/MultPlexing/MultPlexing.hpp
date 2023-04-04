@@ -6,18 +6,19 @@
 
 #define MAX_EPOLL_EVENTS 64
 
-#include "../Read.hpp"
+#include "../http/HttpRequest.hpp"
 
 namespace FT {
-typedef enum EVENT_STATUS {
+enum eventStatus {
     Reading,
     Writing,
     Ended
-} event_status;
+};
 
-typedef struct RequestData {
+struct RequestData {
     int fd;
-    event_status status;
+    HttpRequest *request;
+    eventStatus status;
 };
 
 class Multplexing

@@ -1,7 +1,7 @@
 #include "../../includes/http/HttpRequest.hpp"
 
-FT::HttpRequest::HttpRequest(std::string crudeRequest) {
-    http_parser(crudeRequest);
+FT::HttpRequest::HttpRequest(int fd): Http(fd) {
+    http_parser(getRequest());
 }
 
 std::string FT::HttpRequest::get_body() {
@@ -19,13 +19,24 @@ std::string FT::HttpRequest::get_method() {
 std::string FT::HttpRequest::get_host() {
     return host;
 }
+bool FT::HttpRequest::isValidRequest() {
+    std::vector<std::string>httpRequests = {"POST", "DELETE", "PUT", "GET"};
+    for (int i = 0; i < httpRequests.size(); i++) {
+        if (httpRequests[i] == method) {
+            return true;
+        }
+    }
+    return false;
+}
 
 void FT::HttpRequest::http_parser(std::string crudeRequest) {
-    header_parser(crudeRequest);
-    method_parser(header);
-    host_parser(header);
-    if (method != "GET") {
-        body_parser(crudeRequest);
+    method_parser(crudeRequest);
+    if (isValidRequest()) {
+        header_parser(crudeRequest);
+        host_parser(header);
+        if (method != "GET") {
+            body_parser(crudeRequest);
+        }
     }
 }
 

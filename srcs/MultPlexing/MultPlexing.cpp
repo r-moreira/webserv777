@@ -33,9 +33,9 @@ void FT::Multplexing::newRequest(int fd) {
 }
 
 void FT::Multplexing::reading(RequestData *data) {
-    Read *request = new Read(data->fd);
-    //http request is here
-    std::cout << request->get_text() << std::endl;
+    data->request = new HttpRequest(data->fd);
+    std::cout << data->request->get_body() << '\n';
+    std::cout << data->request->get_header() << '\n';
     data->status = Writing;
 }
 
