@@ -55,8 +55,8 @@ void FT::Multplexing::process_event(RequestData *data) {
 }
 
 void FT::Multplexing::wait() {
-    requestEventCount = epoll_wait(epoll, epoll_list, MAX_EPOLL_EVENTS, -1);
     for (int i = 0; i < requestEventCount; i++) {
+        requestEventCount = epoll_wait(epoll, epoll_list, MAX_EPOLL_EVENTS, -1);
         RequestData *data = (RequestData *) epoll_list[i].data.ptr;
         process_event(data);
         switch (data->status) {
@@ -70,6 +70,7 @@ void FT::Multplexing::wait() {
                 break;
             case Ended:
                 close(data->fd);
+                delete data->request;
                 delete data;
         }
     }
