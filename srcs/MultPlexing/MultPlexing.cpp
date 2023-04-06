@@ -40,8 +40,8 @@ void FT::Multplexing::reading(RequestData *data) {
 }
 
 void FT::Multplexing::wiriting(RequestData *data) {
-    char *str = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!";
-    write(data->fd , str , strlen(str));
+    data->response = new HttpResponse(data->request);
+    write(data->fd , data->response->get_response().data() , data->response->get_response().size());
     data->status = Ended;
 }
 
@@ -71,6 +71,7 @@ void FT::Multplexing::wait() {
             case Ended:
                 close(data->fd);
                 delete data->request;
+                delete data->response;
                 delete data;
         }
     }

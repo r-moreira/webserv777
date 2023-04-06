@@ -23,8 +23,8 @@ SRCS = $(addprefix ./srcs/, \
 			${MULT_DIR}/MultPlexing.cpp \
 			${SERV_DIR}/Server.cpp \
 			${SERV_DIR}/ServerTemplate.cpp \
-			${HTTP_DIR}/Http.cpp \
 			${HTTP_DIR}/HttpRequest.cpp \
+			${HTTP_DIR}/HttpResponse.cpp \
 			Read.cpp)
 
 %.o: %.cpp

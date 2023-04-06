@@ -2,10 +2,11 @@
 #define HttpRequest_hpp
 #include <iostream>
 #include <vector>
-#include "Http.hpp"
+
+#include "../Read.hpp"
 
 namespace FT {
-class HttpRequest: Http
+class HttpRequest: Read
 {
 public:
     HttpRequest(int fd);

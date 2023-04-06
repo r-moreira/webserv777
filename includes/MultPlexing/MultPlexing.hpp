@@ -7,6 +7,7 @@
 #define MAX_EPOLL_EVENTS 64
 
 #include "../http/HttpRequest.hpp"
+#include "../http/HttpResponse.hpp"
 
 namespace FT {
 enum eventStatus {
@@ -18,6 +19,7 @@ enum eventStatus {
 struct RequestData {
     int fd;
     HttpRequest *request;
+    HttpResponse *response;
     eventStatus status;
 };
 

@@ -10,9 +10,11 @@ class Read
 {
 public:
     Read(int fd);
-    std::string get_text();
+    int getSize();
+    std::string getText();
 private:
     char buffer[BUFFER_SIZE];
+    int size;
     int is_read;
     std::string text;
     void readig_fd(int fd);

@@ -1,7 +1,7 @@
 #include "../../includes/http/HttpRequest.hpp"
 
-FT::HttpRequest::HttpRequest(int fd): Http(fd) {
-    http_parser(getRequest());
+FT::HttpRequest::HttpRequest(int fd): Read(fd) {
+    http_parser(getText());
 }
 
 std::string FT::HttpRequest::get_body() {
@@ -19,6 +19,7 @@ std::string FT::HttpRequest::get_method() {
 std::string FT::HttpRequest::get_host() {
     return host;
 }
+
 bool FT::HttpRequest::isValidRequest() {
     std::vector<std::string>httpRequests = {"POST", "DELETE", "PUT", "GET"};
     for (int i = 0; i < httpRequests.size(); i++) {
@@ -49,6 +50,7 @@ void FT::HttpRequest::host_parser(std::string req) {
     std::string delimiter = "Host: ";
     std::string endDelimiter = "\n";
     int lenDelimiter = delimiter.size();
+    // if (find(delimiter) != size)
     host = req.substr(req.find(delimiter) + lenDelimiter, req.find(endDelimiter) - lenDelimiter);
 }
 
