@@ -116,11 +116,6 @@ int open_file(event_data_t *event_data) {
     return 1;
 }
 
-//TODO:
-// * ALTERAR A FORMA DE LER O ARQUIVO
-// * A API DE STREAMS() DO C++ NÃO É PERFORMÁTICA
-// * USAR FUNÇÕES COMO READ() E WRITE() É MAIS EFICIENTE
-// * ESTUDAR SOBRE SEND() X SENDFILE() X WRITE()
 void write_response(event_data_t *event_data) {
     UrlParser urlParser;
 
