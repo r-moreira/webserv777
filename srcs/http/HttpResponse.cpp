@@ -36,7 +36,17 @@ void FT::HttpResponse::make_header(int responseSize) {
     //     "Content-Type: text/html\r\n\r\n",
     //     "Content-Type: image/jpeg\r\n\r\n",
     // };
-    std::string str = "HTTP/1.1 " + statusCode + " OK\n" + "Content-Type: text/html\r\n\r\n";
-    str = str + "Content-Length: " + std::to_string(responseSize) + "\r\n";
+    date_generate();
+    std::string str = "HTTP/1.1 " + statusCode + " OK\n" + "Content-Type: text/html\n";
+    str = str + "Content-Length: " + std::to_string(responseSize) + '\n';
+    str = str + "Date: " + date + "\n\n";
     header = str;
+}
+void FT::HttpResponse::date_generate() {
+    std::time_t now = std::time(nullptr);
+    std::tm* t = std::gmtime(&now);
+    char buffer[32];
+    std::strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", t);
+    std::string aux(buffer);
+    date = aux;
 }

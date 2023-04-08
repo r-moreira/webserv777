@@ -21,7 +21,6 @@ SRCS = $(addprefix ./srcs/, \
 			${SOCK_DIR}/ListeningSocket.cpp \
 			${SOCK_DIR}/Socket.cpp \
 			${MULT_DIR}/MultPlexing.cpp \
-			${SERV_DIR}/Server.cpp \
 			${SERV_DIR}/ServerTemplate.cpp \
 			${HTTP_DIR}/HttpRequest.cpp \
 			${HTTP_DIR}/HttpResponse.cpp \
