@@ -40,14 +40,13 @@ void FT::Multplexing::wiriting(RequestData *data) {
 }
 
 void FT::Multplexing::accepter() {
-    struct sockaddr_in address = get_socket()->get_address();
-    int addrlen = sizeof(address);
+    int fd = get_socket()->socket_accepter();
+    if (fd < 0)
+        return ;
     RequestData *data = new RequestData;
 
     data->status = Reading;
-    data->fd = accept(get_socket()->get_socket(),
-        (struct sockaddr *)&address, (socklen_t*)&addrlen);
-
+    data->fd = fd;
     request_event.data.ptr = data;
     request_event.events = EPOLLIN;
     register_epoll(EPOLL_CTL_ADD, data->fd, &request_event);
@@ -75,7 +74,16 @@ void FT::Multplexing::wait() {
     requestEventCount = epoll_wait(epoll, epoll_list, MAX_EPOLL_EVENTS, -1);
     for (int i = 0; i < requestEventCount; i++) {
         if (epoll_list[i].data.fd == serverSocketFd) {
-            accepter();
+            int fd = get_socket()->socket_accepter();
+            if (fd < 0)
+                break ;
+            RequestData *data = new RequestData;
+
+            data->status = Reading;
+            data->fd = fd;
+            request_event.data.ptr = data;
+            request_event.events = EPOLLIN;
+            register_epoll(EPOLL_CTL_ADD, data->fd, &request_event);
         }
         else {
             RequestData *data = (RequestData *) epoll_list[i].data.ptr;

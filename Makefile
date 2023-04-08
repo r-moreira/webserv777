@@ -17,7 +17,6 @@ MULT_DIR = MultPlexing
 SRCS = $(addprefix ./srcs/, \
           	main.cpp \
           	${SOCK_DIR}/BindingSocket.cpp \
-          	${SOCK_DIR}/Connecting.cpp \
 			${SOCK_DIR}/ListeningSocket.cpp \
 			${SOCK_DIR}/Socket.cpp \
 			${MULT_DIR}/MultPlexing.cpp \
