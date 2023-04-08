@@ -37,46 +37,6 @@ std::string content_type[] = {
         "Content-Type: image/jpeg\r\n\r\n",
 };
 
-std::string messages[] = {
-        "HTTP/1.1 200 Ok\r\n ",
-        "HTTP/1.0 400 Bad Request\r\nContent-Type: text/html\r\n\r\n<!doctype html><html><body>System is busy right now.</body></html>",
-        "HTTP/1.0 404 File not found\r\nContent-Type: text/html\r\n\r\n<!doctype html><html><body>The reuested file does not exist on this server</body></html>"
-};
-
-
-/*
- * * AF_INET is the IP address family of the server
- * * SOCK_STREAM is the type of TCP socket
- * * IPPROTO_TCP is the protocol of the socket
- * * INADDR_ANY accepts any IP address
- * * SOMAXCONN is the maximum number of connections that can be queued
- */
-int create_server_socket(int port) {
-    struct sockaddr_in sevr_addr = {};
-    sevr_addr.sin_family = AF_INET;
-    sevr_addr.sin_port = htons(port);
-    sevr_addr.sin_addr.s_addr = INADDR_ANY;
-
-    int server_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-
-    if (server_fd < 0) {
-        std::cerr << RED << "Error while opening server_fd: " << strerror(errno) << RESET << std::endl;
-        exit(EXIT_FAILURE);
-    }
-
-    if (bind(server_fd, (struct sockaddr *) &sevr_addr, sizeof(sevr_addr)) != 0) {
-        std::cerr << RED << "Error while binding server_fd to address: " << strerror(errno) << RESET << std::endl;
-        exit(EXIT_FAILURE);
-    }
-    if (listen(server_fd, SOMAXCONN) < 0) {
-        std::cerr << RED << "Error while listening on server_fd: " << strerror(errno) << RESET << std::endl;
-        exit(EXIT_FAILURE);
-    }
-
-    std::cout << GREEN << "Server started to listen at port: " << port << RESET << std::endl;
-    return server_fd;
-}
-
 std::string getHeaders(const std::string& file_path, size_t file_size) {
     char size_t_byte_buffer[25] = {};
     std::string headers = "HTTP/1.1 200 Ok\r\n";
