@@ -77,19 +77,6 @@ int create_server_socket(int port) {
     return server_fd;
 }
 
-//void set_non_blocking(int fd) {
-//    int flags = fcntl(fd, F_GETFL, 0);
-//    if (flags == -1) {
-//        std::cerr << RED << "Error while getting flags: " << strerror(errno) << RESET << std::endl;
-//        exit(EXIT_FAILURE);
-//    }
-//    flags |= O_NONBLOCK;
-//    if (fcntl(fd, F_SETFL, flags) == -1) {
-//        std::cerr << RED << "Error while setting flags: " << strerror(errno) << RESET << std::endl;
-//        exit(EXIT_FAILURE);
-//    }
-//}
-
 std::string getHeaders(const std::string& file_path, size_t file_size) {
     char size_t_byte_buffer[25] = {};
     std::string headers = "HTTP/1.1 200 Ok\r\n";
@@ -138,7 +125,7 @@ void write_response(event_data_t *event_data) {
     UrlParser urlParser;
 
     struct stat file_stat;
-    char buffer[10240];
+    char buffer[30720];
 
     if (open_file(event_data) == -1)
         return;
@@ -263,7 +250,7 @@ void io_multiplexing_event_loop(int server_socket_fd) {
     struct epoll_event server_event = {};
     struct epoll_event request_event = {};
 
-    server_event.events = EPOLLIN | EPOLLET;
+    server_event.events = EPOLLIN;
     server_event.data.fd = server_socket_fd;
 
     if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, server_socket_fd, &server_event) == -1) {
@@ -273,7 +260,7 @@ void io_multiplexing_event_loop(int server_socket_fd) {
 
     struct epoll_event epoll_events[MAX_EPOLL_EVENTS];
     while (1) {
-        int nfds = epoll_wait(epoll_fd, epoll_events, MAX_EPOLL_EVENTS, -1);
+        int nfds = epoll_wait(epoll_fd, epoll_events, MAX_EPOLL_EVENTS, 3000);
         if (nfds == -1) {
             std::cerr << RED << "Error while waiting for epoll events: " << strerror(errno) << RESET << std::endl;
             continue;
@@ -346,8 +333,6 @@ int main(int argc, char **argv, char **env) {
     }
 
     srand(time(NULL));
-    //int server_socket_fd = create_server_socket(8080 + (rand() % 10));
-    //set_non_blocking(server_socket_fd);
 
     io_multiplexing_event_loop(Socket::setupServer(8080 + (rand() % 10)));
 
