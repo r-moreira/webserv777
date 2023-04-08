@@ -107,8 +107,8 @@ void write_response(event_data_t *event_data) {
     }
 
     size_t read_size;
-    if (file_stat.st_size > 10240) {
-        read_size = event_data->read_left > 10240 ? 10240 : event_data->read_left;
+    if (file_stat.st_size > 30720) {
+        read_size = event_data->read_left > 30720 ? 30720 : event_data->read_left;
     } else {
         read_size = file_stat.st_size;
     }
