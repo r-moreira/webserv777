@@ -43,24 +43,6 @@
 #define MAX_EPOLL_EVENTS 64
 #define READ_BUFFER_SIZE 8192
 
-typedef enum EVENT_STATUS {
-    Reading,
-    Writing,
-    Ended
-} event_status_t;
-
-typedef struct EventData {
-    int write_iteration;
-    int client_fd;
-    std::string file_path;
-    size_t read_bytes;
-    size_t read_left;
-    std::string read_buffer;
-    FILE *file;
-    Request request;
-    event_status_t event_status;
-} event_data_t;
-
 typedef enum {
     HTTP_HEADER,
     BAD_REQUEST,

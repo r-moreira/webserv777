@@ -14,6 +14,7 @@ SRCS				= ${SRCS_DIR}/webserv.cpp\
 					  ${CONF_DIR}/Configuration.cpp\
 					  ${DOMAIN_DIR}/Request.cpp\
 					  ${DOMAIN_DIR}/Response.cpp\
+					  ${DOMAIN_DIR}/Event.cpp\
 					  ${NETWORK_DIR}/Network.cpp\
 					  ${NETWORK_DIR}/Socket.cpp\
 					  ${NETWORK_DIR}/Server.cpp\

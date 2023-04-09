@@ -1,5 +1,6 @@
 #include "../includes/webserv.h"
 #include "../includes/network/Socket.h"
+#include "../includes/domain/Event.h"
 
 
 std::string file_extension[] = {
@@ -58,34 +59,35 @@ std::string getHeaders(const std::string& file_path, size_t file_size) {
     return "HTTP/1.1 200 Ok\r\n" + content_length + "Content-Type: text/html\r\n\r\n";
 }
 
-int open_file(event_data_t *event_data) {
-    if (event_data->file == NULL) {
-        event_data->file_path = "./public" + event_data->request.getUri();
+int open_file(Event *event) {
+    if (event->getFile() == NULL) {
+        event->setFilePath("./public" + event->getRequest().getUri());
 
         FILE *fptr;
-        fptr = fopen(event_data->file_path.c_str(), "rb");
+        fptr = fopen(event->getFilePath().c_str(), "rb");
         if (fptr == NULL) {
-            std::cerr << RED << "Error while opening file: " << event_data->file_path << " " << strerror(errno) << RESET << std::endl;
+            std::cerr << RED << "Error while opening file: " << event->getFilePath() << " " << strerror(errno) << RESET << std::endl;
             //return error page, end connection
-            event_data->event_status = Ended;
+            event->setEventStatus(Ended);
             return -1;
         }
-        event_data->file = fptr;
-        event_data->read_bytes = 0;
+        event->setFile(fptr);
+        //Por algum motivo readbytes precisa ser inicializado somente neste momento
+        event->setReadBytes(0);
     }
     return 1;
 }
 
-void write_response(event_data_t *event_data) {
+void write_response(Event *event) {
     UrlParser urlParser;
 
     struct stat file_stat;
     char buffer[30720];
 
-    if (open_file(event_data) == -1)
+    if (open_file(event) == -1)
         return;
 
-    int fd = fileno(event_data->file);
+    int fd = fileno(event->getFile());
     if (fd < 1) {
         std::cerr << RED << "Error while getting file descriptor: " << strerror(errno) << RESET << std::endl;
         //return error page, end connection
@@ -93,11 +95,11 @@ void write_response(event_data_t *event_data) {
 
     fstat(fd, &file_stat);
 
-    if (event_data->write_iteration == 0) {
-        std::string headers = getHeaders(event_data->file_path, file_stat.st_size);
+    if (event->getWriteIteration() == 0) {
+        std::string headers = getHeaders(event->getFilePath(), file_stat.st_size);
         std::cout << CYAN << "Response Headers:\n" << headers << RESET << std::endl;
 
-        if (send(event_data->client_fd, headers.c_str(), headers.size(), 0) < 0) {
+        if (send(event->getClientFd(), headers.c_str(), headers.size(), 0) < 0) {
             std::cerr << RED << "Error while writing status header to client: " << strerror(errno) << RESET
                       << std::endl;
             //return error page, end connection
@@ -108,42 +110,42 @@ void write_response(event_data_t *event_data) {
 
     size_t read_size;
     if (file_stat.st_size > 30720) {
-        read_size = event_data->read_left > 30720 ? 30720 : event_data->read_left;
+        read_size = event->getReadLeft() > 30720 ? 30720 : event->getReadLeft();
     } else {
         read_size = file_stat.st_size;
     }
 
     std::cout << YELLOW << "Read Data Size: " << read_size << RESET << std::endl;
-    size_t read_bytes = fread(buffer, 1, read_size, event_data->file);
+    size_t read_bytes = fread(buffer, 1, read_size, event->getFile());
 
-    event_data->read_bytes += read_bytes;
+    event->setReadBytes(event->getReadBytes() + read_bytes);
     std::cout << YELLOW << "Readed Data Size: " << read_bytes << RESET << std::endl;
 
-    event_data->read_left = file_stat.st_size - event_data->read_bytes;
-    std::cout << YELLOW << "Read Left: " << event_data->read_left << RESET << std::endl;
+    event->setReadLeft(file_stat.st_size - event->getReadBytes());
+    std::cout << YELLOW << "Read Left: " << event->getReadLeft() << RESET << std::endl;
 
-    long bytes_sent = send(event_data->client_fd ,buffer, read_bytes, 0 );
+    long bytes_sent = send(event->getClientFd() ,buffer, read_bytes, 0 );
     if (bytes_sent < 0) {
         std::cerr << RED << "Error while writing to client: " << strerror(errno) << RESET << std::endl;
         //return error page, end connection
-        event_data->event_status = Ended;
+        event->setEventStatus(Ended);
     }
 
     std::cout << YELLOW << "Transmitted Data Size " << bytes_sent << " Bytes." << RESET << std::endl;
 
     std::cout << GREEN << "File Transfer Complete." << RESET << std::endl;
 
-    event_data->write_iteration++;
-    if (event_data->read_left <= 0) {
-        event_data->event_status = Ended;
+    event->setWriteIteration(event->getWriteIteration() + 1);
+    if (event->getReadLeft() <= 0) {
+        event->setEventStatus(Ended);
     }
 }
 
-Request parse_request(event_data_t *event_data) {
+Request parse_request(Event *event) {
 
-    std::cout << MAGENTA << "Request Data:\n " << event_data->read_buffer << RESET << std::endl;
+    std::cout << MAGENTA << "Request Data:\n " << event->getReadBuffer() << RESET << std::endl;
 
-    const char *buffer = event_data->read_buffer.c_str();
+    const char *buffer = event->getReadBuffer().c_str();
 
     Request request;
     HttpRequestParser parser;
@@ -156,42 +158,42 @@ Request parse_request(event_data_t *event_data) {
         std::cerr << RED << "Parsing failed" << RESET << std::endl;
         //Return error page, end connection
     }
-    event_data->event_status = Writing;
+    event->setEventStatus(Writing);
     return request;
 }
 
-void read_request(event_data_t *event_data) {
-    int client_fd = event_data->client_fd;
+void read_request(Event *event) {
     char buffer[READ_BUFFER_SIZE] = {};
     Request request;
 
-    long bytes_read = read(client_fd, buffer, READ_BUFFER_SIZE);
+    long bytes_read = read(event->getClientFd(), buffer, READ_BUFFER_SIZE);
 
     if (bytes_read == -1) {
         std::cerr << RED << "Error while reading from client: " << strerror(errno) << RESET << std::endl;
     } else if (bytes_read == 0) {
         std::cout << YELLOW << "Client disconnected" << RESET << std::endl;
-        event_data->event_status = Ended;
+        event->setEventStatus(Ended);
         return;
     }
 
-    event_data->read_bytes += bytes_read;
-    event_data->read_buffer.append(buffer);
+    event->setReadBytes(event->getReadBytes() + bytes_read);
+    std::string read_buffer = event->getReadBuffer();
+    event->setReadBuffer(read_buffer.append(buffer));
 
-    std::cout << YELLOW << "Read " << event_data->read_bytes << " bytes from client" << RESET << std::endl;
+    std::cout << YELLOW << "Read " << event->getReadBytes() << " bytes from client" << RESET << std::endl;
     std::cout << GREEN << "HTTP Request:\n" << buffer << RESET << std::endl;
 
     if (buffer[READ_BUFFER_SIZE - 1] == 0) {
-        request = parse_request(event_data);
+        request = parse_request(event);
     }
-    event_data->request = request;
+    event->setRequest(request);
 }
 
-void process_event(event_data_t *event_data) {
-    if (event_data->event_status == Reading) {
-        read_request(event_data);
-    } else if (event_data->event_status == Writing) {
-        write_response(event_data);
+void process_event(Event *event) {
+    if (event->getEventStatus() == Reading) {
+        read_request(event);
+    } else if (event->getEventStatus() == Writing) {
+        write_response(event);
     }
 }
 
@@ -227,16 +229,8 @@ void io_multiplexing_event_loop(int server_socket_fd) {
                 int client_fd = Socket::setupClient(server_socket_fd);
                 if (client_fd < 0) break;
 
-                event_data_t *event_data = new event_data_t;
-                event_data->write_iteration = 0;
-                event_data->client_fd = client_fd;
-                event_data->file_path = "";
-                event_data->read_bytes = 0;
-                event_data->read_left = 0;
-                event_data->event_status = Reading;
-                event_data->file = NULL;
-
-                request_event.data.ptr = event_data;
+                Event *event = new Event(client_fd);
+                request_event.data.ptr = event;
                 request_event.events = EPOLLIN;
 
                 if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, client_fd, &request_event) == -1) {
@@ -244,13 +238,13 @@ void io_multiplexing_event_loop(int server_socket_fd) {
                     continue;
                 }
             } else {
-                event_data_t *event_data = (event_data_t *) epoll_events[i].data.ptr;
-                process_event(event_data);
-                switch (event_data->event_status) {
+                Event *event = (Event *) epoll_events[i].data.ptr;
+                process_event(event);
+                switch (event->getEventStatus()) {
                     case Reading:
                         request_event.events = EPOLLIN;
-                        request_event.data.ptr = event_data;
-                        if (epoll_ctl(epoll_fd, EPOLL_CTL_MOD, event_data->client_fd, &request_event) < 0) {
+                        request_event.data.ptr = event;
+                        if (epoll_ctl(epoll_fd, EPOLL_CTL_MOD, event->getClientFd(), &request_event) < 0) {
                             std::cerr << RED << "Error while adding reading event to epoll: " << strerror(errno)
                                       << RESET << std::endl;
                             continue;
@@ -258,20 +252,20 @@ void io_multiplexing_event_loop(int server_socket_fd) {
                         break;
                     case Writing:
                         request_event.events = EPOLLOUT;
-                        request_event.data.ptr = event_data;
-                        if (epoll_ctl(epoll_fd, EPOLL_CTL_MOD, event_data->client_fd, &request_event) < 0) {
+                        request_event.data.ptr = event;
+                        if (epoll_ctl(epoll_fd, EPOLL_CTL_MOD, event->getClientFd(), &request_event) < 0) {
                             std::cerr << RED << "Error while adding writing event to epoll: " << strerror(errno)
                                       << RESET << std::endl;
                             continue;
                         }
                         break;
                     case Ended:
-                        if (event_data->file != NULL) {
-                            fclose(event_data->file);
-                            event_data->file = NULL;
+                        if (event->getFile() != NULL) {
+                            fclose(event->getFile());
+                            event->setFile(NULL);
                         }
-                        close(event_data->client_fd);
-                        delete event_data;
+                        close(event->getClientFd());
+                        delete event;
                 }
 
             }
