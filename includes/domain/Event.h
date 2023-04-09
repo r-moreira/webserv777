@@ -59,6 +59,8 @@ public:
 
     void read_upload_file();
 
+    void write_upload_file();
+
     void upload_file();
 
     int getClientFd() const;

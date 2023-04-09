@@ -1,6 +1,5 @@
 #include "../includes/webserv.h"
 #include "../includes/network/Socket.h"
-#include "../includes/domain/Event.h"
 
 void io_multiplexing_event_loop(int server_socket_fd) {
     int epoll_fd = epoll_create1(0);

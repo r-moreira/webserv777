@@ -121,18 +121,25 @@ void Event::upload_file() {
 
     read_upload_file();
 
-    long bytes_sent = send(this->getClientFd() , this->getFileReadChunkBuffer(), this->getFileChunkReadBytes(), 0);
+    write_upload_file();
+
+}
+
+void Event::write_upload_file() {
+    if (this->getEventStatus() == Ended) return;
+
+    long bytes_sent = send(getClientFd() , getFileReadChunkBuffer(), getFileChunkReadBytes(), 0);
     if (bytes_sent < 0) {
         std::cerr << RED << "Error while writing to client: " << strerror(errno) << RESET << std::endl;
         //return error page, end connection
-        this->setEventStatus(Ended);
+        setEventStatus(Ended);
     }
 
     std::cout << YELLOW << "Transmitted Data Size " << bytes_sent << " Bytes." << RESET << std::endl;
 
 
-    if (this->getFileReadLeft() <= 0) {
-        this->setEventStatus(Ended);
+    if (getFileReadLeft() <= 0) {
+        setEventStatus(Ended);
 
         std::cout << GREEN << "File Transfer Complete." << RESET << std::endl;
     }
