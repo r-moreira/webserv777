@@ -7,6 +7,7 @@
 Event::Event(int client_fd) {
     this->_client_fd = client_fd;
     this->_event_status = Reading;
+    this->_event_sub_status = ReadingRequest;
     this->_request = Request();
     this->_read_bytes = 0;
     this->_read_left = 0;
@@ -14,7 +15,6 @@ Event::Event(int client_fd) {
     this->_file = NULL;
     this->_file_path = "";
     this->_file_size = 0;
-    this->_write_iteration = 0;
 }
 
 Event::~Event() {
@@ -81,6 +81,8 @@ std::string getHeaders(const std::string& file_path, size_t file_size) {
 }
 
 void Event::open_file() {
+    if (this->getEventStatus() == Ended) return;
+
     if (this->getFile() == NULL) {
         this->setFilePath("./public" + this->getRequest().getUri());
 
@@ -105,29 +107,15 @@ void Event::open_file() {
 
     fstat(fd, &file_stat);
     this->setFileSize(file_stat.st_size);
+    this->setEventSubStatus(WritingResponseHeaders);
 }
 
-void Event::write_response() {
+void Event::upload_file() {
+    if (this->getEventStatus() == Ended) return;
+
     UrlParser urlParser;
 
     char buffer[30720];
-
-    open_file();
-    if (this->getEventStatus() == Ended) return;
-
-
-    if (this->getWriteIteration() == 0) {
-        std::string headers = getHeaders(this->getFilePath(), this->getFileSize());
-        std::cout << CYAN << "Response Headers:\n" << headers << RESET << std::endl;
-
-        if (send(this->getClientFd(), headers.c_str(), headers.size(), 0) < 0) {
-            std::cerr << RED << "Error while writing status header to client: " << strerror(errno) << RESET
-                      << std::endl;
-            //return error page, end connection
-        }
-
-        std::cout << GREEN << "Successfully sent headers to client" << RESET << std::endl;
-    }
 
     size_t read_size;
     if (this->getFileSize() > 30720) {
@@ -154,15 +142,32 @@ void Event::write_response() {
 
     std::cout << YELLOW << "Transmitted Data Size " << bytes_sent << " Bytes." << RESET << std::endl;
 
-    std::cout << GREEN << "File Transfer Complete." << RESET << std::endl;
 
-    this->setWriteIteration(this->getWriteIteration() + 1);
     if (this->getReadLeft() <= 0) {
         this->setEventStatus(Ended);
+
+        std::cout << GREEN << "File Transfer Complete." << RESET << std::endl;
     }
 }
 
-Request Event::parse_request() {
+void Event::write_response_headers() {
+    if (this->getEventStatus() == Ended) return;
+
+    std::string headers = getHeaders(getFilePath(), getFileSize());
+    std::cout << CYAN << "Response Headers:\n" << headers << RESET << std::endl;
+
+    if (send(getClientFd(), headers.c_str(), headers.size(), 0) < 0) {
+       std::cerr << RED << "Error while writing status header to client: " << strerror(errno) << RESET << std::endl;
+       this->setEventStatus(Ended);
+       //return error page, end connection
+    }
+
+    std::cout << GREEN << "Successfully sent headers to client" << RESET << std::endl;
+    this->setEventSubStatus(UploadingFile);
+}
+
+void Event::parse_request() {
+    if (this->getEventStatus() == Ended) return;
 
     std::cout << MAGENTA << "Request Data:\n " << this->getReadBuffer() << RESET << std::endl;
 
@@ -177,12 +182,17 @@ Request Event::parse_request() {
     } else {
         std::cerr << RED << "Parsing failed" << RESET << std::endl;
         //Return error page, end connection
+        this->setEventStatus(Ended);
     }
     this->setEventStatus(Writing);
-    return _request;
+
+    // Por enquanto só vai ter um sub estado de leitura de arquivo, mas no futuro terá outros dependendo da funcionalidade
+    this->setEventSubStatus(OpeningFile);
 }
 
 void Event::read_request() {
+    if (this->getEventStatus() == Ended) return;
+
     char buffer[READ_BUFFER_SIZE] = {};
     Request request;
 
@@ -190,6 +200,7 @@ void Event::read_request() {
 
     if (bytes_read == -1) {
         std::cerr << RED << "Error while reading from client: " << strerror(errno) << RESET << std::endl;
+        this->setEventStatus(Ended);
     } else if (bytes_read == 0) {
         std::cout << YELLOW << "Client disconnected" << RESET << std::endl;
         this->setEventStatus(Ended);
@@ -204,26 +215,32 @@ void Event::read_request() {
     std::cout << GREEN << "HTTP Request:\n" << buffer << RESET << std::endl;
 
     if (buffer[READ_BUFFER_SIZE - 1] == 0) {
-        request = parse_request();
+        this->setEventSubStatus(ParsingRequest);
     }
-    this->setRequest(request);
 }
 
 void Event::process_event() {
     if (this->getEventStatus() == Reading) {
-        read_request();
+
+        switch (this->getEventSubStatus()) {
+            case ReadingRequest: read_request();
+            case ParsingRequest: parse_request();
+            default: break;
+        }
+
     } else if (this->getEventStatus() == Writing) {
-        write_response();
+
+        switch (this->getEventSubStatus()) {
+            case OpeningFile: open_file();
+            case WritingResponseHeaders: write_response_headers();
+            case UploadingFile: upload_file();
+            default: break;
+        }
+
     }
-}
 
-
-int Event::getWriteIteration() const {
-    return _write_iteration;
-}
-
-void Event::setWriteIteration(int writeIteration) {
-    _write_iteration = writeIteration;
+    std::cout << "Event Status: " << this->getEventStatus() << std::endl;
+    std::cout << "Event Sub Status: " << this->getEventSubStatus() << std::endl;
 }
 
 int Event::getClientFd() const {
@@ -296,4 +313,12 @@ size_t Event::getFileSize() const {
 
 void Event::setFileSize(size_t fileSize) {
     _file_size = fileSize;
+}
+
+event_sub_status_t Event::getEventSubStatus() const {
+    return _event_sub_status;
+}
+
+void Event::setEventSubStatus(event_sub_status_t eventSubStatus) {
+    _event_sub_status = eventSubStatus;
 }

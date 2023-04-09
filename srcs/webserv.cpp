@@ -66,6 +66,9 @@ void io_multiplexing_event_loop(int server_socket_fd) {
                         break;
                     case Ended:
                         delete event;
+                        break;
+                    default:
+                        std::cerr << RED << "Error: Invalid event_status on event_loop" << RESET << std::endl;
                 }
 
             }

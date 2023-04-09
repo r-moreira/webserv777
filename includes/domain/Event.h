@@ -13,10 +13,18 @@ typedef enum EVENT_STATUS {
     Ended
 } event_status_t;
 
+typedef enum EVENT_SUB_STATUS {
+    ReadingRequest,
+    ParsingRequest,
+    OpeningFile,
+    WritingResponseHeaders,
+    UploadingFile
+} event_sub_status_t;
+
+
 class Event {
 
 private:
-    int _write_iteration;
     int _client_fd;
     std::string _file_path;
     FILE *_file;
@@ -26,6 +34,7 @@ private:
     std::string _read_buffer;
     Request _request;
     event_status_t _event_status;
+    event_sub_status_t _event_sub_status;
 public:
     Event(int client_fd);
 
@@ -35,19 +44,17 @@ public:
 
     void read_request();
 
-    size_t getFileSize() const;
+    void write_response_headers();
 
-    void setFileSize(size_t fileSize);
-
-    Request parse_request();
+    void parse_request();
 
     void open_file();
 
-    void write_response();
+    void upload_file();
 
-    int getWriteIteration() const;
+    size_t getFileSize() const;
 
-    void setWriteIteration(int writeIteration);
+    void setFileSize(size_t fileSize);
 
     int getClientFd() const;
 
@@ -80,6 +87,10 @@ public:
     FILE *getFile() const;
 
     void setFile(FILE *file);
+
+    void setEventSubStatus(event_sub_status_t eventSubStatus);
+
+    event_sub_status_t getEventSubStatus() const;
 };
 
 
