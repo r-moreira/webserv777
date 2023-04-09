@@ -26,13 +26,13 @@ class Event {
 
 private:
     int _client_fd;
+    Request _request;
     std::string _file_path;
     FILE *_file;
     size_t _file_size;
     size_t _read_bytes;
     size_t _read_left;
     std::string _read_buffer;
-    Request _request;
     event_status_t _event_status;
     event_sub_status_t _event_sub_status;
 public:

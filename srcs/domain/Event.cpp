@@ -225,7 +225,9 @@ void Event::process_event() {
         switch (this->getEventSubStatus()) {
             case ReadingRequest: read_request();
             case ParsingRequest: parse_request();
-            default: break;
+            default:
+                std::cerr << RED << "Invalid Reading Event Sub Status" << RESET << std::endl;
+                break;
         }
 
     } else if (this->getEventStatus() == Writing) {
@@ -234,7 +236,9 @@ void Event::process_event() {
             case OpeningFile: open_file();
             case WritingResponseHeaders: write_response_headers();
             case UploadingFile: upload_file();
-            default: break;
+            default:
+                std::cerr << RED << "Invalid Writing Event Sub Status" << RESET << std::endl;
+                break;
         }
 
     }
