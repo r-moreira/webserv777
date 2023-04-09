@@ -29,6 +29,10 @@
 #include "parser/HttpRequestParser.h"
 #include "parser/UrlParser.h"
 #include "domain/Event.h"
+#include "network/Socket.h"
+#include "io/Multiplexer.h"
+
+
 
 #define RESET   "\033[0m"
 #define BLACK   "\033[30m"      /* Black */

@@ -5,6 +5,7 @@
 #ifndef WEBSERV_MULTIPLEXER_H
 #define WEBSERV_MULTIPLEXER_H
 
+#include "../webserv.h"
 
 class Multiplexer {
 
@@ -12,6 +13,8 @@ public:
     Multiplexer();
 
     ~Multiplexer();
+
+    void event_loop(int server_socket_fd);
 };
 
 
