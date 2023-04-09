@@ -19,13 +19,13 @@ private:
     int _write_iteration;
     int _client_fd;
     std::string _file_path;
+    FILE *_file;
+    size_t _file_size;
     size_t _read_bytes;
     size_t _read_left;
     std::string _read_buffer;
     Request _request;
     event_status_t _event_status;
-    FILE *_file;
-
 public:
     Event(int client_fd);
 
@@ -35,9 +35,13 @@ public:
 
     void read_request();
 
+    size_t getFileSize() const;
+
+    void setFileSize(size_t fileSize);
+
     Request parse_request();
 
-    int open_file();
+    void open_file();
 
     void write_response();
 

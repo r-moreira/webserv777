@@ -11,9 +11,10 @@ Event::Event(int client_fd) {
     this->_read_bytes = 0;
     this->_read_left = 0;
     this->_read_buffer = "";
-    this->_file_path = "";
-    this->_write_iteration = 0;
     this->_file = NULL;
+    this->_file_path = "";
+    this->_file_size = 0;
+    this->_write_iteration = 0;
 }
 
 Event::~Event() {
@@ -79,7 +80,7 @@ std::string getHeaders(const std::string& file_path, size_t file_size) {
     return "HTTP/1.1 200 Ok\r\n" + content_length + "Content-Type: text/html\r\n\r\n";
 }
 
-int Event::open_file() {
+void Event::open_file() {
     if (this->getFile() == NULL) {
         this->setFilePath("./public" + this->getRequest().getUri());
 
@@ -89,24 +90,13 @@ int Event::open_file() {
             std::cerr << RED << "Error while opening file: " << this->getFilePath() << " " << strerror(errno) << RESET << std::endl;
             //return error page, end connection
             this->setEventStatus(Ended);
-            return -1;
         }
         this->setFile(fptr);
         //Por algum motivo readbytes precisa ser inicializado neste momento
         this->setReadBytes(0);
     }
-    return 1;
-}
-
-void Event::write_response() {
-    UrlParser urlParser;
 
     struct stat file_stat;
-    char buffer[30720];
-
-    if (open_file() == -1)
-        return;
-
     int fd = fileno(this->getFile());
     if (fd < 1) {
         std::cerr << RED << "Error while getting file descriptor: " << strerror(errno) << RESET << std::endl;
@@ -114,9 +104,20 @@ void Event::write_response() {
     }
 
     fstat(fd, &file_stat);
+    this->setFileSize(file_stat.st_size);
+}
+
+void Event::write_response() {
+    UrlParser urlParser;
+
+    char buffer[30720];
+
+    open_file();
+    if (this->getEventStatus() == Ended) return;
+
 
     if (this->getWriteIteration() == 0) {
-        std::string headers = getHeaders(this->getFilePath(), file_stat.st_size);
+        std::string headers = getHeaders(this->getFilePath(), this->getFileSize());
         std::cout << CYAN << "Response Headers:\n" << headers << RESET << std::endl;
 
         if (send(this->getClientFd(), headers.c_str(), headers.size(), 0) < 0) {
@@ -129,10 +130,10 @@ void Event::write_response() {
     }
 
     size_t read_size;
-    if (file_stat.st_size > 30720) {
+    if (this->getFileSize() > 30720) {
         read_size = this->getReadLeft() > 30720 ? 30720 : this->getReadLeft();
     } else {
-        read_size = file_stat.st_size;
+        read_size = this->getFileSize();
     }
 
     std::cout << YELLOW << "Read Data Size: " << read_size << RESET << std::endl;
@@ -141,7 +142,7 @@ void Event::write_response() {
     this->setReadBytes(this->getReadBytes() + it_read_bytes);
     std::cout << YELLOW << "Readed Data Size: " << it_read_bytes << RESET << std::endl;
 
-    this->setReadLeft(file_stat.st_size - this->getReadBytes());
+    this->setReadLeft(this->getFileSize() - this->getReadBytes());
     std::cout << YELLOW << "Read Left: " << this->getReadLeft() << RESET << std::endl;
 
     long bytes_sent = send(this->getClientFd() , buffer, it_read_bytes, 0 );
@@ -287,4 +288,12 @@ FILE *Event::getFile() const {
 
 void Event::setFile(FILE *file) {
     Event::_file = file;
+}
+
+size_t Event::getFileSize() const {
+    return _file_size;
+}
+
+void Event::setFileSize(size_t fileSize) {
+    _file_size = fileSize;
 }

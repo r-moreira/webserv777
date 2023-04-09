@@ -5,9 +5,16 @@
 #ifndef WEBSERV_READ_H
 #define WEBSERV_READ_H
 
+#include "../webserv.h"
 
 class Read {
+private:
+    Event _event;
 
+public:
+    Read();
+    ~Read();
+    Read(Event &event);
 };
 
 

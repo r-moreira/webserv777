@@ -28,6 +28,7 @@
 #include "domain/Request.h"
 #include "parser/HttpRequestParser.h"
 #include "parser/UrlParser.h"
+#include "domain/Event.h"
 
 #define RESET   "\033[0m"
 #define BLACK   "\033[30m"      /* Black */
