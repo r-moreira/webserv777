@@ -52,7 +52,7 @@ types {
     application/x-7z-compressed|                                                7z;
     application/x-cocoa|                                                        cco;
     application/x-java-archive-diff|                                            jardiff;
-    application/x-java-jnlp-file|                                               jnlp;
+    application/x-java-jnlp-_file|                                               jnlp;
     application/x-makeself|                                                     run;
     application/x-perl|                                                         pl pm;
     application/x-pilot|                                                        prc pdb;

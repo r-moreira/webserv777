@@ -16,18 +16,30 @@ typedef enum EVENT_STATUS {
 class Event {
 
 private:
-    int write_iteration;
-    int client_fd;
-    std::string file_path;
-    size_t read_bytes;
-    size_t read_left;
-    std::string read_buffer;
-    Request request;
-    event_status_t event_status;
-    FILE *file;
+    int _write_iteration;
+    int _client_fd;
+    std::string _file_path;
+    size_t _read_bytes;
+    size_t _read_left;
+    std::string _read_buffer;
+    Request _request;
+    event_status_t _event_status;
+    FILE *_file;
 
 public:
     Event(int client_fd);
+
+    ~Event();
+
+    void process_event();
+
+    void read_request();
+
+    Request parse_request();
+
+    int open_file();
+
+    void write_response();
 
     int getWriteIteration() const;
 
