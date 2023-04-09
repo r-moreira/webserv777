@@ -6,15 +6,21 @@
 
 Event::Event(int client_fd) {
     this->_client_fd = client_fd;
-    this->_event_status = Reading;
-    this->_event_sub_status = ReadingRequest;
+
     this->_request = Request();
-    this->_read_bytes = 0;
-    this->_read_left = 0;
-    this->_read_buffer = "";
+    this->_request_read_buffer = "";
+    this->_request_read_bytes = 0;
+
     this->_file = NULL;
     this->_file_path = "";
+    this->_file_read_bytes = 0;
+    this->_file_read_left = 0;
+    this->_file_chunk_read_bytes = 0;
     this->_file_size = 0;
+    this->_file_read_chunk_buffer[0] = '\0';
+
+    this->_event_status = Reading;
+    this->_event_sub_status = ReadingRequest;
 }
 
 Event::~Event() {
@@ -95,7 +101,7 @@ void Event::open_file() {
         }
         this->setFile(fptr);
         //Por algum motivo readbytes precisa ser inicializado neste momento
-        this->setReadBytes(0);
+        this->setFileReadBytes(0);
     }
 
     struct stat file_stat;
@@ -113,27 +119,9 @@ void Event::open_file() {
 void Event::upload_file() {
     if (this->getEventStatus() == Ended) return;
 
-    UrlParser urlParser;
+    read_upload_file();
 
-    char buffer[30720];
-
-    size_t read_size;
-    if (this->getFileSize() > 30720) {
-        read_size = this->getReadLeft() > 30720 ? 30720 : this->getReadLeft();
-    } else {
-        read_size = this->getFileSize();
-    }
-
-    std::cout << YELLOW << "Read Data Size: " << read_size << RESET << std::endl;
-    size_t it_read_bytes = fread(buffer, 1, read_size, this->getFile());
-
-    this->setReadBytes(this->getReadBytes() + it_read_bytes);
-    std::cout << YELLOW << "Readed Data Size: " << it_read_bytes << RESET << std::endl;
-
-    this->setReadLeft(this->getFileSize() - this->getReadBytes());
-    std::cout << YELLOW << "Read Left: " << this->getReadLeft() << RESET << std::endl;
-
-    long bytes_sent = send(this->getClientFd() , buffer, it_read_bytes, 0 );
+    long bytes_sent = send(this->getClientFd() , this->getFileReadChunkBuffer(), this->getFileChunkReadBytes(), 0);
     if (bytes_sent < 0) {
         std::cerr << RED << "Error while writing to client: " << strerror(errno) << RESET << std::endl;
         //return error page, end connection
@@ -143,11 +131,33 @@ void Event::upload_file() {
     std::cout << YELLOW << "Transmitted Data Size " << bytes_sent << " Bytes." << RESET << std::endl;
 
 
-    if (this->getReadLeft() <= 0) {
+    if (this->getFileReadLeft() <= 0) {
         this->setEventStatus(Ended);
 
         std::cout << GREEN << "File Transfer Complete." << RESET << std::endl;
     }
+}
+
+void Event::read_upload_file() {
+    if (this->getEventStatus() == Ended) return;
+
+    size_t read_size;
+    if (getFileSize() > FILE_READ_CHUNK_SIZE) {
+        read_size = getFileReadLeft() > FILE_READ_CHUNK_SIZE ? FILE_READ_CHUNK_SIZE : getFileReadLeft();
+    } else {
+        read_size = getFileSize();
+    }
+
+    std::cout << YELLOW << "Read Data Size: " << read_size << RESET << std::endl;
+    size_t chunk_bytes = fread((void *) this->getFileReadChunkBuffer(), 1, read_size, getFile());
+
+    setFileReadBytes(getFileReadBytes() + chunk_bytes);
+    std::cout << YELLOW << "Readed Data Size: " << chunk_bytes << RESET << std::endl;
+
+    setFileReadLeft(getFileSize() - getFileReadBytes());
+    std::cout << YELLOW << "Read Left: " << getFileReadLeft() << RESET << std::endl;
+
+    this->setFileChunkReadBytes(chunk_bytes);
 }
 
 void Event::write_response_headers() {
@@ -169,9 +179,9 @@ void Event::write_response_headers() {
 void Event::parse_request() {
     if (this->getEventStatus() == Ended) return;
 
-    std::cout << MAGENTA << "Request Data:\n " << this->getReadBuffer() << RESET << std::endl;
+    std::cout << MAGENTA << "Request Data:\n " << this->getRequestReadBuffer() << RESET << std::endl;
 
-    const char *buffer = this->getReadBuffer().c_str();
+    const char *buffer = this->getRequestReadBuffer().c_str();
 
     HttpRequestParser parser;
 
@@ -207,11 +217,11 @@ void Event::read_request() {
         return;
     }
 
-    this->setReadBytes(this->getReadBytes() + bytes_read);
-    std::string read_buffer = this->getReadBuffer();
-    this->setReadBuffer(read_buffer.append(buffer));
+    this->setRequestReadBytes(this->getRequestReadBytes() + bytes_read);
+    std::string read_buffer = this->getRequestReadBuffer();
+    this->setRequestReadBuffer(read_buffer.append(buffer));
 
-    std::cout << YELLOW << "Read " << this->getReadBytes() << " bytes from client" << RESET << std::endl;
+    std::cout << YELLOW << "Read " << this->getRequestReadBytes() << " bytes from client" << RESET << std::endl;
     std::cout << GREEN << "HTTP Request:\n" << buffer << RESET << std::endl;
 
     if (buffer[READ_BUFFER_SIZE - 1] == 0) {
@@ -225,6 +235,7 @@ void Event::process_event() {
         switch (this->getEventSubStatus()) {
             case ReadingRequest: read_request();
             case ParsingRequest: parse_request();
+                break;
             default:
                 std::cerr << RED << "Invalid Reading Event Sub Status" << RESET << std::endl;
                 break;
@@ -236,6 +247,7 @@ void Event::process_event() {
             case OpeningFile: open_file();
             case WritingResponseHeaders: write_response_headers();
             case UploadingFile: upload_file();
+                break;
             default:
                 std::cerr << RED << "Invalid Writing Event Sub Status" << RESET << std::endl;
                 break;
@@ -255,6 +267,22 @@ void Event::setClientFd(int clientFd) {
     _client_fd = clientFd;
 }
 
+const Request &Event::getRequest() const {
+    return _request;
+}
+
+void Event::setRequest(const Request &request) {
+    _request = request;
+}
+
+const std::string &Event::getRequestReadBuffer() const {
+    return _request_read_buffer;
+}
+
+void Event::setRequestReadBuffer(const std::string &requestReadBuffer) {
+    _request_read_buffer = requestReadBuffer;
+}
+
 const std::string &Event::getFilePath() const {
     return _file_path;
 }
@@ -263,44 +291,12 @@ void Event::setFilePath(const std::string &filePath) {
     _file_path = filePath;
 }
 
-size_t Event::getReadBytes() const {
-    return _read_bytes;
+size_t Event::getRequestReadBytes() const {
+    return _request_read_bytes;
 }
 
-void Event::setReadBytes(size_t readBytes) {
-    _read_bytes = readBytes;
-}
-
-size_t Event::getReadLeft() const {
-    return _read_left;
-}
-
-void Event::setReadLeft(size_t readLeft) {
-    _read_left = readLeft;
-}
-
-const std::string &Event::getReadBuffer() const {
-    return _read_buffer;
-}
-
-void Event::setReadBuffer(const std::string &readBuffer) {
-    _read_buffer = readBuffer;
-}
-
-const Request &Event::getRequest() const {
-    return _request;
-}
-
-void Event::setRequest(const Request &request) {
-    Event::_request = request;
-}
-
-event_status_t Event::getEventStatus() const {
-    return _event_status;
-}
-
-void Event::setEventStatus(event_status_t eventStatus) {
-    _event_status = eventStatus;
+void Event::setRequestReadBytes(size_t requestReadBytes) {
+    _request_read_bytes = requestReadBytes;
 }
 
 FILE *Event::getFile() const {
@@ -308,7 +304,31 @@ FILE *Event::getFile() const {
 }
 
 void Event::setFile(FILE *file) {
-    Event::_file = file;
+    _file = file;
+}
+
+size_t Event::getFileReadBytes() const {
+    return _file_read_bytes;
+}
+
+void Event::setFileReadBytes(size_t fileReadBytes) {
+    _file_read_bytes = fileReadBytes;
+}
+
+size_t Event::getFileReadLeft() const {
+    return _file_read_left;
+}
+
+void Event::setFileReadLeft(size_t fileReadLeft) {
+    _file_read_left = fileReadLeft;
+}
+
+size_t Event::getFileChunkReadBytes() const {
+    return _file_chunk_read_bytes;
+}
+
+void Event::setFileChunkReadBytes(size_t fileChunkReadBytes) {
+    _file_chunk_read_bytes = fileChunkReadBytes;
 }
 
 size_t Event::getFileSize() const {
@@ -319,6 +339,18 @@ void Event::setFileSize(size_t fileSize) {
     _file_size = fileSize;
 }
 
+const char *Event::getFileReadChunkBuffer() const {
+    return _file_read_chunk_buffer;
+}
+
+event_status_t Event::getEventStatus() const {
+    return _event_status;
+}
+
+void Event::setEventStatus(event_status_t eventStatus) {
+    _event_status = eventStatus;
+}
+
 event_sub_status_t Event::getEventSubStatus() const {
     return _event_sub_status;
 }
@@ -326,3 +358,4 @@ event_sub_status_t Event::getEventSubStatus() const {
 void Event::setEventSubStatus(event_sub_status_t eventSubStatus) {
     _event_sub_status = eventSubStatus;
 }
+

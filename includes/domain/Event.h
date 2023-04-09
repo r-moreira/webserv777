@@ -21,18 +21,25 @@ typedef enum EVENT_SUB_STATUS {
     UploadingFile
 } event_sub_status_t;
 
+#define FILE_READ_CHUNK_SIZE 30720
 
 class Event {
 
 private:
     int _client_fd;
+
     Request _request;
-    std::string _file_path;
+    std::string _request_read_buffer;
+    size_t _request_read_bytes;
+
     FILE *_file;
+    std::string _file_path;
+    size_t _file_read_bytes;
+    size_t _file_read_left;
+    size_t _file_chunk_read_bytes;
     size_t _file_size;
-    size_t _read_bytes;
-    size_t _read_left;
-    std::string _read_buffer;
+    char _file_read_chunk_buffer[FILE_READ_CHUNK_SIZE];
+
     event_status_t _event_status;
     event_sub_status_t _event_sub_status;
 public:
@@ -50,47 +57,59 @@ public:
 
     void open_file();
 
+    void read_upload_file();
+
     void upload_file();
-
-    size_t getFileSize() const;
-
-    void setFileSize(size_t fileSize);
 
     int getClientFd() const;
 
     void setClientFd(int clientFd);
 
-    const std::string &getFilePath() const;
-
-    void setFilePath(const std::string &filePath);
-
-    size_t getReadBytes() const;
-
-    void setReadBytes(size_t readBytes);
-
-    size_t getReadLeft() const;
-
-    void setReadLeft(size_t readLeft);
-
-    const std::string &getReadBuffer() const;
-
-    void setReadBuffer(const std::string &readBuffer);
-
     const Request &getRequest() const;
 
     void setRequest(const Request &request);
 
-    event_status_t getEventStatus() const;
+    const std::string &getRequestReadBuffer() const;
 
-    void setEventStatus(event_status_t eventStatus);
+    void setRequestReadBuffer(const std::string &requestReadBuffer);
+
+    const std::string &getFilePath() const;
+
+    void setFilePath(const std::string &filePath);
+
+    size_t getRequestReadBytes() const;
+
+    void setRequestReadBytes(size_t requestReadBytes);
 
     FILE *getFile() const;
 
     void setFile(FILE *file);
 
-    void setEventSubStatus(event_sub_status_t eventSubStatus);
+    size_t getFileReadBytes() const;
+
+    void setFileReadBytes(size_t fileReadBytes);
+
+    size_t getFileReadLeft() const;
+
+    void setFileReadLeft(size_t fileReadLeft);
+
+    size_t getFileChunkReadBytes() const;
+
+    void setFileChunkReadBytes(size_t fileChunkReadBytes);
+
+    size_t getFileSize() const;
+
+    void setFileSize(size_t fileSize);
+
+    const char *getFileReadChunkBuffer() const;
+
+    event_status_t getEventStatus() const;
+
+    void setEventStatus(event_status_t eventStatus);
 
     event_sub_status_t getEventSubStatus() const;
+
+    void setEventSubStatus(event_sub_status_t eventSubStatus);
 };
 
 
