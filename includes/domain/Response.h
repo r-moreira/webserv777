@@ -6,8 +6,27 @@
 #define WEBSERV_RESPONSE_H
 
 
-class Response {
+#include "Event.h"
 
+class Response {
+private:
+    Event &_event;
+
+public:
+    Response(Event &event);
+
+    ~Response();
+
+    void upload_file();
+
+    void write_response_headers();
+
+private:
+    std::string getHeaders(const std::string& file_path, size_t file_size);
+
+    void read_upload_file();
+
+    void write_upload_file();
 };
 
 

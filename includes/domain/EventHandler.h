@@ -8,15 +8,18 @@
 #include "../webserv.h"
 #include "Event.h"
 #include "Request.h"
+#include "Response.h"
 
 /*
  * TODO: Encapsular métodos dentro de classes
  */
 
 class EventHandler {
+
 private:
     Event &_event;
     Request _request;
+    Response _response;
 
 public:
     EventHandler(Event &event);
@@ -25,21 +28,14 @@ public:
 
     void process_event();
 
-    void write_response_headers();
-
     void open_file();
-
-    void read_upload_file();
-
-    void write_upload_file();
-
-    void upload_file();
-
-    std::string getHeaders(const std::string& file_path, size_t file_size);
 
     const Event &getEvent() const;
 
     void setEvent(const Event &event);
+
+private:
+    void print_event_status();
 };
 
 
