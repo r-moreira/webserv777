@@ -3,7 +3,6 @@
 //
 
 #include "../../includes/io/Multiplexer.h"
-#include "../../includes/domain/EventHandler.h"
 
 Multiplexer::Multiplexer() {}
 

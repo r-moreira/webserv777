@@ -1,4 +1,5 @@
 #include "../includes/webserv.h"
+#include "../includes/io/Multiplexer.h"
 
 int main(int argc, char **argv, char **env) {
     signal(SIGPIPE, SIG_IGN);

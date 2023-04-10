@@ -25,14 +25,6 @@
 #include <netinet/in.h>
 #include <fstream>
 #include <fcntl.h>
-#include "parser/RequestInfo.h"
-#include "parser/HttpRequestParser.h"
-#include "parser/UrlParser.h"
-#include "domain/Event.h"
-#include "network/Socket.h"
-#include "io/Multiplexer.h"
-
-
 
 #define RESET   "\033[0m"
 #define BLACK   "\033[30m"      /* Black */
@@ -47,6 +39,7 @@
 
 #define MAX_EPOLL_EVENTS 64
 #define READ_BUFFER_SIZE 8192
+#define FILE_READ_CHUNK_SIZE 30720
 
 typedef enum {
     HTTP_HEADER,
@@ -54,6 +47,21 @@ typedef enum {
     NOT_FOUND
 
 } messageType;
+
+
+typedef enum EVENT_STATUS {
+    Reading,
+    Writing,
+    Ended
+} event_status_t;
+
+typedef enum EVENT_SUB_STATUS {
+    ReadingRequest,
+    ParsingRequest,
+    OpeningFile,
+    WritingResponseHeaders,
+    UploadingFile
+} event_sub_status_t;
 
 
 #endif //WEBSERV_WEBSERV_H

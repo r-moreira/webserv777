@@ -4,7 +4,7 @@
 
 #include "../../includes/domain/EventHandler.h"
 
-EventHandler::EventHandler(Event &event) : _event(event) {}
+EventHandler::EventHandler(Event &event) : _event(event), _request(event) {}
 
 EventHandler::~EventHandler() {}
 
@@ -161,65 +161,12 @@ void EventHandler::write_response_headers() {
     this->_event.setEventSubStatus(UploadingFile);
 }
 
-void EventHandler::parse_request() {
-    if (this->_event.getEventStatus() == Ended) return;
-
-    std::cout << MAGENTA << "Request Data:\n " << this->_event.getRequestReadBuffer() << RESET << std::endl;
-
-    const char *buffer = this->_event.getRequestReadBuffer().c_str();
-
-    HttpRequestParser parser;
-
-    HttpRequestParser::ParseResult result = parser.parse(_event._request, buffer, buffer + strlen(buffer));
-
-    if (result == HttpRequestParser::ParsingCompleted) {
-        std::cout << WHITE << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
-    } else {
-        std::cerr << RED << "Parsing failed" << RESET << std::endl;
-        //Return error page, end connection
-        this->_event.setEventStatus(Ended);
-    }
-    this->_event.setEventStatus(Writing);
-
-    // Por enquanto só vai ter um sub estado de leitura de arquivo, mas no futuro terá outros dependendo da funcionalidade
-    this->_event.setEventSubStatus(OpeningFile);
-}
-
-void EventHandler::read_request() {
-    if (this->_event.getEventStatus() == Ended) return;
-
-    char buffer[READ_BUFFER_SIZE] = {};
-    RequestInfo request;
-
-    long bytes_read = read(this->_event.getClientFd(), buffer, READ_BUFFER_SIZE);
-
-    if (bytes_read == -1) {
-        std::cerr << RED << "Error while reading from client: " << strerror(errno) << RESET << std::endl;
-        this->_event.setEventStatus(Ended);
-    } else if (bytes_read == 0) {
-        std::cout << YELLOW << "Client disconnected" << RESET << std::endl;
-        this->_event.setEventStatus(Ended);
-        return;
-    }
-
-    this->_event.setRequestReadBytes(this->_event.getRequestReadBytes() + bytes_read);
-    std::string read_buffer = this->_event.getRequestReadBuffer();
-    this->_event.setRequestReadBuffer(read_buffer.append(buffer));
-
-    std::cout << YELLOW << "Read " << this->_event.getRequestReadBytes() << " bytes from client" << RESET << std::endl;
-    std::cout << GREEN << "HTTP Request:\n" << buffer << RESET << std::endl;
-
-    if (buffer[READ_BUFFER_SIZE - 1] == 0) {
-        this->_event.setEventSubStatus(ParsingRequest);
-    }
-}
-
 void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Reading) {
 
         switch (this->_event.getEventSubStatus()) {
-            case ReadingRequest: read_request();
-            case ParsingRequest: parse_request();
+            case ReadingRequest: _request.read_request();
+            case ParsingRequest: _request.parse_request();
                 break;
             default:
                 std::cerr << RED << "Invalid Reading Event Sub Status" << RESET << std::endl;

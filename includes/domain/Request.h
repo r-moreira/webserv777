@@ -1,0 +1,27 @@
+//
+// Created by rmore on 10/04/2023.
+//
+
+#ifndef WEBSERV_REQUEST_H
+#define WEBSERV_REQUEST_H
+
+#include "Event.h"
+#include "../../includes/parser/HttpRequestParser.h"
+
+class Request {
+
+private:
+    Event &_event;
+
+public:
+    Request(Event &event);
+
+    ~Request();
+
+    void read_request();
+
+    void parse_request();
+};
+
+
+#endif //WEBSERV_REQUEST_H

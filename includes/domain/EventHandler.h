@@ -6,6 +6,8 @@
 #define WEBSERV_EVENTHANDLER_H
 
 #include "../webserv.h"
+#include "Event.h"
+#include "Request.h"
 
 /*
  * TODO: Encapsular métodos dentro de classes
@@ -14,6 +16,7 @@
 class EventHandler {
 private:
     Event &_event;
+    Request _request;
 
 public:
     EventHandler(Event &event);
@@ -22,11 +25,7 @@ public:
 
     void process_event();
 
-    void read_request();
-
     void write_response_headers();
-
-    void parse_request();
 
     void open_file();
 

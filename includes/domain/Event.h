@@ -6,22 +6,8 @@
 #define WEBSERV_EVENT_H
 
 #include "../webserv.h"
+#include "../parser/RequestInfo.h"
 
-typedef enum EVENT_STATUS {
-    Reading,
-    Writing,
-    Ended
-} event_status_t;
-
-typedef enum EVENT_SUB_STATUS {
-    ReadingRequest,
-    ParsingRequest,
-    OpeningFile,
-    WritingResponseHeaders,
-    UploadingFile
-} event_sub_status_t;
-
-#define FILE_READ_CHUNK_SIZE 30720
 
 class Event {
 
