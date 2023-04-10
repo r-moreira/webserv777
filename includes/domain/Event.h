@@ -23,6 +23,8 @@ typedef enum EVENT_SUB_STATUS {
 
 #define FILE_READ_CHUNK_SIZE 30720
 
+//TODO: Criar a classe EventHandler, que vai ser responsável por tratar os eventos, contendo todas as classes handlers, como request e response
+//TODO: A classe Event terá apenas os dados do evento, e será passada para outras classes como Request e Response através da nova classe EventHandler
 class Event {
 
 private:

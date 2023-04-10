@@ -10,6 +10,7 @@ int main(int argc, char **argv, char **env) {
 
     srand(time(NULL));
 
+    //TODO: Fazer a classe multiplexer receber uma lista da classe Server
     Multiplexer multiplexer;
     multiplexer.event_loop(Socket::setupServer(8080 + (rand() % 10)));
 
