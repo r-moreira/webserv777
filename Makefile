@@ -13,8 +13,7 @@ IO_DIR				= ${SRCS_DIR}/io
 SRCS				= ${SRCS_DIR}/webserv.cpp\
 					  ${CONF_DIR}/Configuration.cpp\
 					  ${DOMAIN_DIR}/Event.cpp\
-					  ${DOMAIN_DIR}/Request.cpp\
-					  ${DOMAIN_DIR}/Response.cpp\
+					  ${DOMAIN_DIR}/EventHandler.cpp\
 					  ${IO_DIR}/File.cpp\
 					  ${IO_DIR}/Multiplexer.cpp\
 					  ${IO_DIR}/Read.cpp\
@@ -25,6 +24,8 @@ SRCS				= ${SRCS_DIR}/webserv.cpp\
 					  ${NETWORK_DIR}/Socket.cpp\
 					  ${PARSER_DIR}/HttpRequestParser.cpp\
 					  ${PARSER_DIR}/HttpResponseParser.cpp\
+					  ${PARSER_DIR}/RequestInfo.cpp\
+					  ${PARSER_DIR}/ResponseInfo.cpp\
 					  ${PARSER_DIR}/UrlParser.cpp\
 
 all:				$(NAME)

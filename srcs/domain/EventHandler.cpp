@@ -189,7 +189,7 @@ void EventHandler::read_request() {
     if (this->_event.getEventStatus() == Ended) return;
 
     char buffer[READ_BUFFER_SIZE] = {};
-    Request request;
+    RequestInfo request;
 
     long bytes_read = read(this->_event.getClientFd(), buffer, READ_BUFFER_SIZE);
 

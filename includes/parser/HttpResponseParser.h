@@ -10,7 +10,7 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include "../domain/Response.h"
+#include "ResponseInfo.h"
 
 class HttpResponseParser {
 public:
@@ -27,16 +27,16 @@ public:
         ParsingError
     };
 
-    ParseResult parse(Response &resp, const char *begin, const char *end) {
+    ParseResult parse(ResponseInfo &resp, const char *begin, const char *end) {
         return consume(resp, begin, end);
     }
 
 private:
-    static bool checkIfConnection(const Response::HeaderItem &item) {
+    static bool checkIfConnection(const ResponseInfo::HeaderItem &item) {
         return strcasecmp(item.name.c_str(), "Connection") == 0;
     }
 
-    ParseResult consume(Response &resp, const char *begin, const char *end) {
+    ParseResult consume(ResponseInfo &resp, const char *begin, const char *end) {
         while (begin != end) {
             char input = *begin++;
 
@@ -166,7 +166,7 @@ private:
                     } else if (!isChar(input) || isControl(input) || isSpecial(input)) {
                         return ParsingError;
                     } else {
-                        resp.headers.push_back(Response::HeaderItem());
+                        resp.headers.push_back(ResponseInfo::HeaderItem());
                         resp.headers.back().name.reserve(16);
                         resp.headers.back().value.reserve(16);
                         resp.headers.back().name.push_back(input);
@@ -202,7 +202,7 @@ private:
                     break;
                 case HeaderValue:
                     if (input == '\r') {
-                        Response::HeaderItem &h = resp.headers.back();
+                        ResponseInfo::HeaderItem &h = resp.headers.back();
 
                         if (strcasecmp(h.name.c_str(), "Content-Length") == 0) {
                             contentSize = atoi(h.value.c_str());
@@ -226,9 +226,9 @@ private:
                     }
                     break;
                 case ExpectingNewline_3: {
-                    std::vector<Response::HeaderItem>::iterator it = std::find_if(resp.headers.begin(),
-                                                                                  resp.headers.end(),
-                                                                                  checkIfConnection);
+                    std::vector<ResponseInfo::HeaderItem>::iterator it = std::find_if(resp.headers.begin(),
+                                                                                      resp.headers.end(),
+                                                                                      checkIfConnection);
 
                     if (it != resp.headers.end()) {
                         if (strcasecmp(it->value.c_str(), "Keep-Alive") == 0) {

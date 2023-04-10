@@ -8,7 +8,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "../domain/Request.h"
+#include "RequestInfo.h"
 
 
     class HttpRequestParser {
@@ -24,16 +24,16 @@
             ParsingError
         };
 
-        ParseResult parse(Request &req, const char *begin, const char *end) {
+        ParseResult parse(RequestInfo &req, const char *begin, const char *end) {
             return consume(req, begin, end);
         }
 
     private:
-        static bool checkIfConnection(const Request::HeaderItem &item) {
+        static bool checkIfConnection(const RequestInfo::HeaderItem &item) {
             return strcasecmp(item.name.c_str(), "Connection") == 0;
         }
 
-        ParseResult consume(Request &req, const char *begin, const char *end) {
+        ParseResult consume(RequestInfo &req, const char *begin, const char *end) {
             while (begin != end) {
                 char input = *begin++;
 
@@ -163,7 +163,7 @@
                         } else if (!isChar(input) || isControl(input) || isSpecial(input)) {
                             return ParsingError;
                         } else {
-                            req.headers.push_back(Request::HeaderItem());
+                            req.headers.push_back(RequestInfo::HeaderItem());
                             req.headers.back().name.reserve(16);
                             req.headers.back().value.reserve(16);
                             req.headers.back().name.push_back(input);
@@ -200,7 +200,7 @@
                     case HeaderValue:
                         if (input == '\r') {
                             if (req.method == "POST" || req.method == "PUT") {
-                                Request::HeaderItem &h = req.headers.back();
+                                RequestInfo::HeaderItem &h = req.headers.back();
 
                                 if (strcasecmp(h.name.c_str(), "Content-Length") == 0) {
                                     contentSize = atoi(h.value.c_str());
@@ -225,9 +225,9 @@
                         }
                         break;
                     case ExpectingNewline_3: {
-                        std::vector<Request::HeaderItem>::iterator it = std::find_if(req.headers.begin(),
-                                                                                     req.headers.end(),
-                                                                                     checkIfConnection);
+                        std::vector<RequestInfo::HeaderItem>::iterator it = std::find_if(req.headers.begin(),
+                                                                                         req.headers.end(),
+                                                                                         checkIfConnection);
 
                         if (it != req.headers.end()) {
                             if (strcasecmp(it->value.c_str(), "Keep-Alive") == 0) {

@@ -2,52 +2,46 @@
 // Created by rmore on 20/03/2023.
 //
 
-#ifndef WEBSERV_REQUEST_H
-#define WEBSERV_REQUEST_H
+#ifndef WEBSERV_RESPONSEINFO_H
+#define WEBSERV_RESPONSEINFO_H
 
 
 #include <string>
 #include <vector>
 #include <sstream>
 
-
-struct Request {
-    Request()
-            : versionMajor(0), versionMinor(0), keepAlive(false) {}
+struct ResponseInfo {
+    ResponseInfo()
+            : versionMajor(0), versionMinor(0), keepAlive(false), statusCode(0) {}
 
     struct HeaderItem {
         std::string name;
         std::string value;
     };
 
-    std::string method;
-    std::string uri;
     int versionMajor;
     int versionMinor;
     std::vector<HeaderItem> headers;
     std::vector<char> content;
     bool keepAlive;
 
+    unsigned int statusCode;
+    std::string status;
+
     std::string inspect() const {
         std::stringstream stream;
-        stream << method << " " << uri << " HTTP/"
-               << versionMajor << "." << versionMinor << "\n";
+        stream << "HTTP/" << versionMajor << "." << versionMinor
+               << " " << statusCode << " " << status << "\n";
 
-        for (std::vector<Request::HeaderItem>::const_iterator it = headers.begin();
+        for (std::vector<ResponseInfo::HeaderItem>::const_iterator it = headers.begin();
              it != headers.end(); ++it) {
             stream << it->name << ": " << it->value << "\n";
         }
 
         std::string data(content.begin(), content.end());
         stream << data << "\n";
-        stream << "+ keep-alive: " << keepAlive << "\n";;
         return stream.str();
-    }
-
-    const std::string &getUri() const {
-        return uri;
     }
 };
 
-
-#endif //WEBSERV_REQUEST_H
+#endif //WEBSERV_RESPONSEINFO_H

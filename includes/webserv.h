@@ -25,7 +25,7 @@
 #include <netinet/in.h>
 #include <fstream>
 #include <fcntl.h>
-#include "domain/Request.h"
+#include "parser/RequestInfo.h"
 #include "parser/HttpRequestParser.h"
 #include "parser/UrlParser.h"
 #include "domain/Event.h"

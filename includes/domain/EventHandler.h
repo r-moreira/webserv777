@@ -7,6 +7,10 @@
 
 #include "../webserv.h"
 
+/*
+ * TODO: Encapsular métodos dentro de classes
+ */
+
 class EventHandler {
 private:
     Event &_event;

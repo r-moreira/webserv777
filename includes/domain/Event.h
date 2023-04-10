@@ -43,7 +43,7 @@ private:
     event_sub_status_t _event_sub_status;
 
 public:
-    Request _request;
+    RequestInfo _request;
 
     Event(int client_fd);
 
@@ -53,9 +53,9 @@ public:
 
     void setClientFd(int clientFd);
 
-    const Request &getRequest() const;
+    const RequestInfo &getRequest() const;
 
-    void setRequest(const Request &request);
+    void setRequest(const RequestInfo &request);
 
     const std::string &getRequestReadBuffer() const;
 

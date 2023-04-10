@@ -7,7 +7,7 @@
 Event::Event(int client_fd) {
     this->_client_fd = client_fd;
 
-    this->_request = Request();
+    this->_request = RequestInfo();
     this->_request_read_buffer = "";
     this->_request_read_bytes = 0;
 
@@ -39,11 +39,11 @@ void Event::setClientFd(int clientFd) {
     _client_fd = clientFd;
 }
 
-const Request &Event::getRequest() const {
+const RequestInfo &Event::getRequest() const {
     return _request;
 }
 
-void Event::setRequest(const Request &request) {
+void Event::setRequest(const RequestInfo &request) {
     _request = request;
 }
 
