@@ -23,14 +23,11 @@ typedef enum EVENT_SUB_STATUS {
 
 #define FILE_READ_CHUNK_SIZE 30720
 
-//TODO: Criar a classe EventHandler, que vai ser responsável por tratar os eventos, contendo todas as classes handlers, como request e response
-//TODO: A classe Event terá apenas os dados do evento, e será passada para outras classes como Request e Response através da nova classe EventHandler
 class Event {
 
 private:
     int _client_fd;
 
-    Request _request;
     std::string _request_read_buffer;
     size_t _request_read_bytes;
 
@@ -44,26 +41,13 @@ private:
 
     event_status_t _event_status;
     event_sub_status_t _event_sub_status;
+
 public:
+    Request _request;
+
     Event(int client_fd);
 
     ~Event();
-
-    void process_event();
-
-    void read_request();
-
-    void write_response_headers();
-
-    void parse_request();
-
-    void open_file();
-
-    void read_upload_file();
-
-    void write_upload_file();
-
-    void upload_file();
 
     int getClientFd() const;
 

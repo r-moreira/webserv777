@@ -3,6 +3,7 @@
 //
 
 #include "../../includes/io/Multiplexer.h"
+#include "../../includes/domain/EventHandler.h"
 
 Multiplexer::Multiplexer() {}
 
@@ -41,7 +42,6 @@ void Multiplexer::event_loop(int server_socket_fd) {
                 int client_fd = Socket::setupClient(server_socket_fd);
                 if (client_fd < 0) break;
 
-                //TODO: Tornar a classe event apenas uma classe que guarda os dados
                 Event *event = new Event(client_fd);
                 request_event.data.ptr = event;
                 request_event.events = EPOLLIN;
@@ -51,9 +51,10 @@ void Multiplexer::event_loop(int server_socket_fd) {
                     continue;
                 }
             } else {
-                //TODO: Criar uma classe EventHandler que vai receber a classe POJO event e vai fazer o processamento
                 Event *event = (Event *) epoll_events[i].data.ptr;
-                event->process_event();
+                EventHandler eventHandler(*event);
+                eventHandler.process_event();
+
                 switch (event->getEventStatus()) {
                     case Reading:
                         request_event.events = EPOLLIN;

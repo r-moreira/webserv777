@@ -15,4 +15,4 @@ add_executable(
         srcs/network/Server.cpp includes/network/Server.h
         srcs/io/Multiplexer.cpp includes/io/Multiplexer.h
         srcs/domain/Request.cpp includes/domain/Request.h
-        srcs/parser/HttpRequestParser.cpp includes/parser/HttpRequestParser.h srcs/parser/UrlParser.cpp includes/parser/UrlParser.h srcs/domain/Response.cpp includes/domain/Response.h srcs/parser/HttpResponseParser.cpp includes/parser/HttpResponseParser.h srcs/domain/Event.cpp includes/domain/Event.h srcs/io/Read.cpp includes/io/Read.h srcs/io/File.cpp includes/io/File.h)
+        srcs/parser/HttpRequestParser.cpp includes/parser/HttpRequestParser.h srcs/parser/UrlParser.cpp includes/parser/UrlParser.h srcs/domain/Response.cpp includes/domain/Response.h srcs/parser/HttpResponseParser.cpp includes/parser/HttpResponseParser.h srcs/domain/Event.cpp includes/domain/Event.h srcs/io/Read.cpp includes/io/Read.h srcs/io/File.cpp includes/io/File.h srcs/domain/EventHandler.cpp includes/domain/EventHandler.h)
