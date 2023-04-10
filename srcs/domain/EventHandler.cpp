@@ -4,41 +4,9 @@
 
 #include "../../includes/domain/EventHandler.h"
 
-EventHandler::EventHandler(Event &event) : _event(event), _request(event), _response(event) {}
+EventHandler::EventHandler(Event &event) : _event(event), _request(event), _response(event), _file(event) {}
 
 EventHandler::~EventHandler() {}
-
-
-void EventHandler::open_file() {
-    if (this->_event.getEventStatus() == Ended) return;
-
-    if (this->_event.getFile() == NULL) {
-        this->_event.setFilePath("./public" + this->_event.getRequest().getUri());
-
-        FILE *fptr;
-        fptr = fopen(this->_event.getFilePath().c_str(), "rb");
-        if (fptr == NULL) {
-            std::cerr << RED << "Error while opening file: " << this->_event.getFilePath() << " " << strerror(errno) << RESET << std::endl;
-            //return error page, end connection
-            this->_event.setEventStatus(Ended);
-        }
-        this->_event.setFile(fptr);
-        //Por algum motivo readbytes precisa ser inicializado neste momento
-        this->_event.setFileReadBytes(0);
-    }
-
-    struct stat file_stat;
-    int fd = fileno(this->_event.getFile());
-    if (fd < 1) {
-        std::cerr << RED << "Error while getting file descriptor: " << strerror(errno) << RESET << std::endl;
-        //return error page, end connection
-    }
-
-    fstat(fd, &file_stat);
-    this->_event.setFileSize(file_stat.st_size);
-    this->_event.setEventSubStatus(WritingResponseHeaders);
-}
-
 
 void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Reading) {
@@ -53,8 +21,9 @@ void EventHandler::process_event() {
         }
     }
 
-    if (this->_event.getEventStatus() == Writing) {        switch (this->_event.getEventSubStatus()) {
-            case OpeningFile: open_file();
+    if (this->_event.getEventStatus() == Writing) {
+        switch (this->_event.getEventSubStatus()) {
+            case OpeningFile: _file.open_file();
             case WritingResponseHeaders: _response.write_response_headers();
             case UploadingFile: _response.upload_file();
                 break;
@@ -98,8 +67,8 @@ void EventHandler::print_event_status() {
             break;
     }
 
-    std::cout << "Event Status: " << status << std::endl;
-    std::cout << "Event Sub Status: " << sub_status << std::endl;
+    std::cout << std::endl << "Event Status: " << status << std::endl;
+    std::cout <<  "Event Sub Status: " << sub_status << std::endl;
 }
 
 const Event &EventHandler::getEvent() const {

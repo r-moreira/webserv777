@@ -9,6 +9,7 @@
 #include "Event.h"
 #include "Request.h"
 #include "Response.h"
+#include "File.h"
 
 /*
  * TODO: Encapsular métodos dentro de classes
@@ -20,6 +21,7 @@ private:
     Event &_event;
     Request _request;
     Response _response;
+    File _file;
 
 public:
     EventHandler(Event &event);
@@ -27,8 +29,6 @@ public:
     ~EventHandler();
 
     void process_event();
-
-    void open_file();
 
     const Event &getEvent() const;
 

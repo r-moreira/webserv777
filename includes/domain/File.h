@@ -6,8 +6,19 @@
 #define WEBSERV_FILE_H
 
 
+#include "Event.h"
+
 class File {
 
+private:
+    Event &_event;
+
+public:
+    File(Event &event);
+
+    ~File();
+
+    void open_file();
 };
 
 
