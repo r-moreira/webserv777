@@ -12,7 +12,7 @@
 #include "File.h"
 
 /*
- * TODO: Encapsular métodos dentro de classes
+ * TODO: Encapsular métodos dentro de classes membros do EventHandler
  */
 
 class EventHandler {

@@ -16,7 +16,7 @@ void EventHandler::process_event() {
             case ParsingRequest: _request.parse_request();
                 break;
             default:
-                std::cerr << RED << "Invalid Reading Event Sub Status" << RESET << std::endl;
+                std::cerr << RED << "Invalid Reading Event Status" << RESET << std::endl;
                 break;
         }
     }
