@@ -14,7 +14,6 @@ class Multiplexer {
 private:
     std::vector<Server> _servers;
     int _epoll_fd;
-    struct epoll_event _epoll_events[MAX_EPOLL_EVENTS];
 
 public:
     Multiplexer(const std::vector<Server>& servers);
@@ -25,6 +24,14 @@ public:
 
 private:
     bool is_server_fd(int fd);
+
+    int wait_events(epoll_event *_epoll_events) const;
+
+    int server_event_callback(int client_fd) const;
+
+    int client_read_event_callback(Event *event) const;
+
+    int client_write_event_callback(Event *event) const;
 };
 
 
