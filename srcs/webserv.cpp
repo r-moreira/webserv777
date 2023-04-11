@@ -12,12 +12,8 @@ int main(int argc, char **argv, char **env) {
     }
 
     srand(time(NULL));
-
-    //TODO: Fazer a classe multiplexer receber uma lista da classe Server
-
     int port = 8080 + (rand() % 10);
 
-    Multiplexer multiplexer;
     Server server = Server::build()
             .with_name("webserv")
             .with_port(port)
@@ -25,7 +21,11 @@ int main(int argc, char **argv, char **env) {
 
     std::cout << BLUE << server << RESET << std::endl;
 
-    multiplexer.event_loop(server.getFd());
+    std::vector<Server> servers;
+    servers.insert(servers.begin(), server);
+
+    Multiplexer multiplexer(servers);
+    multiplexer.event_loop();
 
     return EXIT_SUCCESS;
 }
