@@ -1,5 +1,7 @@
 #include "../includes/webserv.h"
 #include "../includes/io/Multiplexer.h"
+#include "../includes/network/Server.h"
+#include "../includes/network/ServerBuilder.h"
 
 int main(int argc, char **argv, char **env) {
     signal(SIGPIPE, SIG_IGN);
@@ -12,8 +14,18 @@ int main(int argc, char **argv, char **env) {
     srand(time(NULL));
 
     //TODO: Fazer a classe multiplexer receber uma lista da classe Server
+
+    int port = 8080 + (rand() % 10);
+
     Multiplexer multiplexer;
-    multiplexer.event_loop(Socket::setupServer(8080 + (rand() % 10)));
+    Server server = Server::build()
+            .with_name("webserv")
+            .with_port(port)
+            .start();
+
+    std::cout << BLUE << server << RESET << std::endl;
+
+    multiplexer.event_loop(server.getFd());
 
     return EXIT_SUCCESS;
 }

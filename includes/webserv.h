@@ -41,14 +41,6 @@
 #define READ_BUFFER_SIZE 8192
 #define FILE_READ_CHUNK_SIZE 30720
 
-typedef enum {
-    HTTP_HEADER,
-    BAD_REQUEST,
-    NOT_FOUND
-
-} messageType;
-
-
 typedef enum EVENT_STATUS {
     Reading,
     Writing,
