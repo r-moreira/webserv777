@@ -12,11 +12,11 @@ add_executable(
         srcs/network/Socket.cpp includes/network/Socket.h
         srcs/network/Server.cpp includes/network/Server.h
         srcs/io/Multiplexer.cpp includes/io/Multiplexer.h
-        srcs/parser/RequestInfo.cpp includes/parser/RequestInfo.h
-        srcs/parser/HttpRequestParser.cpp includes/parser/HttpRequestParser.h
-        srcs/parser/UrlParser.cpp includes/parser/UrlParser.h
-        srcs/parser/ResponseInfo.cpp includes/parser/ResponseInfo.h
-        srcs/parser/HttpResponseParser.cpp includes/parser/HttpResponseParser.h
+        includes/parser/RequestInfo.h
+        includes/parser/HttpRequestParser.h
+        includes/parser/UrlParser.h
+        includes/parser/ResponseInfo.h
+        includes/parser/HttpResponseParser.h
         srcs/domain/Event.cpp includes/domain/Event.h
         srcs/domain/EventHandler.cpp includes/domain/EventHandler.h
         srcs/domain/Request.cpp includes/domain/Request.h

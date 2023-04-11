@@ -14,18 +14,13 @@ SRCS				= ${SRCS_DIR}/webserv.cpp\
 					  ${CONF_DIR}/Configuration.cpp\
 					  ${DOMAIN_DIR}/Event.cpp\
 					  ${DOMAIN_DIR}/EventHandler.cpp\
+					  ${DOMAIN_DIR}/File.cpp\
 					  ${DOMAIN_DIR}/Request.cpp\
 					  ${DOMAIN_DIR}/Response.cpp\
-					  ${DOMAIN_DIR}/File.cpp\
 					  ${IO_DIR}/Multiplexer.cpp\
-					  ${NETWORK_DIR}/Location.cpp\
 					  ${NETWORK_DIR}/Server.cpp\
+					  ${NETWORK_DIR}/ServerBuilder.cpp\
 					  ${NETWORK_DIR}/Socket.cpp\
-					  ${PARSER_DIR}/HttpRequestParser.cpp\
-					  ${PARSER_DIR}/HttpResponseParser.cpp\
-					  ${PARSER_DIR}/RequestInfo.cpp\
-					  ${PARSER_DIR}/ResponseInfo.cpp\
-					  ${PARSER_DIR}/UrlParser.cpp\
 
 all:				$(NAME)
 
