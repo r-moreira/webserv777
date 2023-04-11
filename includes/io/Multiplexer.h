@@ -13,6 +13,8 @@
 class Multiplexer {
 private:
     std::vector<Server> _servers;
+    int _epoll_fd;
+    struct epoll_event _epoll_events[MAX_EPOLL_EVENTS];
 
 public:
     Multiplexer(const std::vector<Server>& servers);
@@ -20,9 +22,10 @@ public:
     ~Multiplexer();
 
     void event_loop();
+
+private:
+    bool is_server_fd(int fd);
 };
 
 
 #endif //WEBSERV_MULTIPLEXER_H
-//std::vector<Server>::iterator it;
-//for (it = _servers.begin(); it != _servers.end(); it++) {
