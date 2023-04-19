@@ -10,8 +10,11 @@ int main(int argc, char **argv, char **env) {
         return EXIT_FAILURE;
     }
 
-    srand(time(NULL));
-    int port = 8080 + (rand() % 10);
+    char tmp[256];
+    getcwd(tmp, 256);
+    std::cout << "Current working directory: " << tmp << std::endl;
+
+    int port = 8080;
 
     //TODO: Fazer o parse do arquivo de configuração e instanciar os servidores
     Server server = Server::build()

@@ -2,3 +2,5 @@
 webserv
 a.out
 cmake-build-debug/
+cmake-build-debug-docker/
+.idea/
