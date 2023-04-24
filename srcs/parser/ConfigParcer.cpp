@@ -1,9 +1,23 @@
 #include "../../includes/ConfigParcer/ConfigParcer.hpp"
 
-FT::ConfigParcer::ConfigParcer() {
-    //fileContent = read file
+FT::ConfigParcer::ConfigParcer(std::string fileName) {
+    read_file(fileName);
     is_valide();
     serverParcer();
+}
+
+void FT::ConfigParcer::read_file(std::string fileName) {
+    int fd;
+    fd = open(fileName.data(), O_RDONLY, 0644);
+
+    char buffer[READ_BUFFER_SIZE] = {};
+
+    long bytes_read = read(fd, buffer, READ_BUFFER_SIZE);
+
+    if (bytes_read == -1) {
+        std::cerr << RED << "Error while reading server config file " << strerror(errno) << RESET << std::endl;
+    }
+    fileContent = buffer;
 }
 
 void FT::ConfigParcer::serverParcer() {

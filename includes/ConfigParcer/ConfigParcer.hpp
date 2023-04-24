@@ -1,8 +1,9 @@
 #ifndef ConfigParcer_hpp
 #define ConfigParcer_hpp
-#include "iostream"
-#include "cstring"
-#include "vector"
+
+#include "../../includes/webserv.h"
+
+#define READ_BUFFER_SIZE 8192
 
 namespace FT {
 
@@ -29,8 +30,10 @@ class ConfigParcer
 private:
     std::vector<ServerType> servers;
     std::string fileContent;
+
+    void read_file(std::string fileName);
 public:
-    ConfigParcer();
+    ConfigParcer(std::string fileName);
     void serverParcer();
     void serverParcerAtributes(std::string server);
     int is_valide();
