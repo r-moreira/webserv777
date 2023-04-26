@@ -21,6 +21,8 @@ SRCS				= ${SRCS_DIR}/webserv.cpp\
 					  ${NETWORK_DIR}/Server.cpp\
 					  ${NETWORK_DIR}/ServerBuilder.cpp\
 					  ${NETWORK_DIR}/Socket.cpp\
+					  ${PARSER_DIR}/ConfigParcer.cpp\
+					  ${PARSER_DIR}/Location.cpp\
 
 all:				$(NAME)
 

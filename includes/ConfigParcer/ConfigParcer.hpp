@@ -1,19 +1,12 @@
 #ifndef ConfigParcer_hpp
 #define ConfigParcer_hpp
 
-#include "../../includes/webserv.h"
+#include "../webserv.h"
+#include "Location.hpp"
 
 #define READ_BUFFER_SIZE 8192
 
 namespace FT {
-
-struct LocationType {
-    std::string limitExcept;
-    std::string root;
-    std::string returnPage;
-    bool cgi_lock;
-};
-
 struct ServerType {
     std::string port;
     std::string serverName;
@@ -23,7 +16,7 @@ struct ServerType {
     std::vector<std::string> cgi;
     int maxBodySize;
     bool auto_index;
-    std::vector<LocationType> location;
+    std::vector<Location> locations;
 };
 
 class ConfigParcer

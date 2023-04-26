@@ -57,7 +57,15 @@ int FT::ConfigParcer::is_valide() {
 
 void FT::ConfigParcer::serverParcerAtributes(std::string serverString) {
     ServerType server;
-    //parcer atributes
+    
+    parcerPort(server);
+    serverName(server);
+    root(server);
+    index(server);
+    errorPage(server);
+    maxBodySize(server);
+    parcerLocation(server);
+
     servers.push_back(server);
 }
     
@@ -98,9 +106,13 @@ void FT::ConfigParcer::maxBodySize(ServerType server) {
 }
 
 void FT::ConfigParcer::parcerLocation(ServerType server) {
-    // std::string delimiter = "location ";
-    // std::string endDelimiter = "\n";
-    // std::vector<std::string> location = spliteString(fileContent.substr(fileContent.find(delimiter), fileContent.find(endDelimiter)));
+    std::string delimiter = "location ";
+    std::string endDelimiter = "\n";
+    std::vector<std::string> strLocations = spliteString(fileContent.substr(fileContent.find(delimiter), fileContent.find(endDelimiter)));
+    for (int i = 0; i < strLocations.size(); i++) {
+        Location loc(strLocations[i]);
+        server.locations.push_back(loc);
+    }
 }
 
 std::vector<std::string> FT::ConfigParcer::spliteString(std::string str) {
