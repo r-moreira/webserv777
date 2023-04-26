@@ -60,3 +60,56 @@ void FT::ConfigParcer::serverParcerAtributes(std::string serverString) {
     //parcer atributes
     servers.push_back(server);
 }
+    
+void FT::ConfigParcer::parcerPort(ServerType server) {
+    std::string delimiter = "listen ";
+    std::string endDelimiter = "\n";
+    server.port = fileContent.substr(fileContent.find(delimiter), fileContent.find(endDelimiter));
+}
+
+void FT::ConfigParcer::serverName(ServerType server) {
+    std::string delimiter = "server_name ";
+    std::string endDelimiter = "\n";
+    server.serverName = fileContent.substr(fileContent.find(delimiter), fileContent.find(endDelimiter));
+}
+
+void FT::ConfigParcer::root(ServerType server) {
+    std::string delimiter = "root ";
+    std::string endDelimiter = "\n";
+    server.root = fileContent.substr(fileContent.find(delimiter), fileContent.find(endDelimiter));
+}
+
+void FT::ConfigParcer::index(ServerType server) {
+    std::string delimiter = "index ";
+    std::string endDelimiter = "\n";
+    server.index = spliteString(fileContent.substr(fileContent.find(delimiter), fileContent.find(endDelimiter)));
+}
+
+void FT::ConfigParcer::errorPage(ServerType server) {
+    std::string delimiter = "error_page ";
+    std::string endDelimiter = "\n";
+    server.errorPage = spliteString(fileContent.substr(fileContent.find(delimiter), fileContent.find(endDelimiter)));
+}
+
+void FT::ConfigParcer::maxBodySize(ServerType server) {
+    std::string delimiter = "client_max_body_size ";
+    std::string endDelimiter = "\n";
+    server.maxBodySize = atoi(fileContent.substr(fileContent.find(delimiter), fileContent.find(endDelimiter)).data());
+}
+
+void FT::ConfigParcer::parcerLocation(ServerType server) {
+    // std::string delimiter = "location ";
+    // std::string endDelimiter = "\n";
+    // std::vector<std::string> location = spliteString(fileContent.substr(fileContent.find(delimiter), fileContent.find(endDelimiter)));
+}
+
+std::vector<std::string> FT::ConfigParcer::spliteString(std::string str) {
+    std::istringstream iss(str);
+    std::vector<std::string> words;
+
+    std::string word;
+    while (std::getline(iss, word, ' ')) {
+        words.push_back(word);
+    }
+    return words;
+}

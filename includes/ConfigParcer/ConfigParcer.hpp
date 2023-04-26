@@ -18,11 +18,12 @@ struct ServerType {
     std::string port;
     std::string serverName;
     std::string root;
-    std::string **index;
-    std::string **errorPage;
-    std::string **cgi;
+    std::vector<std::string> index;
+    std::vector<std::string> errorPage;
+    std::vector<std::string> cgi;
+    int maxBodySize;
     bool auto_index;
-    LocationType **location;
+    std::vector<LocationType> location;
 };
 
 class ConfigParcer
@@ -30,8 +31,15 @@ class ConfigParcer
 private:
     std::vector<ServerType> servers;
     std::string fileContent;
-
+    std::vector<std::string> spliteString(std::string str);
+    void parcerPort(ServerType server);
     void read_file(std::string fileName);
+    void serverName(ServerType server);
+    void root(ServerType server);
+    void index(ServerType server);
+    void errorPage(ServerType server);
+    void maxBodySize(ServerType server);
+    void parcerLocation(ServerType server);
 public:
     ConfigParcer(std::string fileName);
     void serverParcer();
