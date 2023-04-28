@@ -30,11 +30,17 @@ void FT::ConfigParcer::serverParcer() {
     while (std::getline(iss, word, '\n')) {
         if (word.find(delimiter) != std::string::npos) {
             serverCount++;
+            if (serverLocationAtribute) {
+                server->locations.push_back(serverLocationAtribute);
+            }
+            serverLocationCount = 0;
+            serverLocationAtribute = NULL;
         }
         else if (serverCount) {
             if (serverCount > 1) {
                 servers.push_back(server);
                 serverCount--;
+                server = new ServerType();
             }
             parcerPort(server, word);
             serverName(server, word);
@@ -44,6 +50,9 @@ void FT::ConfigParcer::serverParcer() {
             maxBodySize(server, word);
             parcerLocation(server, word);
         }
+    }
+    if (serverCount == 1) {
+        servers.push_back(server);
     }
 }
 
@@ -125,14 +134,17 @@ void FT::ConfigParcer::maxBodySize(ServerType *server, std::string atribute) {
 
 void FT::ConfigParcer::parcerLocation(ServerType* server, std::string atribute) {
     std::string delimiter = "location ";
-    std::string endDelimiter = "\n";
-    int n = delimiter.size();
-    if (contains(delimiter, atribute)) {
-        std::vector<std::string> strLocations = spliteString(atribute.substr(atribute.find(delimiter) + n, atribute.find(endDelimiter) - n));
-        for (int i = 0; i < strLocations.size(); i++) {
-            Location loc(strLocations[i]);
-            server->locations.push_back(loc);
+    int isContains = contains(delimiter, atribute);
+    if (isContains || serverLocationCount) {
+        if (isContains) {
+            if (serverLocationAtribute) {
+                server->locations.push_back(serverLocationAtribute);
+                serverLocationCount--;
+            }
+            serverLocationAtribute = new Location();
+            serverLocationCount++;
         }
+        serverLocationAtribute->addNewAtribute(atribute);
     }
 }
 

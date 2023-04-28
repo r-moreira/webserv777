@@ -16,12 +16,14 @@ struct ServerType {
     std::vector<std::string> cgi;
     int maxBodySize;
     bool auto_index;
-    std::vector<Location> locations;
+    std::vector<Location*> locations;
 };
 
 class ConfigParcer
 {
 private:
+    int serverLocationCount;
+    Location *serverLocationAtribute;
     std::vector<ServerType *> servers;
     std::string fileContent;
     std::vector<std::string> spliteString(std::string str);
