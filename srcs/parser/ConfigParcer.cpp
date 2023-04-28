@@ -21,17 +21,30 @@ void FT::ConfigParcer::read_file(std::string fileName) {
 }
 
 void FT::ConfigParcer::serverParcer() {
-    std::string delimiter = "server";
-    std::string endDelimiter = "}";
-    int lenDelimiter = delimiter.size();
+    std::string delimiter = "server {";
+    int serverCount = 0;
+    ServerType* server = new ServerType();
+    std::istringstream iss(fileContent);
 
-    if (fileContent.find(delimiter) == fileContent.size()) {
-        return ;
+    std::string word;
+    while (std::getline(iss, word, '\n')) {
+        if (word.find(delimiter) != std::string::npos) {
+            serverCount++;
+        }
+        else if (serverCount) {
+            if (serverCount > 1) {
+                servers.push_back(server);
+                serverCount--;
+            }
+            parcerPort(server, word);
+            serverName(server, word);
+            root(server, word);
+            index(server, word);
+            errorPage(server, word);
+            maxBodySize(server, word);
+            parcerLocation(server, word);
+        }
     }
-    std::string server = fileContent.substr(fileContent.find(delimiter) + lenDelimiter, fileContent.find(endDelimiter) - lenDelimiter);
-    fileContent = fileContent.substr(0, server.size());
-    serverParcerAtributes(server);
-    serverParcer();
 }
 
 int FT::ConfigParcer::is_valide() {
@@ -54,64 +67,72 @@ int FT::ConfigParcer::is_valide() {
     }
     return 1;
 }
-
-void FT::ConfigParcer::serverParcerAtributes(std::string serverString) {
-    ServerType server;
-    
-    parcerPort(server);
-    serverName(server);
-    root(server);
-    index(server);
-    errorPage(server);
-    maxBodySize(server);
-    parcerLocation(server);
-
-    servers.push_back(server);
-}
-    
-void FT::ConfigParcer::parcerPort(ServerType server) {
-    std::string delimiter = "listen ";
+   
+void FT::ConfigParcer::parcerPort(ServerType *server, std::string atribute) {
+    std::string delimiter = "port ";
     std::string endDelimiter = "\n";
-    server.port = fileContent.substr(fileContent.find(delimiter), fileContent.find(endDelimiter));
+    int n = delimiter.size();
+    if (contains(delimiter, atribute)) {
+        server->port = atoi(atribute.substr(atribute.find(delimiter) + n, atribute.find(endDelimiter) - n).data());
+    }
 }
 
-void FT::ConfigParcer::serverName(ServerType server) {
+void FT::ConfigParcer::serverName(ServerType *server, std::string atribute) {
     std::string delimiter = "server_name ";
     std::string endDelimiter = "\n";
-    server.serverName = fileContent.substr(fileContent.find(delimiter), fileContent.find(endDelimiter));
+    int n = delimiter.size();
+    if (contains(delimiter, atribute)) {
+        server->serverName = atribute.substr(atribute.find(delimiter) + n, atribute.find(endDelimiter) - n);
+    }
 }
 
-void FT::ConfigParcer::root(ServerType server) {
+void FT::ConfigParcer::root(ServerType *server, std::string atribute) {
     std::string delimiter = "root ";
     std::string endDelimiter = "\n";
-    server.root = fileContent.substr(fileContent.find(delimiter), fileContent.find(endDelimiter));
+    int n = delimiter.size();
+    if (contains(delimiter, atribute)) {
+        server->root = atribute.substr(atribute.find(delimiter) + n, atribute.find(endDelimiter) - n);
+    }
 }
 
-void FT::ConfigParcer::index(ServerType server) {
+void FT::ConfigParcer::index(ServerType *server, std::string atribute) {
     std::string delimiter = "index ";
     std::string endDelimiter = "\n";
-    server.index = spliteString(fileContent.substr(fileContent.find(delimiter), fileContent.find(endDelimiter)));
+    int n = delimiter.size();
+    if (contains(delimiter, atribute)) {
+        server->index = spliteString(atribute.substr(atribute.find(delimiter) + n, atribute.find(endDelimiter) - n));
+    }
 }
 
-void FT::ConfigParcer::errorPage(ServerType server) {
+void FT::ConfigParcer::errorPage(ServerType *server, std::string atribute) {
     std::string delimiter = "error_page ";
     std::string endDelimiter = "\n";
-    server.errorPage = spliteString(fileContent.substr(fileContent.find(delimiter), fileContent.find(endDelimiter)));
+    int n = delimiter.size();
+    if (contains(delimiter, atribute)) {
+        server->errorPage = spliteString(atribute.substr(atribute.find(delimiter) + n, atribute.find(endDelimiter) - n));
+    }
+    
 }
 
-void FT::ConfigParcer::maxBodySize(ServerType server) {
+void FT::ConfigParcer::maxBodySize(ServerType *server, std::string atribute) {
     std::string delimiter = "client_max_body_size ";
     std::string endDelimiter = "\n";
-    server.maxBodySize = atoi(fileContent.substr(fileContent.find(delimiter), fileContent.find(endDelimiter)).data());
+    int n = delimiter.size();
+    if (contains(delimiter, atribute)) {
+        server->maxBodySize = atoi(atribute.substr(atribute.find(delimiter) + n, atribute.find(endDelimiter) - n).data());
+    }
 }
 
-void FT::ConfigParcer::parcerLocation(ServerType server) {
+void FT::ConfigParcer::parcerLocation(ServerType* server, std::string atribute) {
     std::string delimiter = "location ";
     std::string endDelimiter = "\n";
-    std::vector<std::string> strLocations = spliteString(fileContent.substr(fileContent.find(delimiter), fileContent.find(endDelimiter)));
-    for (int i = 0; i < strLocations.size(); i++) {
-        Location loc(strLocations[i]);
-        server.locations.push_back(loc);
+    int n = delimiter.size();
+    if (contains(delimiter, atribute)) {
+        std::vector<std::string> strLocations = spliteString(atribute.substr(atribute.find(delimiter) + n, atribute.find(endDelimiter) - n));
+        for (int i = 0; i < strLocations.size(); i++) {
+            Location loc(strLocations[i]);
+            server->locations.push_back(loc);
+        }
     }
 }
 
@@ -124,4 +145,8 @@ std::vector<std::string> FT::ConfigParcer::spliteString(std::string str) {
         words.push_back(word);
     }
     return words;
+}
+
+int FT::ConfigParcer::contains(std::string delimiter, std::string str) {
+    return str.find(delimiter) != std::string::npos ? 1 : 0;
 }

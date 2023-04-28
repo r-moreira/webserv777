@@ -2,10 +2,11 @@
 
 Location::Location(std::string location) {
     parcerEndPoint(location);
-    parcerLimitExcept(location);
-    parcerRoot(location);
-    parcerReturnPage(location);
-    parcerCgiLock(location);
+    std::cout << "lets go my friend" << '\n';
+    //parcerLimitExcept(location);
+    //parcerRoot(location);
+    //parcerReturnPage(location);
+    //parcerCgiLock(location);
 }
 
 void Location::parcerRoot(std::string location) {

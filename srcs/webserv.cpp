@@ -1,6 +1,7 @@
 #include "../includes/webserv.h"
 #include "../includes/io/Multiplexer.h"
 #include "../includes/network/ServerBuilder.h"
+#include "../includes/ConfigParcer/ConfigParcer.hpp"
 
 int main(int argc, char **argv, char **env) {
     signal(SIGPIPE, SIG_IGN);
@@ -9,14 +10,12 @@ int main(int argc, char **argv, char **env) {
         std::cout << CYAN << "Usage :  ./webserv {PATH TO CONFIGURATION FILE}" << RESET << std::endl;
         return EXIT_FAILURE;
     }
-
     char tmp[256];
     getcwd(tmp, 256);
     std::cout << "Current working directory: " << tmp << std::endl;
 
     int port = 8080;
-
-    //TODO: Fazer o parse do arquivo de configuração e instanciar os servidores
+    FT::ConfigParcer conf = FT::ConfigParcer(argv[1]);
     Server server = Server::build()
             .with_name("webserv")
             .with_port(port)
