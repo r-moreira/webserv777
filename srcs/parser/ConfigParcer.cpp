@@ -162,3 +162,15 @@ std::vector<std::string> FT::ConfigParcer::spliteString(std::string str) {
 int FT::ConfigParcer::contains(std::string delimiter, std::string str) {
     return str.find(delimiter) != std::string::npos ? 1 : 0;
 }
+
+std::vector<FT::ServerType *> FT::ConfigParcer::getServers() {
+    return servers;
+}
+
+int FT::ConfigParcer::getHowMuchServers() {
+    return servers.size();
+}
+
+FT::ServerType & FT::ConfigParcer::operator[](int i) {
+    return *(servers[i]);
+}

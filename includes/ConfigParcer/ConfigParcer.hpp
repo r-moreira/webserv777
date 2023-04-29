@@ -36,10 +36,13 @@ private:
     void maxBodySize(ServerType* server, std::string atribute);
     void parcerLocation(ServerType* server, std::string atribute);
     int contains(std::string delimiter, std::string str);
-public:
-    ConfigParcer(std::string fileName);
     void serverParcer();
     int is_valide();
+public:
+    ConfigParcer(std::string fileName);
+    std::vector<ServerType *> getServers();
+    int getHowMuchServers();
+    ServerType & operator[](int i);
 };
 }
 #endif
