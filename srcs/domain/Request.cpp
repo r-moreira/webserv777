@@ -29,6 +29,7 @@ void Request::parse_request() {
     this->_event.setEventStatus(Writing);
 
     // Por enquanto só vai ter um sub estado de leitura de arquivo, mas no futuro terá outros dependendo da funcionalidade
+    // TODO make a cgi request parcer here
     this->_event.setEventSubStatus(OpeningFile);
 }
 
