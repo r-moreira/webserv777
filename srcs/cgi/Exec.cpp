@@ -1,15 +1,10 @@
 #include "../../includes/cgi/Exec.hpp"
 
 
-Exec::Exec() {
-    if (pipe_init() < 0)
-        return ;
-    _handleScript();
-}
+Exec::Exec(char * path_bin, char* const* command, char* const* env): _path(path_bin), _cmd(command), _env(env) {}
 
 Exec::~Exec() {
     close(_pipeFd[0]);
-    close(_pipeFd[1]);
 }
 
 int Exec::pipe_init() {
@@ -46,7 +41,7 @@ void Exec::_handleScript() {
         std::cout << RED << "Error: unable to fork" << RESET << '\n';
         return ;
     } else if (!_pid) {
-        script_exec(_pipeFd[0], _pipeFd[1]);
+        script_exec(_pipeFd[1]);
     } else {
         is_infity_loop();
         if (WEXITSTATUS(_status) != 0) {
@@ -56,13 +51,30 @@ void Exec::_handleScript() {
         }
         waitpid(_pid, NULL, 0);
     }
+    close(_pipeFd[1]);
     _httpStatusCode = 200;
 }
 
 int Exec::getStdOut() {
-    return _pipeFd[1];
+    return _pipeFd[0];
 }
 
 int Exec::getHttpStatusCode() {
-    return _httpStatusCode;
+    return _httpStatusCode; 
+}
+
+void Exec::script_exec(int stdOut) {
+    dup2(stdOut, STDOUT_FILENO);
+
+    char* errorMessage = "Content-Type: text/html\r\n\r Status: 500 Internal Server Error\r\n\r\n";
+    char * const cmd[] = {"python3", "tt.py", NULL};
+
+    execve("/usr/bin/python3", cmd, NULL);
+    write(STDOUT_FILENO, errorMessage, 64);
+}
+
+void Exec::start() {
+    if (pipe_init() < 0)
+        return ;
+    _handleScript();
 }

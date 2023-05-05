@@ -3,12 +3,12 @@
 
 #include "Exec.hpp"
 
-class ExecPython : Exec
+class ExecPython : public Exec
 {
 private:
     char* const* _command;
     char* const* _envVariables;
-    void script_exec(int stdIn, int stdOut);
+    virtual void script_exec(int stdOut);
 public:
     ExecPython(char* const* command, char* const* env);
 };

@@ -2,6 +2,7 @@
 #include "../includes/io/Multiplexer.h"
 #include "../includes/network/ServerBuilder.h"
 #include "../includes/ConfigParcer/ConfigParcer.hpp"
+#include "../includes/cgi/ExecPython.hpp"
 
 int main(int argc, char **argv, char **env) {
     signal(SIGPIPE, SIG_IGN);
@@ -16,6 +17,16 @@ int main(int argc, char **argv, char **env) {
 
     int port = 8080;
     FT::ConfigParcer conf = FT::ConfigParcer(argv[1]);
+    
+    char * const cmd[] = {"python3", "hello.py", NULL};
+
+    Exec *obj = new ExecPython(cmd, NULL);
+    obj->start();
+    char *buff[138];
+
+    read(obj->getStdOut(), buff, 137);
+
+    write(0, buff, 137);
     Server server = Server::build()
             .with_name("webserv")
             .with_port(port)

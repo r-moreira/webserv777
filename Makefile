@@ -9,6 +9,7 @@ NETWORK_DIR			= ${SRCS_DIR}/network
 PARSER_DIR			= ${SRCS_DIR}/parser
 DOMAIN_DIR			= ${SRCS_DIR}/domain
 IO_DIR				= ${SRCS_DIR}/io
+CGI					= ${SRCS_DIR}/cgi
 
 SRCS				= ${SRCS_DIR}/webserv.cpp\
 					  ${CONF_DIR}/Configuration.cpp\
@@ -23,6 +24,8 @@ SRCS				= ${SRCS_DIR}/webserv.cpp\
 					  ${NETWORK_DIR}/Socket.cpp\
 					  ${PARSER_DIR}/ConfigParcer.cpp\
 					  ${PARSER_DIR}/Location.cpp\
+					  ${CGI}/Exec.cpp\
+					  ${CGI}/ExecPython.cpp\
 
 all:				$(NAME)
 
