@@ -42,7 +42,7 @@ void Multiplexer::event_loop() {
                 int client_fd = Socket::setupClient(epoll_events[i].data.fd);
 
                 if (client_fd < 0) break;
-                if (this->server_event_callback(client_fd) == -1) continue;
+                if (this->server_event_callback(epoll_events[i].data.fd, client_fd) == -1) continue;
 
             } else {
                 Event *event = (Event *) epoll_events[i].data.ptr;
@@ -66,7 +66,7 @@ void Multiplexer::event_loop() {
 }
 
 bool Multiplexer::is_server_fd(int fd) {
-    for ( std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); it++)
+    for (std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); it++)
         if (it->getFd() == fd) return true;
     return false;
 }
@@ -81,9 +81,9 @@ int Multiplexer::wait_events(epoll_event *epoll_events) const {
     return nfds;
 }
 
-int Multiplexer::server_event_callback(int client_fd) const {
+int Multiplexer::server_event_callback(int server_fd, int client_fd) const {
     struct epoll_event client_event = {};
-    Event *event = new Event(client_fd);
+    Event *event = new Event(server_fd, client_fd);
 
     client_event.data.ptr = event;
     client_event.events = EPOLLIN;

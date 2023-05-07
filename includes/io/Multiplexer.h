@@ -27,7 +27,7 @@ private:
 
     int wait_events(epoll_event *_epoll_events) const;
 
-    int server_event_callback(int client_fd) const;
+    int server_event_callback(int server_fd, int client_fd) const;
 
     int client_read_event_callback(Event *event) const;
 

@@ -4,8 +4,9 @@
 
 #include "../../includes/domain/Event.h"
 
-Event::Event(int client_fd) {
+Event::Event(int server_fd, int client_fd) {
     this->_client_fd = client_fd;
+    this->_server_fd = server_fd;
 
     this->_request = RequestInfo();
     this->_request_read_buffer = "";
@@ -30,6 +31,13 @@ Event::~Event() {
     close(this->getClientFd());
 }
 
+int Event::getServerFd() const {
+    return _server_fd;
+}
+
+void Event::setServerFd(int serverFd) {
+    _server_fd = serverFd;
+}
 
 int Event::getClientFd() const {
     return _client_fd;

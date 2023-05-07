@@ -7,12 +7,14 @@
 
 #include "../webserv.h"
 #include "../parser/RequestInfo.h"
+#include "../network/Server.h"
 
 
 class Event {
 
 private:
     int _client_fd;
+    int _server_fd;
 
     std::string _request_read_buffer;
     size_t _request_read_bytes;
@@ -31,9 +33,13 @@ private:
 public:
     RequestInfo _request;
 
-    Event(int client_fd);
+    Event(int server_fd, int client_fd);
 
     ~Event();
+
+    int getServerFd() const;
+
+    void setServerFd(int serverFd);
 
     int getClientFd() const;
 
