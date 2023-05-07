@@ -147,3 +147,11 @@ void Event::setServer(Server *server) {
     _server = server;
 }
 
+file_type_t Event::getFileType() const {
+    return _file_type;
+}
+
+void Event::setFileType(file_type_t fileType) {
+    _file_type = fileType;
+}
+

@@ -54,8 +54,17 @@ typedef enum EVENT_SUB_STATUS {
     ValidatingConstraints,
     OpeningFile,
     WritingResponseHeaders,
-    WritingFile
+    WritingResponseFile
 } event_sub_status_t;
+
+typedef enum FILE_TYPE {
+    Regular,
+    CGI,
+    AutoIndexPage,
+    DirectoryPage,
+    DefaultPage,
+    ErrorPage
+} file_type_t;
 
 
 #endif //WEBSERV_WEBSERV_H

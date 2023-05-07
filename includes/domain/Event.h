@@ -20,6 +20,7 @@ private:
     size_t _request_read_bytes;
 
     FILE *_file;
+    file_type_t _file_type;
     std::string _file_path;
     size_t _file_read_bytes;
     size_t _file_read_left;
@@ -95,6 +96,10 @@ public:
     event_sub_status_t getEventSubStatus() const;
 
     void setEventSubStatus(event_sub_status_t eventSubStatus);
+
+    file_type_t getFileType() const;
+
+    void setFileType(file_type_t fileType);
 };
 
 

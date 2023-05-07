@@ -16,7 +16,7 @@ void EventHandler::process_event() {
             case ParsingRequest: _request.parse_request();
             case ChoosingServer: _request.choose_server(this->_servers);
             case ValidatingConstraints: _request.validate_constraints();
-            //case HandlingLocation: _request.handle_location();
+            //case HandlingLocation: _request.handle_location();   --> Traduzir o path, lidar com redirects
                 break;
             default:
                 std::cerr << RED << "Invalid Reading Event Status" << RESET << std::endl;
@@ -28,12 +28,13 @@ void EventHandler::process_event() {
         switch (this->_event.getEventSubStatus()) {
             case OpeningFile: _file.open_file();
             case WritingResponseHeaders: _response.write_response_headers();
-            case WritingFile: _response.writting_file();
-            //case HandlingRedirection: _response.handle_redirection();
-            //case WritingCGI: _response.write_cgi();
-            //case WritingAutoIndex: _response.write_auto_index();
-            //case WritingErrorPage: _response.write_error_page();
+            case WritingResponseFile: _response.write_response_file();
                 break;
+            //case HandlingRedirection: _response.handle_redirection(); --> responder 302 para o navegador chamar outro site
+            //case WritingCGI: _response.write_cgi(); break;
+            //case WritingAutoIndex: _response.write_auto_index(); break;
+            //case WritingDirectoryPage: _response.write_directory_page(); break;
+            //case WritingErrorPage: _response.write_error_page(); break;
             default:
                 std::cerr << RED << "Invalid Writing Event Sub Status" << RESET << std::endl;
                 break;
@@ -68,7 +69,7 @@ void EventHandler::print_event_status() {
             break;
         case WritingResponseHeaders: sub_status = "WritingResponseHeaders";
             break;
-        case WritingFile: sub_status = "WritingFile";
+        case WritingResponseFile: sub_status = "WritingResponseFile";
             break;
         default: sub_status = "Invalid";
             break;
