@@ -60,7 +60,6 @@ void Request::read_request() {
 }
 
 void Request::choose_server(std::vector<Server> servers) {
-
     std::cout << BLUE << "\nChoosing Server:" << RESET << std::endl;
 
     for (std::vector<Server>::iterator it = servers.begin(); it != servers.end(); it++) {
@@ -75,7 +74,10 @@ void Request::choose_server(std::vector<Server> servers) {
         this->_event.getServer()->getPort() << RESET << std::endl << std::endl;
 
     this->_event.setEventStatus(Writing);
-
     // Por enquanto só vai ter um sub estado de leitura de arquivo, mas no futuro terá outros dependendo da funcionalidade
     this->_event.setEventSubStatus(OpeningFile);
+}
+
+void Request::validate_constraints() {
+
 }

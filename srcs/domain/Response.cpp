@@ -43,7 +43,7 @@ std::string content_type[] = {
         "Content-Type: image/jpeg\r\n\r\n",
 };
 
-void Response::upload_file() {
+void Response::writting_file() {
     if (this->_event.getEventStatus() == Ended) return;
 
     read_upload_file();
@@ -87,7 +87,7 @@ void Response::write_response_headers() {
     }
 
     std::cout << GREEN << "Successfully sent headers to client" << RESET << std::endl;
-    this->_event.setEventSubStatus(UploadingFile);
+    this->_event.setEventSubStatus(WritingFile);
 }
 
 void Response::write_upload_file() {

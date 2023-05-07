@@ -17,7 +17,7 @@ public:
 
     ~Response();
 
-    void upload_file();
+    void writting_file();
 
     void write_response_headers();
 

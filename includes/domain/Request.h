@@ -23,6 +23,8 @@ public:
     void parse_request();
 
     void choose_server(std::vector<Server> servers);
+
+    void validate_constraints();
 };
 
 

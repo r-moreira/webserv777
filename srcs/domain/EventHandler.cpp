@@ -15,6 +15,8 @@ void EventHandler::process_event() {
             case ReadingRequest: _request.read_request();
             case ParsingRequest: _request.parse_request();
             case ChoosingServer: _request.choose_server(this->_servers);
+            case ValidatingConstraints: _request.validate_constraints();
+            //case HandlingLocation: _request.handle_location();
                 break;
             default:
                 std::cerr << RED << "Invalid Reading Event Status" << RESET << std::endl;
@@ -26,7 +28,11 @@ void EventHandler::process_event() {
         switch (this->_event.getEventSubStatus()) {
             case OpeningFile: _file.open_file();
             case WritingResponseHeaders: _response.write_response_headers();
-            case UploadingFile: _response.upload_file();
+            case WritingFile: _response.writting_file();
+            //case HandlingRedirection: _response.handle_redirection();
+            //case WritingCGI: _response.write_cgi();
+            //case WritingAutoIndex: _response.write_auto_index();
+            //case WritingErrorPage: _response.write_error_page();
                 break;
             default:
                 std::cerr << RED << "Invalid Writing Event Sub Status" << RESET << std::endl;
@@ -62,7 +68,7 @@ void EventHandler::print_event_status() {
             break;
         case WritingResponseHeaders: sub_status = "WritingResponseHeaders";
             break;
-        case UploadingFile: sub_status = "UploadingFile";
+        case WritingFile: sub_status = "WritingFile";
             break;
         default: sub_status = "Invalid";
             break;

@@ -51,9 +51,10 @@ typedef enum EVENT_SUB_STATUS {
     ReadingRequest,
     ParsingRequest,
     ChoosingServer,
+    ValidatingConstraints,
     OpeningFile,
     WritingResponseHeaders,
-    UploadingFile
+    WritingFile
 } event_sub_status_t;
 
 
