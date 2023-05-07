@@ -50,6 +50,7 @@ typedef enum EVENT_STATUS {
 typedef enum EVENT_SUB_STATUS {
     ReadingRequest,
     ParsingRequest,
+    ChoosingServer,
     OpeningFile,
     WritingResponseHeaders,
     UploadingFile

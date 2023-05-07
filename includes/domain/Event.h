@@ -30,6 +30,7 @@ private:
     event_status_t _event_status;
     event_sub_status_t _event_sub_status;
 
+    Server *_server;
 public:
     RequestInfo _request;
 
@@ -44,6 +45,10 @@ public:
     int getClientFd() const;
 
     void setClientFd(int clientFd);
+
+    Server *getServer() const;
+
+    void setServer(Server *server);
 
     const RequestInfo &getRequest() const;
 

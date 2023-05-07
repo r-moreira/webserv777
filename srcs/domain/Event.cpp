@@ -139,3 +139,11 @@ void Event::setEventSubStatus(event_sub_status_t eventSubStatus) {
     _event_sub_status = eventSubStatus;
 }
 
+Server *Event::getServer() const {
+    return _server;
+}
+
+void Event::setServer(Server *server) {
+    _server = server;
+}
+

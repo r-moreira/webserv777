@@ -46,7 +46,7 @@ void Multiplexer::event_loop() {
 
             } else {
                 Event *event = (Event *) epoll_events[i].data.ptr;
-                EventHandler eventHandler(*event);
+                EventHandler eventHandler(*event, this->_servers);
                 eventHandler.process_event();
 
                 switch (event->getEventStatus()) {

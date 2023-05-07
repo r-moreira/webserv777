@@ -18,13 +18,14 @@
 class EventHandler {
 
 private:
+    std::vector<Server> &_servers;
     Event &_event;
     Request _request;
     Response _response;
     File _file;
 
 public:
-    EventHandler(Event &event);
+    EventHandler(Event &event, std::vector<Server> &servers);
 
     ~EventHandler();
 

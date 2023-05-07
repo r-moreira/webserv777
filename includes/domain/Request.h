@@ -21,6 +21,8 @@ public:
     void read_request();
 
     void parse_request();
+
+    void choose_server(std::vector<Server> servers);
 };
 
 

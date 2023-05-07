@@ -4,7 +4,7 @@
 
 #include "../../includes/domain/EventHandler.h"
 
-EventHandler::EventHandler(Event &event) : _event(event), _request(event), _response(event), _file(event) {}
+EventHandler::EventHandler(Event &event, std::vector<Server> &servers) :_servers(servers), _event(event), _request(event), _response(event), _file(event) {}
 
 EventHandler::~EventHandler() {}
 
@@ -14,6 +14,7 @@ void EventHandler::process_event() {
         switch (this->_event.getEventSubStatus()) {
             case ReadingRequest: _request.read_request();
             case ParsingRequest: _request.parse_request();
+            case ChoosingServer: _request.choose_server(this->_servers);
                 break;
             default:
                 std::cerr << RED << "Invalid Reading Event Status" << RESET << std::endl;

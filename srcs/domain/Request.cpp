@@ -26,10 +26,8 @@ void Request::parse_request() {
         //Return error page, end connection
         this->_event.setEventStatus(Ended);
     }
-    this->_event.setEventStatus(Writing);
 
-    // Por enquanto só vai ter um sub estado de leitura de arquivo, mas no futuro terá outros dependendo da funcionalidade
-    this->_event.setEventSubStatus(OpeningFile);
+    this->_event.setEventSubStatus(ChoosingServer);
 }
 
 void Request::read_request() {
@@ -59,4 +57,25 @@ void Request::read_request() {
     if (buffer[READ_BUFFER_SIZE - 1] == 0) {
         this->_event.setEventSubStatus(ParsingRequest);
     }
+}
+
+void Request::choose_server(std::vector<Server> servers) {
+
+    std::cout << BLUE << "\nChoosing Server:" << RESET << std::endl;
+
+    for (std::vector<Server>::iterator it = servers.begin(); it != servers.end(); it++) {
+        if (it->getFd() == this->_event.getServerFd()) {
+            this->_event.setServer(&*it);
+            break;
+        }
+    }
+
+    std::cout << BLUE << "Choosed server = name: " <<
+        this->_event.getServer()->getName() << " port: " <<
+        this->_event.getServer()->getPort() << RESET << std::endl << std::endl;
+
+    this->_event.setEventStatus(Writing);
+
+    // Por enquanto só vai ter um sub estado de leitura de arquivo, mas no futuro terá outros dependendo da funcionalidade
+    this->_event.setEventSubStatus(OpeningFile);
 }
