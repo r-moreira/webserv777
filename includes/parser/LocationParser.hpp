@@ -1,9 +1,9 @@
-#ifndef Location_hpp
-#define Location_hpp
+#ifndef LocationParser_hpp
+#define LocationParser_hpp
 #include <iostream>
 #include <vector>
 
-class Location
+class LocationParser
 {
 private:
     std::string endPoint;
@@ -18,7 +18,7 @@ private:
     void parcerEndPoint(std::string location);
     int contains(std::string delimiter, std::string str);
 public:
-    Location();
+    LocationParser();
     void addNewAtribute(std::string str);
     std::string getLimitExcept();
     std::string getRoot();

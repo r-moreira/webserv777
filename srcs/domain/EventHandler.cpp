@@ -15,7 +15,7 @@ void EventHandler::process_event() {
             case ReadingRequest: _request.read_request();
             case ParsingRequest: _request.parse_request();
             case ChoosingServer: _request.choose_server(this->_servers);
-            case ValidatingConstraints: _request.validate_constraints();
+            case ValidatingConstraints: _request.validate_constraints(); //TODO
             //case HandlingLocation: _request.handle_location();   --> Traduzir o path, lidar com redirects
                 break;
             default:

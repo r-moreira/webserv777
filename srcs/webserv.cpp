@@ -1,7 +1,7 @@
 #include "../includes/webserv.h"
 #include "../includes/io/Multiplexer.h"
 #include "../includes/network/ServerBuilder.h"
-#include "../includes/ConfigParcer/ConfigParcer.hpp"
+#include "../includes/parser/ConfigParser.hpp"
 
 int main(int argc, char **argv, char **env) {
     signal(SIGPIPE, SIG_IGN);

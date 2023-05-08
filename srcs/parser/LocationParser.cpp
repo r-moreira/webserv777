@@ -1,8 +1,8 @@
-#include "../../includes/ConfigParcer/Location.hpp"
+#include "../../includes/parser/LocationParser.hpp"
 
-Location::Location() {}
+LocationParser::LocationParser() {}
 
-void Location::addNewAtribute(std::string str) {
+void LocationParser::addNewAtribute(std::string str) {
     parcerEndPoint(str);
     parcerLimitExcept(str);
     parcerRoot(str);
@@ -10,7 +10,7 @@ void Location::addNewAtribute(std::string str) {
     parcerCgiLock(str);
 }
 
-void Location::parcerRoot(std::string location) {
+void LocationParser::parcerRoot(std::string location) {
     std::string delimiter = "root ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
@@ -19,7 +19,7 @@ void Location::parcerRoot(std::string location) {
     }
 }
 
-void Location::parcerLimitExcept(std::string location) {
+void LocationParser::parcerLimitExcept(std::string location) {
     std::string delimiter = "limit_except ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
@@ -28,7 +28,7 @@ void Location::parcerLimitExcept(std::string location) {
     }
 }
 
-void Location::parcerReturnPage(std::string location) {
+void LocationParser::parcerReturnPage(std::string location) {
     std::string delimiter = "return ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
@@ -37,7 +37,7 @@ void Location::parcerReturnPage(std::string location) {
     }
 }
 
-void Location::parcerEndPoint(std::string location) {
+void LocationParser::parcerEndPoint(std::string location) {
     std::string delimiter = "location ";
     std::string endDelimiter = " ";
     int n = delimiter.size();
@@ -46,7 +46,7 @@ void Location::parcerEndPoint(std::string location) {
     }
 }
 
-void Location::parcerCgiLock(std::string location) {
+void LocationParser::parcerCgiLock(std::string location) {
     std::string delimiter = "cgi_lock";
     if (contains(delimiter, location)) {
         cgi_lock = 1;
@@ -54,26 +54,26 @@ void Location::parcerCgiLock(std::string location) {
     cgi_lock = 0;
 }
 
-bool Location::getCgiLock() {
+bool LocationParser::getCgiLock() {
     return cgi_lock;
 }
 
-std::string Location::getEndPoint() {
+std::string LocationParser::getEndPoint() {
     return endPoint;
 }
 
-std::string Location::getLimitExcept() {
+std::string LocationParser::getLimitExcept() {
     return limitExcept;
 }
 
-std::string Location::getReturnPage() {
+std::string LocationParser::getReturnPage() {
     return returnPage;
 }
 
-std::string Location::getRoot() {
+std::string LocationParser::getRoot() {
     return root;
 }
 
-int Location::contains(std::string delimiter, std::string str) {
+int LocationParser::contains(std::string delimiter, std::string str) {
     return str.find(delimiter) != std::string::npos ? 1 : 0;
 }

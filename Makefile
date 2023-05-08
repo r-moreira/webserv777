@@ -4,14 +4,12 @@ CFLAGS 				=  -g -std=c++98 #-Wall -Wextra -Werror
 OBJS_DIR			= objs
 OBJS				= $(patsubst $(SRCS_DIR)/%.cpp, $(OBJS_DIR)/%.o, $(SRCS))
 SRCS_DIR			= srcs
-CONF_DIR			= ${SRCS_DIR}/config
 NETWORK_DIR			= ${SRCS_DIR}/network
 PARSER_DIR			= ${SRCS_DIR}/parser
 DOMAIN_DIR			= ${SRCS_DIR}/domain
 IO_DIR				= ${SRCS_DIR}/io
 
 SRCS				= ${SRCS_DIR}/webserv.cpp\
-					  ${CONF_DIR}/Configuration.cpp\
 					  ${DOMAIN_DIR}/Event.cpp\
 					  ${DOMAIN_DIR}/EventHandler.cpp\
 					  ${DOMAIN_DIR}/File.cpp\
@@ -21,8 +19,8 @@ SRCS				= ${SRCS_DIR}/webserv.cpp\
 					  ${NETWORK_DIR}/Server.cpp\
 					  ${NETWORK_DIR}/ServerBuilder.cpp\
 					  ${NETWORK_DIR}/Socket.cpp\
-					  ${PARSER_DIR}/ConfigParcer.cpp\
-					  ${PARSER_DIR}/Location.cpp\
+					  ${PARSER_DIR}/ConfigParser.cpp\
+					  ${PARSER_DIR}/LocationParser.cpp\
 
 all:				$(NAME)
 

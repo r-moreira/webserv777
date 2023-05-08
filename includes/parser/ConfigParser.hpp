@@ -1,8 +1,8 @@
-#ifndef ConfigParcer_hpp
-#define ConfigParcer_hpp
+#ifndef ConfigParser_hpp
+#define ConfigParser_hpp
 
 #include "../webserv.h"
-#include "Location.hpp"
+#include "LocationParser.hpp"
 
 #define READ_BUFFER_SIZE 8192
 
@@ -16,14 +16,14 @@ struct ServerType {
     std::vector<std::string> cgi;
     int maxBodySize;
     bool auto_index;
-    std::vector<Location*> locations;
+    std::vector<LocationParser*> locations;
 };
 
-class ConfigParcer
+class ConfigParser
 {
 private:
     int serverLocationCount;
-    Location *serverLocationAtribute;
+    LocationParser *serverLocationAtribute;
     std::vector<ServerType *> servers;
     std::string fileContent;
     std::vector<std::string> spliteString(std::string str);
@@ -39,7 +39,7 @@ private:
     void serverParcer();
     int is_valide();
 public:
-    ConfigParcer(std::string fileName);
+    ConfigParser(std::string fileName);
     std::vector<ServerType *> getServers();
     int getHowMuchServers();
     ServerType & operator[](int i);

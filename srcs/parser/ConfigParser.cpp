@@ -1,12 +1,12 @@
-#include "../../includes/ConfigParcer/ConfigParcer.hpp"
+#include "../../includes/parser/ConfigParser.hpp"
 
-FT::ConfigParcer::ConfigParcer(std::string fileName) {
+FT::ConfigParser::ConfigParser(std::string fileName) {
     read_file(fileName);
     is_valide();
     serverParcer();
 }
 
-void FT::ConfigParcer::read_file(std::string fileName) {
+void FT::ConfigParser::read_file(std::string fileName) {
     int fd;
     fd = open(fileName.data(), O_RDONLY, 0644);
 
@@ -20,7 +20,7 @@ void FT::ConfigParcer::read_file(std::string fileName) {
     fileContent = buffer;
 }
 
-void FT::ConfigParcer::serverParcer() {
+void FT::ConfigParser::serverParcer() {
     std::string delimiter = "server {";
     int serverCount = 0;
     ServerType* server = new ServerType();
@@ -56,7 +56,7 @@ void FT::ConfigParcer::serverParcer() {
     }
 }
 
-int FT::ConfigParcer::is_valide() {
+int FT::ConfigParser::is_valide() {
     std::string delimiter = "server";
     int openQuotes = 0;
 
@@ -77,7 +77,7 @@ int FT::ConfigParcer::is_valide() {
     return 1;
 }
    
-void FT::ConfigParcer::parcerPort(ServerType *server, std::string atribute) {
+void FT::ConfigParser::parcerPort(ServerType *server, std::string atribute) {
     std::string delimiter = "port ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
@@ -86,7 +86,7 @@ void FT::ConfigParcer::parcerPort(ServerType *server, std::string atribute) {
     }
 }
 
-void FT::ConfigParcer::serverName(ServerType *server, std::string atribute) {
+void FT::ConfigParser::serverName(ServerType *server, std::string atribute) {
     std::string delimiter = "server_name ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
@@ -95,7 +95,7 @@ void FT::ConfigParcer::serverName(ServerType *server, std::string atribute) {
     }
 }
 
-void FT::ConfigParcer::root(ServerType *server, std::string atribute) {
+void FT::ConfigParser::root(ServerType *server, std::string atribute) {
     std::string delimiter = "root ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
@@ -104,7 +104,7 @@ void FT::ConfigParcer::root(ServerType *server, std::string atribute) {
     }
 }
 
-void FT::ConfigParcer::index(ServerType *server, std::string atribute) {
+void FT::ConfigParser::index(ServerType *server, std::string atribute) {
     std::string delimiter = "index ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
@@ -113,7 +113,7 @@ void FT::ConfigParcer::index(ServerType *server, std::string atribute) {
     }
 }
 
-void FT::ConfigParcer::errorPage(ServerType *server, std::string atribute) {
+void FT::ConfigParser::errorPage(ServerType *server, std::string atribute) {
     std::string delimiter = "error_page ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
@@ -123,7 +123,7 @@ void FT::ConfigParcer::errorPage(ServerType *server, std::string atribute) {
     
 }
 
-void FT::ConfigParcer::maxBodySize(ServerType *server, std::string atribute) {
+void FT::ConfigParser::maxBodySize(ServerType *server, std::string atribute) {
     std::string delimiter = "client_max_body_size ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
@@ -132,7 +132,7 @@ void FT::ConfigParcer::maxBodySize(ServerType *server, std::string atribute) {
     }
 }
 
-void FT::ConfigParcer::parcerLocation(ServerType* server, std::string atribute) {
+void FT::ConfigParser::parcerLocation(ServerType* server, std::string atribute) {
     std::string delimiter = "location ";
     int isContains = contains(delimiter, atribute);
     if (isContains || serverLocationCount) {
@@ -141,14 +141,14 @@ void FT::ConfigParcer::parcerLocation(ServerType* server, std::string atribute) 
                 server->locations.push_back(serverLocationAtribute);
                 serverLocationCount--;
             }
-            serverLocationAtribute = new Location();
+            serverLocationAtribute = new LocationParser();
             serverLocationCount++;
         }
         serverLocationAtribute->addNewAtribute(atribute);
     }
 }
 
-std::vector<std::string> FT::ConfigParcer::spliteString(std::string str) {
+std::vector<std::string> FT::ConfigParser::spliteString(std::string str) {
     std::istringstream iss(str);
     std::vector<std::string> words;
 
@@ -159,18 +159,18 @@ std::vector<std::string> FT::ConfigParcer::spliteString(std::string str) {
     return words;
 }
 
-int FT::ConfigParcer::contains(std::string delimiter, std::string str) {
+int FT::ConfigParser::contains(std::string delimiter, std::string str) {
     return str.find(delimiter) != std::string::npos ? 1 : 0;
 }
 
-std::vector<FT::ServerType *> FT::ConfigParcer::getServers() {
+std::vector<FT::ServerType *> FT::ConfigParser::getServers() {
     return servers;
 }
 
-int FT::ConfigParcer::getHowMuchServers() {
+int FT::ConfigParser::getHowMuchServers() {
     return servers.size();
 }
 
-FT::ServerType & FT::ConfigParcer::operator[](int i) {
+FT::ServerType & FT::ConfigParser::operator[](int i) {
     return *(servers[i]);
 }

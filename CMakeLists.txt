@@ -8,7 +8,6 @@ add_compile_options(-std=c++98)
 
 add_executable(
         webserv srcs/webserv.cpp includes/webserv.h
-        srcs/config/Configuration.cpp includes/config/Configuration.h
         srcs/network/Socket.cpp includes/network/Socket.h
         srcs/network/Server.cpp includes/network/Server.h
         srcs/io/Multiplexer.cpp includes/io/Multiplexer.h
@@ -21,4 +20,4 @@ add_executable(
         srcs/domain/EventHandler.cpp includes/domain/EventHandler.h
         srcs/domain/Request.cpp includes/domain/Request.h
         srcs/domain/Response.cpp includes/domain/Response.h
-        srcs/domain/File.cpp includes/domain/File.h srcs/network/ServerBuilder.cpp includes/network/ServerBuilder.h srcs/parser/ConfigParcer.cpp srcs/parser/Location.cpp)
+        srcs/domain/File.cpp includes/domain/File.h srcs/network/ServerBuilder.cpp includes/network/ServerBuilder.h srcs/parser/ConfigParser.cpp srcs/parser/LocationParser.cpp)
