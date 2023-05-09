@@ -33,7 +33,9 @@ void EventHandler::process_event() {
             //case WritingCGI: _response.write_cgi();
             // case WritingAutoIndex: _response.write_auto_index();
             //case WritingDirectoryPage: _response.write_directory_page();
-            //case WritingErrorPage: _response.write_error_page(); break;
+                break;
+            case WritingErrorHeaders: _response.write_error_headers();
+            case WritingErrorPage: _response.write_error_page();
                 break;
             default:
                 std::cerr << RED << "Invalid Writing Event Sub Status:" << RESET << std::endl;
@@ -70,6 +72,8 @@ void EventHandler::print_event_status() {
         case WritingResponseHeaders: sub_status = "WritingResponseHeaders";
             break;
         case WritingResponseFile: sub_status = "WritingResponseFile";
+            break;
+        case WritingErrorHeaders: sub_status = "WritingErrorHeaders";
             break;
         case WritingErrorPage: sub_status = "WritingErrorPage";
             break;

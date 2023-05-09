@@ -43,71 +43,40 @@ std::string content_type[] = {
         "Content-Type: image/jpeg\r\n\r\n",
 };
 
+void Response::write_response_headers() {
+    if (this->_event.getEventStatus() == Ended) return;
+
+    send_headers(getFileHeaders(_event.getFilePath(), _event.getFileSize()));
+    this->_event.setEventSubStatus(WritingResponseFile);
+}
+
 void Response::write_response_file() {
     if (this->_event.getEventStatus() == Ended) return;
 
     read_upload_file();
 
     write_upload_file();
-
 }
 
-std::string Response::getHeaders(const std::string& file_path, size_t file_size) {
-    char size_t_byte_buffer[25] = {};
-    std::string headers = "HTTP/1.1 200 Ok\r\n";
-
-    if (snprintf(size_t_byte_buffer, 25, "%lu", file_size) < 0) {
-        std::cerr << RED << "Error while formatting file size: " << strerror(errno) << RESET << std::endl;
-        //stop connection, display error page
-    }
-    std::string content_length = "Content-Length: " + std::string(size_t_byte_buffer) + "\r\n";
-
-    std::string extension = file_path.substr(file_path.find_last_of('.') + 1);
-    for (int i = 0; i < 25; i++) {
-        if (extension == file_extension[i]) {
-            headers += content_length;
-            headers += content_type[i];
-            return headers;
-        }
-    }
-    return "HTTP/1.1 200 Ok\r\n" + content_length + "Content-Type: text/html\r\n\r\n";
+void Response::write_error_headers() {
+    send_headers( getErrorHeaders());
+    this->_event.setEventSubStatus(WritingErrorPage);
 }
 
-std::string Response::getErrorHeaders() {
-    std::string headers = "HTTP/1.1 500\r\n";
-    headers += "Content-Type: text/html\r\n\r\n";
-    return headers;
-}
+void Response::write_error_page() {
+    std::string error_500_page_html = "<html><body><h1>500 Internal Server Error</h1></body></html>";
 
+    std::cout << CYAN << "Response Page:\n" << error_500_page_html << RESET << std::endl;
 
-
-void Response::write_response_headers() {
-    std::string headers;
-
-    if (this->_event.getEventStatus() == Ended) return;
-
-    if (this->_event.getHttpStatus() == OK) {
-        headers = getHeaders(_event.getFilePath(), _event.getFileSize());
-        send_headers(headers);
-        this->_event.setEventSubStatus(WritingResponseFile);
-    } else {
-        headers = getErrorHeaders();
-        send_headers(headers);
-        this->_event.setEventSubStatus(WritingErrorPage);
-    }
-}
-
-void Response::send_headers(const std::string &headers) {
-    std::cout << CYAN << "Response Headers:\n" << headers << RESET << std::endl;
-
-    if (send(_event.getClientFd(), headers.c_str(), headers.size(), 0) < 0) {
-        std::cerr << RED << "Error while writing status header to client: " << strerror(errno) << RESET << std::endl;
-        _event.setEventStatus(Ended);
-        //return error page, end connection
+    if (send(_event.getClientFd(), error_500_page_html.c_str(), error_500_page_html.size(), 0) < 0) {
+        std::cerr << RED << "Error while writing error page to client: " << strerror(errno) << RESET << std::endl;
     }
 
-    std::cout << GREEN << "Successfully sent headers to client" << RESET << std::endl;
+    _event.setEventStatus(Ended);
+    std::cout << GREEN << "Successfully sent error page to client" << RESET << std::endl;
 }
+
+
 
 void Response::write_upload_file() {
     if (this->_event.getEventStatus() == Ended) return;
@@ -151,15 +120,42 @@ void Response::read_upload_file() {
     this->_event.setFileChunkReadBytes(chunk_bytes);
 }
 
-void Response::write_error_page() {
-    std::string error_500_page_html = "<html><body><h1>500 Internal Server Error</h1></body></html>";
+std::string Response::getFileHeaders(const std::string& file_path, size_t file_size) {
+    char size_t_byte_buffer[25] = {};
+    std::string headers = "HTTP/1.1 200 Ok\r\n";
 
-    std::cout << CYAN << "Response Page:\n" << error_500_page_html << RESET << std::endl;
+    if (snprintf(size_t_byte_buffer, 25, "%lu", file_size) < 0) {
+        std::cerr << RED << "Error while formatting file size: " << strerror(errno) << RESET << std::endl;
+        //stop connection, display error page
+    }
+    std::string content_length = "Content-Length: " + std::string(size_t_byte_buffer) + "\r\n";
 
-    if (send(_event.getClientFd(), error_500_page_html.c_str(), error_500_page_html.size(), 0) < 0) {
-        std::cerr << RED << "Error while writing error page to client: " << strerror(errno) << RESET << std::endl;
+    std::string extension = file_path.substr(file_path.find_last_of('.') + 1);
+    for (int i = 0; i < 25; i++) {
+        if (extension == file_extension[i]) {
+            headers += content_length;
+            headers += content_type[i];
+            return headers;
+        }
+    }
+    return "HTTP/1.1 200 Ok\r\n" + content_length + "Content-Type: text/html\r\n\r\n";
+}
+
+std::string Response::getErrorHeaders() {
+    std::string headers = "HTTP/1.1 500\r\n";
+    headers += "Content-Type: text/html\r\n\r\n";
+    return headers;
+}
+
+void Response::send_headers(const std::string &headers) {
+    std::cout << CYAN << "Response Headers:\n" << headers << RESET << std::endl;
+
+    if (send(_event.getClientFd(), headers.c_str(), headers.size(), 0) < 0) {
+        std::cerr << RED << "Error while writing status header to client: " << strerror(errno) << RESET << std::endl;
+        _event.setEventStatus(Ended);
+        //return error page, end connection
     }
 
-    _event.setEventStatus(Ended);
-    std::cout << GREEN << "Successfully sent error page to client" << RESET << std::endl;
+    std::cout << GREEN << "Successfully sent headers to client" << RESET << std::endl;
 }
+

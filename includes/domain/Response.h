@@ -23,8 +23,10 @@ public:
 
     void write_error_page();
 
+    void write_error_headers();
+
 private:
-    std::string getHeaders(const std::string& file_path, size_t file_size);
+    std::string getFileHeaders(const std::string& file_path, size_t file_size);
     std::string getErrorHeaders();
 
     void read_upload_file();

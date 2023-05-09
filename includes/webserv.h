@@ -55,6 +55,7 @@ typedef enum EVENT_SUB_STATUS {
     OpeningFile,
     WritingResponseHeaders,
     WritingResponseFile,
+    WritingErrorHeaders,
     WritingErrorPage
 } event_sub_status_t;
 
