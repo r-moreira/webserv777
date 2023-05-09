@@ -12,7 +12,8 @@ class EventStateHelper {
 public:
     EventStateHelper();
 
-    static void error_state(Event &event, event_http_status_enum_t status);
+    static void throw_error_state(Event &event, event_http_status_enum_t status);
+    static bool is_error_state(Event &event);
 };
 
 

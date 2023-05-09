@@ -9,7 +9,7 @@ File::File(Event &event): _event(event) {}
 File::~File() {}
 
 void File::open_file() {
-    if (this->_event.getEventStatus() == Ended) return;
+    if (EventStateHelper::is_error_state(this->_event)) return;
 
     if (this->_event.getFile() == NULL) {
         this->_event.setFilePath("./public" + this->_event.getRequest().getUri());
@@ -18,8 +18,8 @@ void File::open_file() {
         fptr = fopen(this->_event.getFilePath().c_str(), "rb");
         if (fptr == NULL) {
             std::cerr << RED << "Error while opening file: " << this->_event.getFilePath() << " " << strerror(errno) << RESET << std::endl;
-            //return error page, end connection
-            this->_event.setEventStatus(Ended);
+            EventStateHelper::throw_error_state(this->_event, NOT_FOUND);
+            return;
         }
         this->_event.setFile(fptr);
         //Por algum motivo readbytes precisa ser inicializado neste momento

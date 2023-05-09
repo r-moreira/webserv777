@@ -7,6 +7,7 @@
 
 
 #include "Event.h"
+#include "EventStateHelper.h"
 
 class File {
 

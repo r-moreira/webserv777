@@ -10,6 +10,8 @@ Request::~Request() {}
 
 
 void Request::read_request() {
+    if (EventStateHelper::is_error_state(this->_event)) return;
+
     char buffer[READ_BUFFER_SIZE] = {};
 
     RequestInfo request;
@@ -18,10 +20,10 @@ void Request::read_request() {
 
     if (bytes_read == -1) {
         std::cerr << RED << "Error while reading from client: " << strerror(errno) << RESET << std::endl;
-        EventStateHelper::error_state(this->_event, INTERNAL_SERVER_ERROR);
+        EventStateHelper::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
     } else if (bytes_read == 0) {
         std::cout << YELLOW << "Client disconnected" << RESET << std::endl;
-        EventStateHelper::error_state(this->_event, BAD_REQUEST);
+        EventStateHelper::throw_error_state(this->_event, BAD_REQUEST);
         return;
     }
 
@@ -38,6 +40,8 @@ void Request::read_request() {
 }
 
 void Request::parse_request() {
+    if (EventStateHelper::is_error_state(this->_event)) return;
+
     std::cout << MAGENTA << "Request Data:\n " << this->_event.getRequestReadBuffer() << RESET << std::endl;
 
     const char *buffer = this->_event.getRequestReadBuffer().c_str();
@@ -50,7 +54,7 @@ void Request::parse_request() {
         std::cout << WHITE << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
     } else {
         std::cerr << RED << "Parsing failed" << RESET << std::endl;
-        EventStateHelper::error_state(this->_event, BAD_REQUEST);
+        EventStateHelper::throw_error_state(this->_event, BAD_REQUEST);
     }
 
     this->_event.setEventSubStatus(ChoosingServer);
@@ -58,6 +62,8 @@ void Request::parse_request() {
 
 
 void Request::choose_server(std::vector<Server> servers) {
+    if (EventStateHelper::is_error_state(this->_event)) return;
+
     std::cout << BLUE << "\nChoosing Server:" << RESET << std::endl;
 
     for (std::vector<Server>::iterator it = servers.begin(); it != servers.end(); it++) {
@@ -69,7 +75,7 @@ void Request::choose_server(std::vector<Server> servers) {
 
     if (this->_event.getServer() == NULL) {
         std::cerr << RED << "Server not found" << RESET << std::endl;
-        EventStateHelper::error_state(this->_event, INTERNAL_SERVER_ERROR);
+        EventStateHelper::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
         return;
     }
 
@@ -81,6 +87,8 @@ void Request::choose_server(std::vector<Server> servers) {
 }
 
 void Request::validate_constraints() {
+    if (EventStateHelper::is_error_state(this->_event)) return;
+
     //EventStateHelper::error_state(this->_event, INTERNAL_SERVER_ERROR);
 
     this->_event.setEventStatus(Writing);

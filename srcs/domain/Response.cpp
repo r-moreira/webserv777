@@ -44,6 +44,8 @@ std::string content_type[] = {
 };
 
 void Response::write_file_response_headers() {
+    if (EventStateHelper::is_error_state(this->_event)) return;
+
     send_headers(getFileHeaders(_event.getFilePath(), _event.getFileSize()));
     this->_event.setEventSubStatus(WritingResponseFile);
 }
@@ -80,7 +82,7 @@ void Response::write_error_page() {
 }
 
 void Response::write_upload_file() {
-    if (this->_event.getEventStatus() == Ended) return;
+    if (EventStateHelper::is_error_state(this->_event)) return;
 
     long bytes_sent = send(_event.getClientFd() , _event.getFileReadChunkBuffer(), _event.getFileChunkReadBytes(), 0);
     if (bytes_sent < 0) {
@@ -98,7 +100,7 @@ void Response::write_upload_file() {
 }
 
 void Response::read_upload_file() {
-    if (this->_event.getEventStatus() == Ended) return;
+    if (EventStateHelper::is_error_state(this->_event)) return;
 
     size_t read_size;
     if (_event.getFileSize() > FILE_READ_CHUNK_SIZE) {
