@@ -59,7 +59,7 @@ void Response::write_response_file() {
 }
 
 void Response::write_error_headers() {
-    send_headers( getErrorHeaders());
+    send_headers(getErrorHeaders());
     this->_event.setEventSubStatus(WritingErrorPage);
 }
 
@@ -76,8 +76,6 @@ void Response::write_error_page() {
     std::cout << GREEN << "Successfully sent error page to client" << RESET << std::endl;
 }
 
-
-
 void Response::write_upload_file() {
     if (this->_event.getEventStatus() == Ended) return;
 
@@ -90,10 +88,8 @@ void Response::write_upload_file() {
 
     std::cout << YELLOW << "Transmitted Data Size " << bytes_sent << " Bytes." << RESET << std::endl;
 
-
     if (_event.getFileReadLeft() <= 0) {
         _event.setEventStatus(Ended);
-
         std::cout << GREEN << "File Transfer Complete." << RESET << std::endl;
     }
 }

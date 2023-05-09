@@ -29,11 +29,15 @@ void EventHandler::process_event() {
             case OpeningFile: _file.open_file();
             case WritingResponseHeaders: _response.write_response_headers();
             case WritingResponseFile: _response.write_response_file();
-            //case HandlingRedirection: _response.handle_redirection(); --> responder 302 para o navegador chamar outro site
-            //case WritingCGI: _response.write_cgi();
-            // case WritingAutoIndex: _response.write_auto_index();
-            //case WritingDirectoryPage: _response.write_directory_page();
                 break;
+            //case HandlingRedirection: _response.handle_redirection(); --> responder 302 para o navegador chamar outro site
+                //break;
+            //case WritingCGI: _response.write_cgi();
+                //break;
+            // case WritingAutoIndex: _response.write_auto_index();
+                //break;
+            //case WritingDirectoryPage: _response.write_directory_page();
+
             case WritingErrorHeaders: _response.write_error_headers();
             case WritingErrorPage: _response.write_error_page();
                 break;

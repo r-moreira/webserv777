@@ -80,7 +80,7 @@ void Request::validate_constraints() {
 
     //this->_event.setHttpStatus(INTERNAL_SERVER_ERROR);
     //this->_event.setEventStatus(Writing);
-    //this->_event.setEventSubStatus(WritingResponseHeaders);
+    //this->_event.setEventSubStatus(WritingErrorHeaders);
 
     this->_event.setEventStatus(Writing);
     this->_event.setEventSubStatus(OpeningFile);
