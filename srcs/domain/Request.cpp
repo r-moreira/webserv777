@@ -23,7 +23,6 @@ void Request::parse_request() {
         std::cout << WHITE << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
     } else {
         std::cerr << RED << "Parsing failed" << RESET << std::endl;
-        //Return error page, end connection
         this->_event.setEventStatus(Ended);
     }
 
@@ -73,11 +72,18 @@ void Request::choose_server(std::vector<Server> servers) {
         this->_event.getServer()->getName() << " port: " <<
         this->_event.getServer()->getPort() << RESET << std::endl << std::endl;
 
-    this->_event.setEventStatus(Writing);
-    // Por enquanto só vai ter um sub estado de leitura de arquivo, mas no futuro terá outros dependendo da funcionalidade
-    this->_event.setEventSubStatus(OpeningFile);
+    this->_event.setEventSubStatus(ValidatingConstraints);
 }
 
+// Por enquanto só vai ter um sub estado de leitura de arquivo, mas no futuro terá outros dependendo da funcionalidade
 void Request::validate_constraints() {
+
+    //this->_event.setHttpStatus(INTERNAL_SERVER_ERROR);
+    //this->_event.setEventStatus(Writing);
+    //this->_event.setEventSubStatus(WritingResponseHeaders);
+
+    this->_event.setEventStatus(Writing);
+    this->_event.setEventSubStatus(OpeningFile);
+
 
 }

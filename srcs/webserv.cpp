@@ -14,7 +14,8 @@ int main(int argc, char **argv, char **env) {
     getcwd(tmp, 256);
     std::cout << "Current working directory: " << tmp << std::endl;
 
-    int port = 8080;
+    srand(time(0));
+    int port = 8080 + rand() % 10;
 
     Server server = Server::build()
             .with_name("webserv")

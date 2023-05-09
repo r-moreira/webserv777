@@ -54,7 +54,8 @@ typedef enum EVENT_SUB_STATUS {
     ValidatingConstraints,
     OpeningFile,
     WritingResponseHeaders,
-    WritingResponseFile
+    WritingResponseFile,
+    WritingErrorPage
 } event_sub_status_t;
 
 typedef enum FILE_TYPE {
@@ -65,6 +66,20 @@ typedef enum FILE_TYPE {
     DefaultPage,
     ErrorPage
 } file_type_t;
+
+
+typedef enum EVENT_HTTP_STATUS_ENUM {
+    OK = 200,
+    CREATED = 201,
+    BAD_REQUEST = 400,
+    NOT_FOUND = 404,
+    FORBIDDEN = 403,
+    METHOD_NOT_ALLOWED = 405,
+    PAYLOAD_TOO_LARGE = 413,
+    INTERNAL_SERVER_ERROR = 500,
+    NOT_IMPLEMENTED = 501,
+} event_http_status_enum_t;
+
 
 
 #endif //WEBSERV_WEBSERV_H

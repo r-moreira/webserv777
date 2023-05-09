@@ -7,6 +7,7 @@ SRCS_DIR			= srcs
 NETWORK_DIR			= ${SRCS_DIR}/network
 PARSER_DIR			= ${SRCS_DIR}/parser
 DOMAIN_DIR			= ${SRCS_DIR}/domain
+MODEL_DIR			= ${SRCS_DIR}/model
 IO_DIR				= ${SRCS_DIR}/io
 
 SRCS				= ${SRCS_DIR}/webserv.cpp\
@@ -21,6 +22,7 @@ SRCS				= ${SRCS_DIR}/webserv.cpp\
 					  ${NETWORK_DIR}/Socket.cpp\
 					  ${PARSER_DIR}/ConfigParser.cpp\
 					  ${PARSER_DIR}/LocationParser.cpp\
+					  ${MODEL_DIR}/DefaultErrorPages.cpp\
 
 all:				$(NAME)
 

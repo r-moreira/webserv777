@@ -73,21 +73,40 @@ std::string Response::getHeaders(const std::string& file_path, size_t file_size)
     return "HTTP/1.1 200 Ok\r\n" + content_length + "Content-Type: text/html\r\n\r\n";
 }
 
+std::string Response::getErrorHeaders() {
+    std::string headers = "HTTP/1.1 500\r\n";
+    headers += "Content-Type: text/html\r\n\r\n";
+    return headers;
+}
+
+
 
 void Response::write_response_headers() {
+    std::string headers;
+
     if (this->_event.getEventStatus() == Ended) return;
 
-    std::string headers = getHeaders(_event.getFilePath(), _event.getFileSize());
+    if (this->_event.getHttpStatus() == OK) {
+        headers = getHeaders(_event.getFilePath(), _event.getFileSize());
+        send_headers(headers);
+        this->_event.setEventSubStatus(WritingResponseFile);
+    } else {
+        headers = getErrorHeaders();
+        send_headers(headers);
+        this->_event.setEventSubStatus(WritingErrorPage);
+    }
+}
+
+void Response::send_headers(const std::string &headers) {
     std::cout << CYAN << "Response Headers:\n" << headers << RESET << std::endl;
 
     if (send(_event.getClientFd(), headers.c_str(), headers.size(), 0) < 0) {
         std::cerr << RED << "Error while writing status header to client: " << strerror(errno) << RESET << std::endl;
-        this->_event.setEventStatus(Ended);
+        _event.setEventStatus(Ended);
         //return error page, end connection
     }
 
     std::cout << GREEN << "Successfully sent headers to client" << RESET << std::endl;
-    this->_event.setEventSubStatus(WritingResponseFile);
 }
 
 void Response::write_upload_file() {
@@ -130,4 +149,17 @@ void Response::read_upload_file() {
     std::cout << YELLOW << "Read Left: " << _event.getFileReadLeft() << RESET << std::endl;
 
     this->_event.setFileChunkReadBytes(chunk_bytes);
+}
+
+void Response::write_error_page() {
+    std::string error_500_page_html = "<html><body><h1>500 Internal Server Error</h1></body></html>";
+
+    std::cout << CYAN << "Response Page:\n" << error_500_page_html << RESET << std::endl;
+
+    if (send(_event.getClientFd(), error_500_page_html.c_str(), error_500_page_html.size(), 0) < 0) {
+        std::cerr << RED << "Error while writing error page to client: " << strerror(errno) << RESET << std::endl;
+    }
+
+    _event.setEventStatus(Ended);
+    std::cout << GREEN << "Successfully sent error page to client" << RESET << std::endl;
 }

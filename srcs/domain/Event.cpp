@@ -12,6 +12,8 @@ Event::Event(int server_fd, int client_fd) {
     this->_request_read_buffer = "";
     this->_request_read_bytes = 0;
 
+    this->_http_status = OK;
+
     this->_file = NULL;
     this->_file_path = "";
     this->_file_read_bytes = 0;
@@ -153,5 +155,13 @@ file_type_t Event::getFileType() const {
 
 void Event::setFileType(file_type_t fileType) {
     _file_type = fileType;
+}
+
+event_http_status_enum_t Event::getHttpStatus() const {
+    return _http_status;
+}
+
+void Event::setHttpStatus(event_http_status_enum_t httpStatus) {
+    _http_status = httpStatus;
 }
 

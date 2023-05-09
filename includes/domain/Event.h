@@ -16,6 +16,8 @@ private:
     int _client_fd;
     int _server_fd;
 
+    event_http_status_enum_t _http_status;
+
     std::string _request_read_buffer;
     size_t _request_read_bytes;
 
@@ -50,6 +52,10 @@ public:
     Server *getServer() const;
 
     void setServer(Server *server);
+
+    event_http_status_enum_t getHttpStatus() const;
+
+    void setHttpStatus(event_http_status_enum_t httpStatus);
 
     const RequestInfo &getRequest() const;
 

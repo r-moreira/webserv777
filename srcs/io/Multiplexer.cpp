@@ -37,7 +37,6 @@ void Multiplexer::event_loop() {
         int nfds = wait_events(epoll_events);
 
         for (int i = 0; i < nfds; i++) {
-
             if (is_server_fd(epoll_events[i].data.fd)) {
                 int client_fd = Socket::setupClient(epoll_events[i].data.fd);
 

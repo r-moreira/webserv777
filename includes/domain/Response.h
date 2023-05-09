@@ -21,12 +21,17 @@ public:
 
     void write_response_headers();
 
+    void write_error_page();
+
 private:
     std::string getHeaders(const std::string& file_path, size_t file_size);
+    std::string getErrorHeaders();
 
     void read_upload_file();
 
     void write_upload_file();
+
+    void send_headers(const std::string &headers);
 };
 
 
