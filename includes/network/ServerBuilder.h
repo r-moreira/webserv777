@@ -22,6 +22,8 @@ public:
 
     ServerBuilder& with_port(int port);
 
+    ServerBuilder& with_max_body_size(long max_body_size);
+
     Server start();
 };
 

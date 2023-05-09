@@ -91,7 +91,27 @@ void Request::choose_server(std::vector<Server> servers) {
 void Request::validate_constraints() {
     if (EventStateHelper::is_error_state(this->_event)) return;
 
-    //EventStateHelper::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
+    std::cout << BLUE << "Validating Constraints:" << RESET << std::endl;
+
+    if (this->_event.getRequest().method != "GET" && this->_event.getRequest().method != "POST") {
+        EventStateHelper::throw_error_state(this->_event, METHOD_NOT_ALLOWED);
+        return;
+    }
+
+    if (this->_event.getServer()->getMaxBodySize() != -1) {
+        std::vector<RequestInfo::HeaderItem> headers = this->_event.getRequest().headers;
+
+        for (std::vector<RequestInfo::HeaderItem>::iterator it = headers.begin(); it != headers.end(); it++) {
+            if (it->name == "Content-Length") {
+                long content_length = std::strtol(it->value.c_str(), NULL, 10);
+
+                if (content_length > this->_event.getServer()->getMaxBodySize()) {
+                    EventStateHelper::throw_error_state(this->_event, PAYLOAD_TOO_LARGE);
+                    return;
+                }
+            }
+        }
+    }
 
     this->_event.setEventStatus(Writing);
     this->_event.setEventSubStatus(OpeningFile);

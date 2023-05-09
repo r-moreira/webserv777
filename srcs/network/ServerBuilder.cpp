@@ -18,6 +18,11 @@ ServerBuilder &ServerBuilder::with_port(int port) {
     return *this;
 }
 
+ServerBuilder &ServerBuilder::with_max_body_size(long max_body_size) {
+    _server._max_body_size = max_body_size;
+    return *this;
+}
+
 Server ServerBuilder::start() {
     _server._fd = Socket::setupServer(_server.getPort());
     return _server;

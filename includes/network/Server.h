@@ -15,6 +15,7 @@ private:
     std::string _name;
     int _port;
     int _fd;
+    long _max_body_size;
 
 public:
     Server();
@@ -29,6 +30,10 @@ public:
     int getPort() const;
 
     int getFd() const;
+
+    int getMaxBodySize() const;
+
+    void setMaxBodySize(int maxBodySize);
 };
 
 std::ostream& operator << (std::ostream& os, const Server& obj);

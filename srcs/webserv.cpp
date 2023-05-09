@@ -20,6 +20,7 @@ int main(int argc, char **argv, char **env) {
     Server server = Server::build()
             .with_name("webserv")
             .with_port(port)
+            .with_max_body_size(10)
             .start();
 
     Server server2 = Server::build()

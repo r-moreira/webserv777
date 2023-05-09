@@ -7,7 +7,12 @@
 
 class ServerBuilder;
 
-Server::Server() {}
+Server::Server() {
+    this->_name = "webserv";
+    this->_port = 80;
+    this-> _fd = -1;
+    this->_max_body_size = -1;
+}
 
 Server::~Server() {}
 
@@ -25,6 +30,14 @@ int Server::getPort() const {
 
 int Server::getFd() const {
     return _fd;
+}
+
+int Server::getMaxBodySize() const {
+    return _max_body_size;
+}
+
+void Server::setMaxBodySize(int maxBodySize) {
+    _max_body_size = maxBodySize;
 }
 
 std::ostream &operator<<(std::ostream &os, const Server &server) {
