@@ -59,6 +59,8 @@ void Response::write_response_file() {
 }
 
 void Response::write_error_headers() {
+    std::cout << CYAN << "Send error headers for status: " << this->_event.getHttpStatus() << RESET << std::endl;
+
     send_headers(getErrorHeaders());
     this->_event.setEventSubStatus(WritingErrorPage);
 }

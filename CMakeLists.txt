@@ -23,4 +23,4 @@ add_executable(
         srcs/domain/File.cpp includes/domain/File.h
         srcs/network/ServerBuilder.cpp includes/network/ServerBuilder.h
         srcs/parser/ConfigParser.cpp srcs/parser/LocationParser.cpp
-        srcs/network/Location.cpp includes/network/Location.h)
+        srcs/network/Location.cpp includes/network/Location.h srcs/domain/EventStateHelper.cpp includes/domain/EventStateHelper.h)

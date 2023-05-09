@@ -8,41 +8,20 @@ Request::Request(Event &event): _event(event) {}
 
 Request::~Request() {}
 
-void Request::parse_request() {
-    if (this->_event.getEventStatus() == Ended) return;
-
-    std::cout << MAGENTA << "Request Data:\n " << this->_event.getRequestReadBuffer() << RESET << std::endl;
-
-    const char *buffer = this->_event.getRequestReadBuffer().c_str();
-
-    HttpRequestParser parser;
-
-    HttpRequestParser::ParseResult result = parser.parse(_event._request, buffer, buffer + strlen(buffer));
-
-    if (result == HttpRequestParser::ParsingCompleted) {
-        std::cout << WHITE << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
-    } else {
-        std::cerr << RED << "Parsing failed" << RESET << std::endl;
-        this->_event.setEventStatus(Ended);
-    }
-
-    this->_event.setEventSubStatus(ChoosingServer);
-}
 
 void Request::read_request() {
-    if (this->_event.getEventStatus() == Ended) return;
-
     char buffer[READ_BUFFER_SIZE] = {};
+
     RequestInfo request;
 
     long bytes_read = read(this->_event.getClientFd(), buffer, READ_BUFFER_SIZE);
 
     if (bytes_read == -1) {
         std::cerr << RED << "Error while reading from client: " << strerror(errno) << RESET << std::endl;
-        this->_event.setEventStatus(Ended);
+        EventStateHelper::error_state(this->_event, INTERNAL_SERVER_ERROR);
     } else if (bytes_read == 0) {
         std::cout << YELLOW << "Client disconnected" << RESET << std::endl;
-        this->_event.setEventStatus(Ended);
+        EventStateHelper::error_state(this->_event, BAD_REQUEST);
         return;
     }
 
@@ -58,6 +37,26 @@ void Request::read_request() {
     }
 }
 
+void Request::parse_request() {
+    std::cout << MAGENTA << "Request Data:\n " << this->_event.getRequestReadBuffer() << RESET << std::endl;
+
+    const char *buffer = this->_event.getRequestReadBuffer().c_str();
+
+    HttpRequestParser parser;
+
+    HttpRequestParser::ParseResult result = parser.parse(_event._request, buffer, buffer + strlen(buffer));
+
+    if (result == HttpRequestParser::ParsingCompleted) {
+        std::cout << WHITE << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
+    } else {
+        std::cerr << RED << "Parsing failed" << RESET << std::endl;
+        EventStateHelper::error_state(this->_event, BAD_REQUEST);
+    }
+
+    this->_event.setEventSubStatus(ChoosingServer);
+}
+
+
 void Request::choose_server(std::vector<Server> servers) {
     std::cout << BLUE << "\nChoosing Server:" << RESET << std::endl;
 
@@ -68,6 +67,12 @@ void Request::choose_server(std::vector<Server> servers) {
         }
     }
 
+    if (this->_event.getServer() == NULL) {
+        std::cerr << RED << "Server not found" << RESET << std::endl;
+        EventStateHelper::error_state(this->_event, INTERNAL_SERVER_ERROR);
+        return;
+    }
+
     std::cout << BLUE << "Choosed server = name: " <<
         this->_event.getServer()->getName() << " port: " <<
         this->_event.getServer()->getPort() << RESET << std::endl << std::endl;
@@ -75,15 +80,9 @@ void Request::choose_server(std::vector<Server> servers) {
     this->_event.setEventSubStatus(ValidatingConstraints);
 }
 
-// Por enquanto só vai ter um sub estado de leitura de arquivo, mas no futuro terá outros dependendo da funcionalidade
 void Request::validate_constraints() {
-
-    //this->_event.setHttpStatus(INTERNAL_SERVER_ERROR);
-    //this->_event.setEventStatus(Writing);
-    //this->_event.setEventSubStatus(WritingErrorHeaders);
+    //EventStateHelper::apply_error_state(this->_event, INTERNAL_SERVER_ERROR);
 
     this->_event.setEventStatus(Writing);
     this->_event.setEventSubStatus(OpeningFile);
-
-
 }

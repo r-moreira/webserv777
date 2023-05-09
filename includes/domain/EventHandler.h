@@ -31,12 +31,13 @@ public:
 
     void process_event();
 
+
     const Event &getEvent() const;
 
     void setEvent(const Event &event);
-
 private:
     void print_event_status();
+
 };
 
 

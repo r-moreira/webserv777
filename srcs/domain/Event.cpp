@@ -8,11 +8,11 @@ Event::Event(int server_fd, int client_fd) {
     this->_client_fd = client_fd;
     this->_server_fd = server_fd;
 
+    this->_http_status = OK;
+
     this->_request = RequestInfo();
     this->_request_read_buffer = "";
     this->_request_read_bytes = 0;
-
-    this->_http_status = OK;
 
     this->_file = NULL;
     this->_file_path = "";
@@ -24,6 +24,8 @@ Event::Event(int server_fd, int client_fd) {
 
     this->_event_status = Reading;
     this->_event_sub_status = ReadingRequest;
+
+    this->_server = NULL;
 }
 
 Event::~Event() {

@@ -7,6 +7,7 @@
 
 #include "Event.h"
 #include "../../includes/parser/HttpRequestParser.h"
+#include "EventStateHelper.h"
 
 class Request {
 
