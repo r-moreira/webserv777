@@ -15,3 +15,4 @@ void EventStateHelper::throw_error_state(Event &event, event_http_status_enum_t 
 bool EventStateHelper::is_error_state(Event &event) {
    return event.getHttpStatus() != OK;
 }
+

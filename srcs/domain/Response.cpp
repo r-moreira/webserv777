@@ -45,7 +45,7 @@ std::string content_type[] = {
 
 void Response::write_file_response_headers() {
     if (EventStateHelper::is_error_state(this->_event)) return;
-    send_headers(getFileHeaders(_event.getFilePath(), _event.getFileSize()));
+    write_headers(getFileHeaders(_event.getFilePath(), _event.getFileSize()));
     if (EventStateHelper::is_error_state(this->_event)) return;
 
     this->_event.setEventSubStatus(WritingResponseFile);
@@ -53,15 +53,15 @@ void Response::write_file_response_headers() {
 
 void Response::write_error_headers() {
     std::cout << CYAN << "Send error headers for status: " << this->_event.getHttpStatus() << RESET << std::endl;
-    send_headers(getErrorHeaders());
+    write_headers(getErrorHeaders());
     if (EventStateHelper::is_error_state(this->_event)) return;
 
     this->_event.setEventSubStatus(WritingErrorPage);
 }
 
 void Response::write_response_file() {
-    read_upload_file();
-    write_upload_file();
+    read_requested_file();
+    write_requested_file();
 }
 
 void Response::write_error_page() {
@@ -83,7 +83,7 @@ void Response::write_error_page() {
     std::cout << GREEN << "Successfully sent error page to client" << RESET << std::endl;
 }
 
-void Response::read_upload_file() {
+void Response::read_requested_file() {
     if (EventStateHelper::is_error_state(this->_event)) return;
 
     size_t read_size;
@@ -98,7 +98,7 @@ void Response::read_upload_file() {
 
     if (ferror(_event.getFile())) {
         std::cerr << RED << "Error while reading file: " << strerror(errno) << RESET << std::endl;
-        EventStateHelper::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
+        _event.setEventStatus(Ended);
         return;
     }
 
@@ -111,13 +111,13 @@ void Response::read_upload_file() {
     this->_event.setFileChunkReadBytes(chunk_bytes);
 }
 
-void Response::write_upload_file() {
+void Response::write_requested_file() {
     if (EventStateHelper::is_error_state(this->_event)) return;
 
     long bytes_sent = send(_event.getClientFd() , _event.getFileReadChunkBuffer(), _event.getFileChunkReadBytes(), 0);
     if (bytes_sent < 0) {
         std::cerr << RED << "Error while writing to client: " << strerror(errno) << RESET << std::endl;
-        EventStateHelper::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
+        _event.setEventStatus(Ended);
         return;
     }
 
@@ -129,7 +129,7 @@ void Response::write_upload_file() {
     }
 }
 
-void Response::send_headers(const std::string &headers) {
+void Response::write_headers(const std::string &headers) {
     std::cout << CYAN << "Response Headers:\n" << headers << RESET << std::endl;
 
     if (send(_event.getClientFd(), headers.c_str(), headers.size(), 0) < 0) {

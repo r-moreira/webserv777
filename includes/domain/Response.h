@@ -30,11 +30,11 @@ private:
     std::string getFileHeaders(const std::string& file_path, size_t file_size);
     std::string getErrorHeaders();
 
-    void read_upload_file();
+    void read_requested_file();
 
-    void write_upload_file();
+    void write_requested_file();
 
-    void send_headers(const std::string &headers);
+    void write_headers(const std::string &headers);
 };
 
 
