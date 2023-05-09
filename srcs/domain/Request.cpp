@@ -21,9 +21,10 @@ void Request::read_request() {
     if (bytes_read == -1) {
         std::cerr << RED << "Error while reading from client: " << strerror(errno) << RESET << std::endl;
         EventStateHelper::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
+        return;
     } else if (bytes_read == 0) {
         std::cout << YELLOW << "Client disconnected" << RESET << std::endl;
-        EventStateHelper::throw_error_state(this->_event, BAD_REQUEST);
+        EventStateHelper::throw_error_state(this->_event, CLIENT_CLOSED_REQUEST);
         return;
     }
 
@@ -55,6 +56,7 @@ void Request::parse_request() {
     } else {
         std::cerr << RED << "Parsing failed" << RESET << std::endl;
         EventStateHelper::throw_error_state(this->_event, BAD_REQUEST);
+        return;
     }
 
     this->_event.setEventSubStatus(ChoosingServer);
@@ -89,7 +91,7 @@ void Request::choose_server(std::vector<Server> servers) {
 void Request::validate_constraints() {
     if (EventStateHelper::is_error_state(this->_event)) return;
 
-    //EventStateHelper::error_state(this->_event, INTERNAL_SERVER_ERROR);
+    //EventStateHelper::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
 
     this->_event.setEventStatus(Writing);
     this->_event.setEventSubStatus(OpeningFile);

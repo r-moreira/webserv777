@@ -30,7 +30,8 @@ void File::open_file() {
     int fd = fileno(this->_event.getFile());
     if (fd < 1) {
         std::cerr << RED << "Error while getting file descriptor: " << strerror(errno) << RESET << std::endl;
-        //return error page, end connection
+        EventStateHelper::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
+        return;
     }
 
     fstat(fd, &file_stat);
