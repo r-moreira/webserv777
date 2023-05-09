@@ -19,7 +19,7 @@ public:
 
     void write_response_file();
 
-    void write_response_headers();
+    void write_file_response_headers();
 
     void write_error_page();
 

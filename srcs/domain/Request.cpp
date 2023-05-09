@@ -81,7 +81,7 @@ void Request::choose_server(std::vector<Server> servers) {
 }
 
 void Request::validate_constraints() {
-    //EventStateHelper::apply_error_state(this->_event, INTERNAL_SERVER_ERROR);
+    //EventStateHelper::error_state(this->_event, INTERNAL_SERVER_ERROR);
 
     this->_event.setEventStatus(Writing);
     this->_event.setEventSubStatus(OpeningFile);

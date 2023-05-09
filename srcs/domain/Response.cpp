@@ -43,18 +43,13 @@ std::string content_type[] = {
         "Content-Type: image/jpeg\r\n\r\n",
 };
 
-void Response::write_response_headers() {
-    if (this->_event.getEventStatus() == Ended) return;
-
+void Response::write_file_response_headers() {
     send_headers(getFileHeaders(_event.getFilePath(), _event.getFileSize()));
     this->_event.setEventSubStatus(WritingResponseFile);
 }
 
 void Response::write_response_file() {
-    if (this->_event.getEventStatus() == Ended) return;
-
     read_upload_file();
-
     write_upload_file();
 }
 
@@ -66,11 +61,17 @@ void Response::write_error_headers() {
 }
 
 void Response::write_error_page() {
-    std::string error_500_page_html = "<html><body><h1>500 Internal Server Error</h1></body></html>";
+    std::ostringstream error_page;
+    std::string html_tag_init = "<html><body><h1>";
+    std::string html_message = "Webserv Error: ";
+    long error_status_code = this->_event.getHttpStatus();
+    std::string html_tag_end =  "</h1></body></html>";
 
-    std::cout << CYAN << "Response Page:\n" << error_500_page_html << RESET << std::endl;
+    error_page << html_tag_init << html_message << error_status_code << html_tag_end;
 
-    if (send(_event.getClientFd(), error_500_page_html.c_str(), error_500_page_html.size(), 0) < 0) {
+    std::cout << CYAN << "Response Page:\n" << error_page.str() << RESET << std::endl;
+
+    if (send(_event.getClientFd(), error_page.str().c_str(), error_page.str().size(), 0) < 0) {
         std::cerr << RED << "Error while writing error page to client: " << strerror(errno) << RESET << std::endl;
     }
 

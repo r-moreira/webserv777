@@ -53,7 +53,7 @@ typedef enum EVENT_SUB_STATUS {
     ChoosingServer,
     ValidatingConstraints,
     OpeningFile,
-    WritingResponseHeaders,
+    WritingFileResponseHeaders,
     WritingResponseFile,
     WritingErrorHeaders,
     WritingErrorPage

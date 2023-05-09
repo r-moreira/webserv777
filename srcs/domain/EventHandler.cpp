@@ -17,6 +17,7 @@ void EventHandler::process_event() {
             case ChoosingServer: _request.choose_server(this->_servers);
             case ValidatingConstraints: _request.validate_constraints(); //TODO
             //case HandlingLocation: _request.handle_location();   --> Traduzir o path, lidar com redirects
+            //case DefiningResponseState: _request.define_response_state(); --> Definir para qual "feature" do servidor o request vai cair
                 break;
             default:
                 std::cerr << RED << "Invalid Reading Event Status" << RESET << std::endl;
@@ -27,7 +28,7 @@ void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Writing) {
         switch (this->_event.getEventSubStatus()) {
             case OpeningFile: _file.open_file();
-            case WritingResponseHeaders: _response.write_response_headers();
+            case WritingFileResponseHeaders: _response.write_file_response_headers();
             case WritingResponseFile: _response.write_response_file();
                 break;
             //case HandlingRedirection: _response.handle_redirection(); --> responder 302 para o navegador chamar outro site
@@ -37,7 +38,7 @@ void EventHandler::process_event() {
             // case WritingAutoIndex: _response.write_auto_index();
                 //break;
             //case WritingDirectoryPage: _response.write_directory_page();
-
+                //break;
             case WritingErrorHeaders: _response.write_error_headers();
             case WritingErrorPage: _response.write_error_page();
                 break;
@@ -73,7 +74,7 @@ void EventHandler::print_event_status() {
             break;
         case OpeningFile: sub_status = "OpeningFile";
             break;
-        case WritingResponseHeaders: sub_status = "WritingResponseHeaders";
+        case WritingFileResponseHeaders: sub_status = "WritingFileResponseHeaders";
             break;
         case WritingResponseFile: sub_status = "WritingResponseFile";
             break;

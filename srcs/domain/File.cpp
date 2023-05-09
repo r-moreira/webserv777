@@ -35,6 +35,6 @@ void File::open_file() {
 
     fstat(fd, &file_stat);
     this->_event.setFileSize(file_stat.st_size);
-    this->_event.setEventSubStatus(WritingResponseHeaders);
+    this->_event.setEventSubStatus(WritingFileResponseHeaders);
 }
 
