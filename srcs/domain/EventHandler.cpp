@@ -10,6 +10,10 @@ EventHandler::~EventHandler() {}
 
 //TODO:
 // Implementar validação dos métodos HTTP no validate_constraints()
+// Implementar validação dos headers no validate_constraints()
+// Implementar suporte a location redirect, cgi, upload e auto_index
+// Implementar suporte a pagina de diretório customizada
+// Implementar suporte a pagina de erro customizada
 void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Reading) {
 

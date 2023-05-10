@@ -162,8 +162,12 @@ std::string Response::getFileHeaders(const std::string& file_path, size_t file_s
 }
 
 std::string Response::getErrorHeaders() {
-    std::string headers = "HTTP/1.1 500\r\n";
-    headers += "Content-Type: text/html\r\n\r\n";
-    return headers;
+    std::ostringstream headers;
+    std::string error_header_init = "HTTP/1.1 ";
+    long error_status_code = this->_event.getHttpStatus();
+    std::string error_header_end =  "\r\nContent-Type: text/html\r\n\r\n";
+
+    headers << error_header_init << error_status_code << error_header_end;
+    return headers.str();
 }
 

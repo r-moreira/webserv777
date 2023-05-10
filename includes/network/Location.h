@@ -16,7 +16,7 @@ private:
     std::string _redirect_url;
     std::string _cgi_path;
     std::string _upload_path;
-    bool autoindex;
+    bool _auto_index;
 public:
     Location();
 

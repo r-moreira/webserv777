@@ -52,11 +52,11 @@ void Location::setCgiPath(const std::string &cgiPath) {
 }
 
 bool Location::isAutoindex() const {
-    return autoindex;
+    return _auto_index;
 }
 
 void Location::setAutoindex(bool autoindex) {
-    Location::autoindex = autoindex;
+    Location::_auto_index = autoindex;
 }
 
 const std::string &Location::getUploadPath() const {
