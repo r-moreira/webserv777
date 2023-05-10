@@ -28,16 +28,11 @@ void Write::write_requested_file() {
 }
 
 void Write::write_default_error_page() {
-    std::ostringstream error_page;
-    std::string html_tag_init = "<html><body><h1>";
-    std::string html_message = "Webserv Error: ";
-    long error_status_code = this->_event.getHttpStatus();
-    std::string html_tag_end =  "</h1></body></html>";
+    std::string default_error_page = Pages::get_default_error_page(this->_event.getHttpStatus());
 
-    error_page << html_tag_init << html_message << error_status_code << html_tag_end;
+    std::cout << CYAN << "Response Page:\n" << default_error_page << RESET << std::endl;
 
-    std::cout << CYAN << "Response Page:\n" << error_page.str() << RESET << std::endl;
-    if (send(_event.getClientFd(), error_page.str().c_str(), error_page.str().size(), 0) < 0) {
+    if (send(_event.getClientFd(), default_error_page.c_str(), default_error_page.size(), 0) < 0) {
         std::cerr << RED << "Error while writing error page to client: " << strerror(errno) << RESET << std::endl;
     }
 

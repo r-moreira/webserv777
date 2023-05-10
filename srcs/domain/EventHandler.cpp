@@ -15,9 +15,9 @@ EventHandler::~EventHandler() {}
 // Implementar suporte a upload de arquivos
 
 //TODO Atuais:
-// Fazer testes com diferentes rotas em diferentes locations, principalmente com location /
 // Fazer gerênciamento do estado do evento com base no location, retornar status code e pagina de exemplo
 // Fazer leitura de arquivos de paginas de erro/diretório com base na configuração para poder responde-la ao client
+// Fazer método para upload e arquivo no diretório da config
 void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Reading) {
 

@@ -8,6 +8,7 @@
 #include "../domain/Event.h"
 #include "../domain/ErrorState.h"
 #include "../../includes/model/Headers.h"
+#include "../../includes/model/Pages.h"
 
 class Write {
 

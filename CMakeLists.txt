@@ -27,4 +27,4 @@ add_executable(
         srcs/io/Read.cpp includes/io/Read.h
         srcs/io/Write.cpp includes/io/Write.h
         srcs/model/Headers.cpp includes/model/Headers.h
-        srcs/model/MimeTypes.cpp includes/model/MimeTypes.h)
+        srcs/model/MimeTypes.cpp includes/model/MimeTypes.h srcs/model/Pages.cpp includes/model/Pages.h)

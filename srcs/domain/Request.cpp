@@ -89,7 +89,7 @@ void Request::choose_location() {
 void Request::validate_constraints() {
     if (ErrorState::is_error_state(this->_event)) return;
 
-    std::cout << MAGENTA << "Validating Allowed Methods" << RESET <<std::endl;
+    std::cout << MAGENTA << "Validating Allowed Methods" << RESET << std::endl;
     std::vector<std::string> allowed_methods = this->_event.getLocation().getLimitExcept();
     if (std::find(allowed_methods.begin(), allowed_methods.end(), this->_event.getRequest().method) == allowed_methods.end()) {
         ErrorState::throw_error_state(this->_event, METHOD_NOT_ALLOWED);
@@ -123,10 +123,8 @@ void Request::define_response_state() {
 
     std::cout << CYAN << "Defining Response State" << RESET << std::endl;
 
-
-    //Tipo regular: arquivo
-    std::cout << MAGENTA << "Replacing Path To Root" << RESET << std::endl;
-    std::string file_path = repace_path_to_root(
+    std::cout << MAGENTA << "Evento regular, fluxo: Path To Root" << RESET << std::endl;
+    std::string file_path = path_to_root(
             this->_event.getRequest().uri,
             this->_event.getLocation().getPath(),
             this->_event.getLocation().getRoot());
@@ -139,8 +137,8 @@ void Request::define_response_state() {
     this->_event.setEventStatus(Writing);
 }
 
-std::string Request::repace_path_to_root(std::string request_uri, const std::string& request_path,
-                                         const std::string& location_root) {
+std::string Request::path_to_root(std::string request_uri, const std::string& request_path,
+                                  const std::string& location_root) {
 
     if (this->_event.getLocation().getPath() == "/") {
         return location_root + request_uri;
