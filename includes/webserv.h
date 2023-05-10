@@ -56,9 +56,9 @@ typedef enum EVENT_SUB_STATUS {
     ChoosingLocation,
     ValidatingConstraints,
     DefiningResponseState,
-    WritingResponseFile,
-    WritingDirectoryResponse,
-    WritingErrorResponse
+    SendingResponseFile,
+    SendingDirectoryResponse,
+    SendingErrorResponse
 } event_sub_status_t;
 
 typedef enum FILE_TYPE {

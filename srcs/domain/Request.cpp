@@ -135,7 +135,7 @@ void Request::define_response_state() {
     this->_event.setFilePath(file_path);
 
     //Mandar para o estado de acordo com o tipo de request/location
-    this->_event.setEventSubStatus(WritingResponseFile);
+    this->_event.setEventSubStatus(SendingResponseFile);
 
 
     this->_event.setEventStatus(Writing);

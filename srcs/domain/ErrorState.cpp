@@ -11,7 +11,7 @@ void ErrorState::throw_error_state(Event &event, event_http_status_enum_t status
 
     event.setHttpStatus(status);
     event.setEventStatus(Writing);
-    event.setEventSubStatus(WritingErrorResponse);
+    event.setEventSubStatus(SendingErrorResponse);
 }
 
 bool ErrorState::is_error_state(Event &event) {

@@ -15,17 +15,10 @@ EventHandler::~EventHandler() {}
 // Implementar suporte a upload de arquivos
 
 //TODO:
-// Remover estado de OpenResponseFile, colocar dentro funcionalidade do estado de WritingResponseFile
-//  Lembrar colocar uma flag: is_file_opened e checar toda vez
+// Criar uma classe de model de mime types para ser usada na classe header de response dos arquivos
+//      Ter um método para ver se é um tipo de mime_type existente no server para montagem de header
+//      caso contrário, retornar erro igual o do nginx
 
-//TODO:
-// Criar uma classe de model de mime types para ser usada no header de response dos arquivos
-//  Ter um método para ver se é um tipo de mime_type existente no server
-//  caso contrário, retornar erro igual o do nginx
-
-//TODO:
-// Mover classes para o pacote IO: File, Read (criar), Write (criar)
-// Mover classes para o pacote Domain: Server e Location
 void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Reading) {
 
@@ -45,7 +38,7 @@ void EventHandler::process_event() {
 
     if (this->_event.getEventStatus() == Writing) {
         switch (this->_event.getEventSubStatus()) {
-            case WritingResponseFile: _response.send_response_file();
+            case SendingResponseFile: _response.send_response_file();
                 break;
             //case HandlingRedirection: _response.handle_redirection(); --> responder 302 para o navegador chamar outro site
                 //break;
@@ -55,9 +48,9 @@ void EventHandler::process_event() {
                 //break;
             // case WritingAutoIndex: _response.write_auto_index();
                 //break;
-            case WritingDirectoryResponse: _response.send_is_directory_response();
+            case SendingDirectoryResponse: _response.send_is_directory_response();
                 break;
-            case WritingErrorResponse: _response.send_error_response();
+            case SendingErrorResponse: _response.send_error_response();
                 break;
             default:
                 std::cerr << RED << "Invalid Writing Event Sub Status:" << RESET << std::endl;
@@ -95,11 +88,11 @@ void EventHandler::print_event_status() {
             break;
         case DefiningResponseState: sub_status = "DefiningResponseState";
             break;
-        case WritingDirectoryResponse: sub_status = "WritingDirectoryResponse";
+        case SendingDirectoryResponse: sub_status = "SendingDirectoryResponse";
             break;
-        case WritingResponseFile: sub_status = "WritingResponseFile";
+        case SendingResponseFile: sub_status = "SendingResponseFile";
             break;
-        case WritingErrorResponse: sub_status = "WritingErrorResponse";
+        case SendingErrorResponse: sub_status = "SendingErrorResponse";
             break;
         default: sub_status = "Invalid";
             break;

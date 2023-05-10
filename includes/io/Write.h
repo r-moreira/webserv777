@@ -7,6 +7,7 @@
 
 #include "../domain/Event.h"
 #include "../domain/ErrorState.h"
+#include "../../includes/model/Headers.h"
 
 class Write {
 
@@ -25,12 +26,9 @@ public:
     void write_requested_file();
 
     void write_default_error_page();
+
 private:
     void write_headers(const std::string &headers);
-
-    std::string getErrorHeaders();
-
-    std::string getFileHeaders(const std::string &file_path, size_t file_size);
 };
 
 

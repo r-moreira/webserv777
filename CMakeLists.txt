@@ -22,4 +22,4 @@ add_executable(
         srcs/domain/Response.cpp includes/domain/Response.h
         srcs/io/File.cpp includes/io/File.h
         srcs/parser/ConfigParser.cpp srcs/parser/LocationParser.cpp
-        srcs/config/Location.cpp includes/config/Location.h srcs/domain/ErrorState.cpp includes/domain/ErrorState.h srcs/io/Read.cpp includes/io/Read.h srcs/io/Write.cpp includes/io/Write.h)
+        srcs/config/Location.cpp includes/config/Location.h srcs/domain/ErrorState.cpp includes/domain/ErrorState.h srcs/io/Read.cpp includes/io/Read.h srcs/io/Write.cpp includes/io/Write.h srcs/model/Headers.cpp includes/model/Headers.h srcs/model/MimeTypes.cpp includes/model/MimeTypes.h)

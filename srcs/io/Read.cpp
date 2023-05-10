@@ -59,7 +59,7 @@ void Read::read_file() {
 
         if (errno == EISDIR) {
             std::cerr << RED << "Redirecionado para página de erro de diretório" << RESET << std::endl;
-            _event.setEventSubStatus(WritingDirectoryResponse);
+            _event.setEventSubStatus(SendingDirectoryResponse);
             _event.setHttpStatus(FORBIDDEN);
             return;
         }
