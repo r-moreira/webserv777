@@ -83,7 +83,6 @@ void Request::choose_location() {
         return;
     }
 
-
     this->_event.setEventSubStatus(ValidatingConstraints);
 }
 
@@ -137,12 +136,16 @@ void Request::define_response_state() {
     //Mandar para o estado de acordo com o tipo de request/location
     this->_event.setEventSubStatus(SendingResponseFile);
 
-
     this->_event.setEventStatus(Writing);
 }
 
 std::string Request::repace_path_to_root(std::string request_uri, const std::string& request_path,
                                          const std::string& location_root) {
+
+    if (this->_event.getLocation().getPath() == "/") {
+        return location_root + request_uri;
+    }
+
     size_t pos = 0;
     while ((pos = request_uri.find(request_path, pos)) != std::string::npos) {
         request_uri.replace(pos, request_path.length(), location_root);
