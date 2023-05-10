@@ -26,9 +26,13 @@ public:
 
     void choose_server(std::vector<Server> servers);
 
+    void handle_location();
+
     void validate_constraints();
 
-    void choose_location();
+
+private:
+    std::string repace_path_to_root(std::string subject, const std::string &search, const std::string &replace);
 };
 
 

@@ -12,7 +12,6 @@ void File::open_file() {
     if (EventStateHelper::is_error_state(this->_event)) return;
 
     if (this->_event.getFile() == NULL) {
-        this->_event.setFilePath("./public" + this->_event.getRequest().getUri());
 
         FILE *fptr;
         fptr = fopen(this->_event.getFilePath().c_str(), "rb");
