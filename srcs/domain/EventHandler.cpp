@@ -8,17 +8,16 @@ EventHandler::EventHandler(Event &event, std::vector<Server> &servers) :_servers
 
 EventHandler::~EventHandler() {}
 
-//TODO:
+//TODO Features
 // Implementar suporte a location redirect, cgi, upload e auto_index
 // Implementar suporte a pagina de diretório customizada, em caso de erro de request para diretório
 // Implementar suporte a pagina de erro customizada, em caso de erro geral
 // Implementar suporte a upload de arquivos
 
-//TODO:
-// Criar uma classe de model de mime types para ser usada na classe header de response dos arquivos
-//      Ter um método para ver se é um tipo de mime_type existente no server para montagem de header
-//      caso contrário, retornar erro igual o do nginx
-
+//TODO Atuais:
+// Fazer testes com diferentes rotas em diferentes locations, principalmente com location /
+// Fazer gerênciamento do estado do evento com base no location, retornar status code e pagina de exemplo
+// Fazer leitura de arquivos de paginas de erro/diretório com base na configuração para poder responde-la ao client
 void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Reading) {
 
@@ -29,8 +28,6 @@ void EventHandler::process_event() {
             case ChoosingLocation: _request.choose_location();
             case ValidatingConstraints: _request.validate_constraints();
             case DefiningResponseState: _request.define_response_state();
-            //case UploadingFile: _response.upload_file();
-                break;
             default:
                 std::cerr << RED << "Invalid Reading Event Status" << RESET << std::endl;
                 break;
@@ -40,6 +37,8 @@ void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Writing) {
         switch (this->_event.getEventSubStatus()) {
             case SendingResponseFile: _response.send_response_file();
+                break;
+            //case UploadingFile: _response.upload_file();
                 break;
             //case SendingRedirectionResponse: _response.handle_redirection(); --> responder 302 para o navegador chamar outro site
                 //break;
