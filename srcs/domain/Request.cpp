@@ -68,14 +68,12 @@ void Request::choose_server(std::vector<Server> servers) {
 
     std::cout << BLUE << "Choosing Server:" << RESET << std::endl;
 
-   /* for (std::vector<Server>::iterator it = servers.begin(); it != servers.end(); it++) {
+    for (std::vector<Server>::iterator it = servers.begin(); it != servers.end(); it++) {
         if (it->getFd() == this->_event.getServerFd()) {
-            this->_event.setServer(&*it);
+            this->_event.setServer(*it);
             break;
         }
-    }*/
-
-    this->_event.setServer(servers[0]);
+    }
 
     std::cout << BLUE << "Choosed server = name: " <<
         this->_event.getServer().getName() << " port: " <<
