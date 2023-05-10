@@ -85,6 +85,8 @@ void Response::write_error_page() {
 void Response::read_requested_file() {
     if (EventStateHelper::is_error_state(this->_event)) return;
 
+    std::cout << MAGENTA << "Reading request file: " << this->_event.getFilePath() << RESET << std::endl;
+
     size_t read_size;
     if (_event.getFileSize() > FILE_READ_CHUNK_SIZE) {
         read_size = _event.getFileReadLeft() > FILE_READ_CHUNK_SIZE ? FILE_READ_CHUNK_SIZE : _event.getFileReadLeft();
@@ -97,6 +99,12 @@ void Response::read_requested_file() {
 
     if (ferror(_event.getFile())) {
         std::cerr << RED << "Error while reading file: " << strerror(errno) << RESET << std::endl;
+
+        if (errno == EISDIR) {
+            std::cerr << RED << "Redirecionado para página de erro de diretório" << RESET << std::endl;
+            EventStateHelper::throw_error_state(this->_event, FORBIDDEN);
+            return;
+        }
         _event.setEventStatus(Ended);
         return;
     }

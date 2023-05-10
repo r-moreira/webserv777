@@ -12,6 +12,10 @@ EventHandler::~EventHandler() {}
 // Implementar suporte a location redirect, cgi, upload e auto_index
 // Implementar suporte a pagina de diretório customizada, em caso de erro de request para diretório
 // Implementar suporte a pagina de erro customizada, em caso de erro geral
+
+
+//TODO:
+// Bug no erro diretório, mandar os headers apenas após a primeira leitura do arquivo, e antes do primeiro write do arquivo, para poder capturar o erro do diretório.
 void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Reading) {
 

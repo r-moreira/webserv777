@@ -7,6 +7,8 @@
 EventStateHelper::EventStateHelper() {}
 
 void EventStateHelper::throw_error_state(Event &event, event_http_status_enum_t status) {
+    std::cout << YELLOW << "Ativando estado de erro para o status " << status << RESET << std::endl;
+
     event.setHttpStatus(status);
     event.setEventStatus(Writing);
     event.setEventSubStatus(WritingErrorHeaders);
