@@ -68,12 +68,14 @@ void Request::choose_server(std::vector<Server> servers) {
 
     std::cout << BLUE << "Choosing Server:" << RESET << std::endl;
 
-    for (std::vector<Server>::iterator it = servers.begin(); it != servers.end(); it++) {
+   /* for (std::vector<Server>::iterator it = servers.begin(); it != servers.end(); it++) {
         if (it->getFd() == this->_event.getServerFd()) {
             this->_event.setServer(&*it);
             break;
         }
-    }
+    }*/
+
+    this->_event.setServer(&servers[0]);
 
     if (this->_event.getServer() == NULL) {
         std::cerr << RED << "Server not found" << RESET << std::endl;
@@ -85,18 +87,81 @@ void Request::choose_server(std::vector<Server> servers) {
         this->_event.getServer()->getName() << " port: " <<
         this->_event.getServer()->getPort() << RESET << std::endl << std::endl;
 
-    this->_event.setEventSubStatus(ChoosingLocation);
+    this->_event.setEventSubStatus(HandlingLocation);
 }
 
-void Request::choose_location() {
+void Request::handle_location() {
     if (EventStateHelper::is_error_state(this->_event)) return;
 
-    std::cout << CYAN << "Choosing Location:" << CYAN << std::endl;
+    std::cout << CYAN << "Handling Location:" << CYAN << std::endl;
+
+    std::map<std::string, Location> locations = this->_event.getServer()->getLocations();
+
+    if (locations.empty()) {
+        std::cerr << RED << "No locations found" << RESET << std::endl;
+        EventStateHelper::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
+        return;
+    }
+
+    bool found = false;
+    /*for (std::map<std::string, Location>::iterator it = locations.begin(); it != locations.end(); it++) {
+        if (this->_event.getRequest().uri.rfind(it->first, 0) == 0) {
+            this->_event.setLocation(&it->second);
+            found = true;
+            break;
+        }
+    }*/
+
+    this->_event.setLocation(&locations.begin()->second);
+    found = true;
+
+    if (!found) {
+        std::cerr << RED << "Location not found" << RESET << std::endl;
+        EventStateHelper::throw_error_state(this->_event, NOT_FOUND);
+        return;
+    }
+
+    std::string original = this->_event.getRequest().uri;
+    std::string substring = this->_event.getLocation()->getPath();
+    std::size_t ind = original.find(substring); // Find the starting position of substring in the string
+    if(ind !=std::string::npos){
+        original.erase(ind,substring.length()); // erase function takes two parameter, the starting index in the string from where you want to erase characters and total no of characters you want to erase.
+        std::cout<<original<<"\n";
+    }else{
+        std::cout<<"Substring does not exist in the string\n";
+    }
+
+    this->_event.setFilePath(this->_event.getLocation()->getRoot() + original);
 
 
+   /* std::cout << CYAN << "Replacing Path To Root" << CYAN << std::endl;
+    std::string file_path = repace_path_to_root(
+            this->_event.getRequest().uri,
+            this->_event.getLocation()->getPath(),
+            this->_event.getLocation()->getRoot());
+
+    this->_event.setFilePath(file_path);*/
+
+    //TODO: Traduzir o path do request para root
 
     this->_event.setEventSubStatus(ValidatingConstraints);
 }
+
+/*
+ *
+    std::string original = this->_event.getRequest().uri;
+    std::string substring = this->_event.getLocation()->getPath();
+    std::size_t ind = original.find(substring); // Find the starting position of substring in the string
+    if(ind !=std::string::npos){
+        original.erase(ind,substring.length()); // erase function takes two parameter, the starting index in the string from where you want to erase characters and total no of characters you want to erase.
+        std::cout<<original<<"\n";
+    }else{
+        std::cout<<"Substring does not exist in the string\n";
+    }
+
+    this->_event.setFilePath("./public" + original);
+
+ */
 
 void Request::validate_constraints() {
     if (EventStateHelper::is_error_state(this->_event)) return;
@@ -123,4 +188,14 @@ void Request::validate_constraints() {
 
     this->_event.setEventStatus(Writing);
     this->_event.setEventSubStatus(OpeningFile);
+}
+
+std::string Request::repace_path_to_root(std::string subject, const std::string& search,
+                                         const std::string& replace) {
+    size_t pos = 0;
+    while ((pos = subject.find(search, pos)) != std::string::npos) {
+        subject.replace(pos, search.length(), replace);
+        pos += replace.length();
+    }
+    return subject;
 }

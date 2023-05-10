@@ -74,7 +74,6 @@ void Response::write_error_page() {
     error_page << html_tag_init << html_message << error_status_code << html_tag_end;
 
     std::cout << CYAN << "Response Page:\n" << error_page.str() << RESET << std::endl;
-
     if (send(_event.getClientFd(), error_page.str().c_str(), error_page.str().size(), 0) < 0) {
         std::cerr << RED << "Error while writing error page to client: " << strerror(errno) << RESET << std::endl;
     }

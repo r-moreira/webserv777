@@ -53,7 +53,7 @@ typedef enum EVENT_SUB_STATUS {
     ReadingRequest,
     ParsingRequest,
     ChoosingServer,
-    ChoosingLocation,
+    HandlingLocation,
     ValidatingConstraints,
     OpeningFile,
     WritingFileResponseHeaders,

@@ -19,7 +19,8 @@ void EventHandler::process_event() {
             case ReadingRequest: _request.read_request();
             case ParsingRequest: _request.parse_request();
             case ChoosingServer: _request.choose_server(this->_servers);
-            case ChoosingLocation: _request.choose_location();
+            case HandlingLocation:
+                _request.handle_location();
             case ValidatingConstraints: _request.validate_constraints();
             //case DefiningResponseState: _request.define_response_state(); --> Definir para qual "feature" do servidor o request vai cair
                 break;
@@ -78,7 +79,7 @@ void EventHandler::print_event_status() {
             break;
         case ChoosingServer: sub_status = "ChoosingServer";
             break;
-        case ChoosingLocation: sub_status = "ChoosingLocation";
+        case HandlingLocation: sub_status = "HandlingLocation";
             break;
         case OpeningFile: sub_status = "OpeningFile";
             break;

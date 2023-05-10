@@ -14,7 +14,8 @@ Server::Server() {
     this->_locations.insert(std::pair<std::string, Location>(location.getPath(), location));
 }
 
-Server::~Server() {}
+Server::~Server() {
+}
 
 const std::string &Server::getName() const {
     return _name;
