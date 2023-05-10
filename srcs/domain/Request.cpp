@@ -70,20 +70,14 @@ void Request::choose_server(std::vector<Server> servers) {
 
     for (std::vector<Server>::iterator it = servers.begin(); it != servers.end(); it++) {
         if (it->getFd() == this->_event.getServerFd()) {
-            this->_event.setServer(&*it);
+            this->_event.setServer(*it);
             break;
         }
     }
 
-    if (this->_event.getServer() == NULL) {
-        std::cerr << RED << "Server not found" << RESET << std::endl;
-        EventStateHelper::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
-        return;
-    }
-
     std::cout << BLUE << "Choosed server = name: " <<
-        this->_event.getServer()->getName() << " port: " <<
-        this->_event.getServer()->getPort() << RESET << std::endl << std::endl;
+        this->_event.getServer().getName() << " port: " <<
+        this->_event.getServer().getPort() << RESET << std::endl << std::endl;
 
     this->_event.setEventSubStatus(ChoosingLocation);
 }
@@ -93,7 +87,9 @@ void Request::choose_location() {
 
     std::cout << CYAN << "Choosing Location:" << CYAN << std::endl;
 
+    std::map<std::string , Location> locations = this->_event.getServer().getLocations();
 
+    this->_event.setLocation(locations.begin()->second);
 
     this->_event.setEventSubStatus(ValidatingConstraints);
 }
@@ -106,14 +102,14 @@ void Request::validate_constraints() {
         return;
     }
 
-    if (this->_event.getServer()->getMaxBodySize() != -1) {
+    if (this->_event.getServer().getMaxBodySize() != -1) {
         std::vector<RequestInfo::HeaderItem> headers = this->_event.getRequest().headers;
 
         for (std::vector<RequestInfo::HeaderItem>::iterator it = headers.begin(); it != headers.end(); it++) {
             if (it->name == "Content-Length") {
                 long content_length = std::strtol(it->value.c_str(), NULL, 10);
 
-                if (content_length > this->_event.getServer()->getMaxBodySize()) {
+                if (content_length > this->_event.getServer().getMaxBodySize()) {
                     EventStateHelper::throw_error_state(this->_event, PAYLOAD_TOO_LARGE);
                     return;
                 }

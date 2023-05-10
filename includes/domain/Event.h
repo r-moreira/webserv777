@@ -33,7 +33,8 @@ private:
     event_status_t _event_status;
     event_sub_status_t _event_sub_status;
 
-    Server *_server;
+    Server _server;
+    Location _location;
 public:
     RequestInfo _request;
 
@@ -49,9 +50,13 @@ public:
 
     void setClientFd(int clientFd);
 
-    Server *getServer() const;
+    Server getServer() const;
 
-    void setServer(Server *server);
+    void setServer(Server server);
+
+    Location getLocation() const;
+
+    void setLocation(Location location);
 
     event_http_status_enum_t getHttpStatus() const;
 
