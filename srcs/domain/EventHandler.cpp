@@ -45,7 +45,7 @@ void EventHandler::process_event() {
 
     if (this->_event.getEventStatus() == Writing) {
         switch (this->_event.getEventSubStatus()) {
-            case WritingResponseFile: _response.write_response_file();
+            case WritingResponseFile: _response.send_response_file();
                 break;
             //case HandlingRedirection: _response.handle_redirection(); --> responder 302 para o navegador chamar outro site
                 //break;
@@ -55,9 +55,9 @@ void EventHandler::process_event() {
                 //break;
             // case WritingAutoIndex: _response.write_auto_index();
                 //break;
-            case WritingDirectoryResponse: _response.write_is_directory_response();
+            case WritingDirectoryResponse: _response.send_is_directory_response();
                 break;
-            case WritingErrorResponse: _response.write_error_response();
+            case WritingErrorResponse: _response.send_error_response();
                 break;
             default:
                 std::cerr << RED << "Invalid Writing Event Sub Status:" << RESET << std::endl;

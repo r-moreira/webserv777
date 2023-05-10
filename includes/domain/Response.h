@@ -24,13 +24,13 @@ public:
 
     ~Response();
 
-    void write_response_file();
+    void send_response_file();
 
     void write_default_error_page();
 
-    void write_error_response();
+    void send_error_response();
 
-    void write_is_directory_response();
+    void send_is_directory_response();
 
 private:
     void write_requested_file();

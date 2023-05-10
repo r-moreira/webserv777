@@ -8,7 +8,6 @@ Write::Write(Event &event): _event(event) {}
 
 Write::~Write() {}
 
-
 std::string file_extension[] = {
         "aac", "avi", "bmp", "css", "gif", "ico", "js",
         "json", "mp3", "mp4", "otf", "png", "php", "rtf",
@@ -44,14 +43,40 @@ std::string content_type[] = {
         "Content-Type: image/jpeg\r\n\r\n",
 };
 
-void Write::write_error_headers() {
-    if (this->_event.isHeaderSent()) return;
 
-    std::cout << CYAN << "Send error headers for status: " << this->_event.getHttpStatus() << RESET << std::endl;
-    write_headers(getErrorHeaders());
+void Write::write_requested_file() {
     if (ErrorState::is_error_state(this->_event)) return;
 
-    this->_event.setHeaderSent(true);
+    long bytes_sent = send(_event.getClientFd() , _event.getFileReadChunkBuffer(), _event.getFileChunkReadBytes(), 0);
+    if (bytes_sent < 0) {
+        std::cerr << RED << "Error while writing to client: " << strerror(errno) << RESET << std::endl;
+        _event.setEventStatus(Ended);
+        return;
+    }
+
+    std::cout << YELLOW << "Transmitted Data Size " << bytes_sent << " Bytes." << RESET << std::endl;
+
+    if (_event.getFileReadLeft() <= 0) {
+        _event.setEventStatus(Ended);
+        std::cout << GREEN << "File Transfer Complete." << RESET << std::endl;
+    }
+}
+
+void Write::write_default_error_page() {
+    std::ostringstream error_page;
+    std::string html_tag_init = "<html><body><h1>";
+    std::string html_message = "Webserv Error: ";
+    long error_status_code = this->_event.getHttpStatus();
+    std::string html_tag_end =  "</h1></body></html>";
+
+    error_page << html_tag_init << html_message << error_status_code << html_tag_end;
+
+    std::cout << CYAN << "Response Page:\n" << error_page.str() << RESET << std::endl;
+    if (send(_event.getClientFd(), error_page.str().c_str(), error_page.str().size(), 0) < 0) {
+        std::cerr << RED << "Error while writing error page to client: " << strerror(errno) << RESET << std::endl;
+    }
+
+    std::cout << GREEN << "Successfully sent error page to client" << RESET << std::endl;
 }
 
 void Write::write_file_response_headers() {
@@ -61,6 +86,16 @@ void Write::write_file_response_headers() {
 
     write_headers(getFileHeaders(_event.getFilePath(), _event.getFileSize()));
     if (ErrorState::is_error_state(this->_event)) return;
+}
+
+void Write::write_error_headers() {
+    if (this->_event.isHeaderSent()) return;
+
+    std::cout << CYAN << "Send error headers for status: " << this->_event.getHttpStatus() << RESET << std::endl;
+    write_headers(getErrorHeaders());
+    if (ErrorState::is_error_state(this->_event)) return;
+
+    this->_event.setHeaderSent(true);
 }
 
 void Write::write_headers(const std::string &headers) {
@@ -85,7 +120,6 @@ std::string Write::getErrorHeaders() {
     headers << error_header_init << error_status_code << error_header_end;
     return headers.str();
 }
-
 
 std::string Write::getFileHeaders(const std::string& file_path, size_t file_size) {
     char size_t_byte_buffer[25] = {};
