@@ -79,7 +79,7 @@ void Request::choose_server(std::vector<Server> servers) {
         this->_event.getServer().getName() << " port: " <<
         this->_event.getServer().getPort() << RESET << std::endl << std::endl;
 
-    this->_event.setEventSubStatus(HandlingLocation);
+    this->_event.setEventSubStatus(ChoosingLocation);
 }
 
 void Request::handle_location() {
@@ -110,13 +110,7 @@ void Request::handle_location() {
         return;
     }
 
-    std::cout << CYAN << "Replacing Path To Root" << CYAN << std::endl;
-    std::string file_path = repace_path_to_root(
-            this->_event.getRequest().uri,
-            this->_event.getLocation().getPath(),
-            this->_event.getLocation().getRoot());
 
-    this->_event.setFilePath(file_path);
     this->_event.setEventSubStatus(ValidatingConstraints);
 }
 
@@ -145,6 +139,26 @@ void Request::validate_constraints() {
 
     this->_event.setEventStatus(Writing);
     this->_event.setEventSubStatus(OpeningFile);
+}
+
+//TODO: Definir o tipo da location e agir de acordo, nesse caso todas são do tipo regular, ou seja, requisitando aquivo, após trocar o path por root
+void Request::define_response_state() {
+    if (EventStateHelper::is_error_state(this->_event)) return;
+
+    //Tipo regular: arquivo
+    std::cout << CYAN << "Replacing Path To Root" << CYAN << std::endl;
+    std::string file_path = repace_path_to_root(
+            this->_event.getRequest().uri,
+            this->_event.getLocation().getPath(),
+            this->_event.getLocation().getRoot());
+
+    this->_event.setFilePath(file_path);
+
+    //Mandar para o estado de acordo com o tipo de request/location
+    this->_event.setEventSubStatus(OpeningFile);
+
+
+    this->_event.setEventStatus(Writing);
 }
 
 std::string Request::repace_path_to_root(std::string request_uri, const std::string& request_path,

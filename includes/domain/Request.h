@@ -31,6 +31,8 @@ public:
     void validate_constraints();
 
 
+    void define_response_state();
+
 private:
     static std::string repace_path_to_root(std::string request_uri, const std::string &request_path, const std::string &location_root);
 };
