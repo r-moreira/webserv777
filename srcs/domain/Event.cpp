@@ -24,9 +24,6 @@ Event::Event(int server_fd, int client_fd) {
 
     this->_event_status = Reading;
     this->_event_sub_status = ReadingRequest;
-
-    this->_location = NULL;
-    this->_server = NULL;
 }
 
 Event::~Event() {
@@ -144,11 +141,11 @@ void Event::setEventSubStatus(event_sub_status_t eventSubStatus) {
     _event_sub_status = eventSubStatus;
 }
 
-Server *Event::getServer() const {
+Server Event::getServer() const {
     return _server;
 }
 
-void Event::setServer(Server *server) {
+void Event::setServer(Server server) {
     _server = server;
 }
 
@@ -168,11 +165,11 @@ void Event::setHttpStatus(event_http_status_enum_t httpStatus) {
     _http_status = httpStatus;
 }
 
-Location *Event::getLocation() const {
+Location Event::getLocation() const {
     return _location;
 }
 
-void Event::setLocation(Location *location) {
+void Event::setLocation(Location location) {
     _location = location;
 }
 

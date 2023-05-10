@@ -75,17 +75,11 @@ void Request::choose_server(std::vector<Server> servers) {
         }
     }*/
 
-    this->_event.setServer(&servers[0]);
-
-    if (this->_event.getServer() == NULL) {
-        std::cerr << RED << "Server not found" << RESET << std::endl;
-        EventStateHelper::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
-        return;
-    }
+    this->_event.setServer(servers[0]);
 
     std::cout << BLUE << "Choosed server = name: " <<
-        this->_event.getServer()->getName() << " port: " <<
-        this->_event.getServer()->getPort() << RESET << std::endl << std::endl;
+        this->_event.getServer().getName() << " port: " <<
+        this->_event.getServer().getPort() << RESET << std::endl << std::endl;
 
     this->_event.setEventSubStatus(HandlingLocation);
 }
@@ -95,7 +89,7 @@ void Request::handle_location() {
 
     std::cout << CYAN << "Handling Location:" << CYAN << std::endl;
 
-    std::map<std::string, Location> locations = this->_event.getServer()->getLocations();
+    std::map<std::string, Location> locations = this->_event.getServer().getLocations();
 
     if (locations.empty()) {
         std::cerr << RED << "No locations found" << RESET << std::endl;
@@ -112,7 +106,7 @@ void Request::handle_location() {
         }
     }*/
 
-    this->_event.setLocation(&locations.begin()->second);
+    this->_event.setLocation(locations.begin()->second);
     found = true;
 
     if (!found) {
@@ -122,7 +116,7 @@ void Request::handle_location() {
     }
 
     std::string original = this->_event.getRequest().uri;
-    std::string substring = this->_event.getLocation()->getPath();
+    std::string substring = this->_event.getLocation().getPath();
     std::size_t ind = original.find(substring); // Find the starting position of substring in the string
     if(ind !=std::string::npos){
         original.erase(ind,substring.length()); // erase function takes two parameter, the starting index in the string from where you want to erase characters and total no of characters you want to erase.
@@ -131,7 +125,7 @@ void Request::handle_location() {
         std::cout<<"Substring does not exist in the string\n";
     }
 
-    this->_event.setFilePath(this->_event.getLocation()->getRoot() + original);
+    this->_event.setFilePath(this->_event.getLocation().getRoot() + original);
 
 
    /* std::cout << CYAN << "Replacing Path To Root" << CYAN << std::endl;
@@ -171,14 +165,14 @@ void Request::validate_constraints() {
         return;
     }
 
-    if (this->_event.getServer()->getMaxBodySize() != -1) {
+    if (this->_event.getServer().getMaxBodySize() != -1) {
         std::vector<RequestInfo::HeaderItem> headers = this->_event.getRequest().headers;
 
         for (std::vector<RequestInfo::HeaderItem>::iterator it = headers.begin(); it != headers.end(); it++) {
             if (it->name == "Content-Length") {
                 long content_length = std::strtol(it->value.c_str(), NULL, 10);
 
-                if (content_length > this->_event.getServer()->getMaxBodySize()) {
+                if (content_length > this->_event.getServer().getMaxBodySize()) {
                     EventStateHelper::throw_error_state(this->_event, PAYLOAD_TOO_LARGE);
                     return;
                 }
