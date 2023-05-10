@@ -14,7 +14,7 @@ void Request::read_request() {
 }
 
 void Request::parse_request() {
-    if (EventStateHelper::is_error_state(this->_event)) return;
+    if (ErrorState::is_error_state(this->_event)) return;
 
     std::cout << MAGENTA << "Request Data:\n " << this->_event.getRequestReadBuffer() << RESET << std::endl;
 
@@ -28,7 +28,7 @@ void Request::parse_request() {
         std::cout << WHITE << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
     } else {
         std::cerr << RED << "Parsing failed" << RESET << std::endl;
-        EventStateHelper::throw_error_state(this->_event, BAD_REQUEST);
+        ErrorState::throw_error_state(this->_event, BAD_REQUEST);
         return;
     }
 
@@ -37,7 +37,7 @@ void Request::parse_request() {
 
 
 void Request::choose_server(std::vector<Server> servers) {
-    if (EventStateHelper::is_error_state(this->_event)) return;
+    if (ErrorState::is_error_state(this->_event)) return;
 
     std::cout << BLUE << "Choosing Server:" << RESET << std::endl;
 
@@ -56,7 +56,7 @@ void Request::choose_server(std::vector<Server> servers) {
 }
 
 void Request::choose_location() {
-    if (EventStateHelper::is_error_state(this->_event)) return;
+    if (ErrorState::is_error_state(this->_event)) return;
 
     std::cout << CYAN << "Handling Location:" << CYAN << std::endl;
 
@@ -64,7 +64,7 @@ void Request::choose_location() {
 
     if (locations.empty()) {
         std::cerr << RED << "No locations found" << RESET << std::endl;
-        EventStateHelper::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
+        ErrorState::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
         return;
     }
 
@@ -79,7 +79,7 @@ void Request::choose_location() {
 
     if (!found) {
         std::cerr << RED << "Location not found" << RESET << std::endl;
-        EventStateHelper::throw_error_state(this->_event, NOT_FOUND);
+        ErrorState::throw_error_state(this->_event, NOT_FOUND);
         return;
     }
 
@@ -88,12 +88,12 @@ void Request::choose_location() {
 }
 
 void Request::validate_constraints() {
-    if (EventStateHelper::is_error_state(this->_event)) return;
+    if (ErrorState::is_error_state(this->_event)) return;
 
     std::cout << MAGENTA << "Validating Allowed Methods" << RESET <<std::endl;
     std::vector<std::string> allowed_methods = this->_event.getLocation().getLimitExcept();
     if (std::find(allowed_methods.begin(), allowed_methods.end(), this->_event.getRequest().method) == allowed_methods.end()) {
-        EventStateHelper::throw_error_state(this->_event, METHOD_NOT_ALLOWED);
+        ErrorState::throw_error_state(this->_event, METHOD_NOT_ALLOWED);
         return;
     }
 
@@ -107,7 +107,7 @@ void Request::validate_constraints() {
                 long content_length = std::strtol(it->value.c_str(), NULL, 10);
 
                 if (content_length > this->_event.getServer().getMaxBodySize()) {
-                    EventStateHelper::throw_error_state(this->_event, PAYLOAD_TOO_LARGE);
+                    ErrorState::throw_error_state(this->_event, PAYLOAD_TOO_LARGE);
                     return;
                 }
             }
@@ -120,7 +120,7 @@ void Request::validate_constraints() {
 
 //TODO: Definir o tipo da location e agir de acordo, nesse caso todas são do tipo regular, ou seja, requisitando aquivo, após trocar o path por root
 void Request::define_response_state() {
-    if (EventStateHelper::is_error_state(this->_event)) return;
+    if (ErrorState::is_error_state(this->_event)) return;
 
     std::cout << CYAN << "Defining Response State" << RESET << std::endl;
 

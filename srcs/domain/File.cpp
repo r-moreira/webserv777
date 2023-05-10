@@ -9,7 +9,7 @@ File::File(Event &event): _event(event) {}
 File::~File() {}
 
 void File::open_file() {
-    if (EventStateHelper::is_error_state(this->_event) || this->_event.isFileOpened()) return;
+    if (ErrorState::is_error_state(this->_event) || this->_event.isFileOpened()) return;
 
     std::cout << "Opening file: " << this->_event.getFilePath() << std::endl;
 
@@ -20,7 +20,7 @@ void File::open_file() {
         if (fptr == NULL) {
             std::cerr << RED << "Error while opening file: " << this->_event.getFilePath() << " " << strerror(errno) << RESET << std::endl;
 
-            EventStateHelper::throw_error_state(this->_event, NOT_FOUND);
+            ErrorState::throw_error_state(this->_event, NOT_FOUND);
             return;
         }
         this->_event.setFile(fptr);
@@ -32,7 +32,7 @@ void File::open_file() {
     int fd = fileno(this->_event.getFile());
     if (fd < 1) {
         std::cerr << RED << "Error while getting file descriptor: " << strerror(errno) << RESET << std::endl;
-        EventStateHelper::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
+        ErrorState::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
         return;
     }
 

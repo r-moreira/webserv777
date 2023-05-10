@@ -51,17 +51,17 @@ void Response::write_response_file() {
 }
 
 void Response::write_file_response_headers() {
-    if (EventStateHelper::is_error_state(this->_event) || this->_event.isHeaderSent()) return;
+    if (ErrorState::is_error_state(this->_event) || this->_event.isHeaderSent()) return;
 
     std::cout << MAGENTA << "Writing file response headers" << RESET << std::endl;
 
     write_headers(getFileHeaders(_event.getFilePath(), _event.getFileSize()));
-    if (EventStateHelper::is_error_state(this->_event)) return;
+    if (ErrorState::is_error_state(this->_event)) return;
 }
 
 
 void Response::write_requested_file() {
-    if (EventStateHelper::is_error_state(this->_event)) return;
+    if (ErrorState::is_error_state(this->_event)) return;
 
     long bytes_sent = send(_event.getClientFd() , _event.getFileReadChunkBuffer(), _event.getFileChunkReadBytes(), 0);
     if (bytes_sent < 0) {
@@ -139,7 +139,7 @@ void Response::write_error_headers() {
 
     std::cout << CYAN << "Send error headers for status: " << this->_event.getHttpStatus() << RESET << std::endl;
     write_headers(getErrorHeaders());
-    if (EventStateHelper::is_error_state(this->_event)) return;
+    if (ErrorState::is_error_state(this->_event)) return;
 
     this->_event.setHeaderSent(true);
 }
@@ -176,7 +176,7 @@ void Response::write_headers(const std::string &headers) {
 
     if (send(_event.getClientFd(), headers.c_str(), headers.size(), 0) < 0) {
         std::cerr << RED << "Error while writing status header to client: " << strerror(errno) << RESET << std::endl;
-        EventStateHelper::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
+        ErrorState::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
         return;
     }
 

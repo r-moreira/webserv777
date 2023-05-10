@@ -19,6 +19,11 @@ EventHandler::~EventHandler() {}
 //  Lembrar colocar uma flag: is_file_opened e checar toda vez
 
 //TODO:
+// Criar uma classe de model de mime types para ser usada no header de response dos arquivos
+//  Ter um método para ver se é um tipo de mime_type existente no server
+//  caso contrário, retornar erro igual o do nginx
+
+//TODO:
 // Mover classes para o pacote IO: File, Read (criar), Write (criar)
 // Mover classes para o pacote Domain: Server e Location
 void EventHandler::process_event() {

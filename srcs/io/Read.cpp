@@ -9,7 +9,7 @@ Read::Read(Event &event): _event(event) {}
 Read::~Read() {}
 
 void Read::read_request() {
-    if (EventStateHelper::is_error_state(this->_event)) return;
+    if (ErrorState::is_error_state(this->_event)) return;
 
     char buffer[READ_BUFFER_SIZE] = {};
 
@@ -19,11 +19,11 @@ void Read::read_request() {
 
     if (bytes_read == -1) {
         std::cerr << RED << "Error while reading from client: " << strerror(errno) << RESET << std::endl;
-        EventStateHelper::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
+        ErrorState::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
         return;
     } else if (bytes_read == 0) {
         std::cout << YELLOW << "Client disconnected" << RESET << std::endl;
-        EventStateHelper::throw_error_state(this->_event, CLIENT_CLOSED_REQUEST);
+        ErrorState::throw_error_state(this->_event, CLIENT_CLOSED_REQUEST);
         return;
     }
 
@@ -40,7 +40,7 @@ void Read::read_request() {
 }
 
 void Read::read_file() {
-    if (EventStateHelper::is_error_state(this->_event)) return;
+    if (ErrorState::is_error_state(this->_event)) return;
 
     std::cout << MAGENTA << "Reading request file: " << this->_event.getFilePath() << RESET << std::endl;
 

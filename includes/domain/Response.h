@@ -38,8 +38,6 @@ private:
     std::string getFileHeaders(const std::string& file_path, size_t file_size);
     std::string getErrorHeaders();
 
-    void read_requested_file();
-
     void write_requested_file();
 
     void write_headers(const std::string &headers);
