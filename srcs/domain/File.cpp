@@ -10,7 +10,7 @@ File::~File() {}
 
 //TODO:: Setar uma flag ou ativa estado de diretório no errno == EISDIR
 void File::open_response_file() {
-    if (EventStateHelper::is_error_state(this->_event)) return;
+    if (EventStateHelper::is_error_state(this->_event) || this->_event.isFileOpened()) return;
 
     std::cout << "Opening file: " << this->_event.getFilePath() << std::endl;
 
@@ -44,6 +44,8 @@ void File::open_response_file() {
 
     fstat(fd, &file_stat);
     this->_event.setFileSize(file_stat.st_size);
-    this->_event.setEventSubStatus(WritingResponseFile);
+
+    this->_event.setFileOpened(true);
+    std::cout << CYAN << "Successfully opened file: " << this->_event.getFilePath() << RESET << std::endl;
 }
 

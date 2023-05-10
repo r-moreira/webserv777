@@ -8,10 +8,12 @@
 
 #include "Event.h"
 #include "EventStateHelper.h"
+#include "File.h"
 
 class Response {
 private:
     Event &_event;
+    File _file;
 
 public:
     Response(Event &event);

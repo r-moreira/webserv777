@@ -23,6 +23,7 @@ Event::Event(int server_fd, int client_fd) {
     this->_file_read_chunk_buffer[0] = '\0';
 
     this->_header_sent = false;
+    this->_file_opened = false;
 
     this->_event_status = Reading;
     this->_event_sub_status = ReadingRequest;
@@ -182,6 +183,14 @@ bool Event::isHeaderSent() const {
 
 void Event::setHeaderSent(bool headerSent) {
     _header_sent = headerSent;
+}
+
+bool Event::isFileOpened() const {
+    return _file_opened;
+}
+
+void Event::setFileOpened(bool fileOpened) {
+    _file_opened = fileOpened;
 }
 
 

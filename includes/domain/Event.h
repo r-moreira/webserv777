@@ -34,6 +34,7 @@ private:
     event_sub_status_t _event_sub_status;
 
     bool _header_sent;
+    bool _file_opened;
 
     Server _server;
     Location _location;
@@ -117,6 +118,10 @@ public:
     bool isHeaderSent() const;
 
     void setHeaderSent(bool headerSent);
+
+    bool isFileOpened() const;
+
+    void setFileOpened(bool fileOpened);
 };
 
 

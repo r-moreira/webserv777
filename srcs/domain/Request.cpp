@@ -142,7 +142,7 @@ void Request::validate_constraints() {
     }
 
     this->_event.setEventStatus(Writing);
-    this->_event.setEventSubStatus(OpeningResponseFile);
+    this->_event.setEventSubStatus(DefiningResponseState);
 }
 
 //TODO: Definir o tipo da location e agir de acordo, nesse caso todas são do tipo regular, ou seja, requisitando aquivo, após trocar o path por root
@@ -162,7 +162,7 @@ void Request::define_response_state() {
     this->_event.setFilePath(file_path);
 
     //Mandar para o estado de acordo com o tipo de request/location
-    this->_event.setEventSubStatus(OpeningResponseFile);
+    this->_event.setEventSubStatus(WritingResponseFile);
 
 
     this->_event.setEventStatus(Writing);

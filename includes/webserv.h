@@ -56,7 +56,6 @@ typedef enum EVENT_SUB_STATUS {
     ChoosingLocation,
     ValidatingConstraints,
     DefiningResponseState,
-    OpeningResponseFile,
     WritingResponseFile,
     WritingDirectoryResponse,
     WritingErrorResponse

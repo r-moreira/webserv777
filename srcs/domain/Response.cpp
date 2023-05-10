@@ -4,7 +4,7 @@
 
 #include "../../includes/domain/Response.h"
 
-Response::Response(Event &event): _event(event) {}
+Response::Response(Event &event): _event(event), _file(event) {}
 
 Response::~Response() {}
 
@@ -44,6 +44,7 @@ std::string content_type[] = {
 };
 
 void Response::write_response_file() {
+    _file.open_response_file();
     read_requested_file();
     write_file_response_headers();
     write_requested_file();
