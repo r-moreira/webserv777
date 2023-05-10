@@ -44,6 +44,14 @@ public:
 
     void setLocations(const std::map<std::string, Location> &locations);
 
+    const std::string &getDirectoryRequestPage() const;
+
+    void setDirectoryRequestPage(const std::string &directoryRequestPage);
+
+    const std::map<int, std::string> &getErrorPages() const;
+
+    void setErrorPages(const std::map<int, std::string> &errorPages);
+
 
 };
 

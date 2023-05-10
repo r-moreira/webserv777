@@ -18,7 +18,7 @@ int main(int argc, char **argv, char **env) {
 
     Location location = Location();
     location.setPath("/puppy");
-    location.setRoot("./public");
+    location.setRoot("./public/website");
 
     Server server = Server();
 
@@ -26,9 +26,16 @@ int main(int argc, char **argv, char **env) {
     locations.clear();
     locations.insert(std::pair<std::string, Location>(location.getPath(), location));
 
+    std::map<int, std::string> error_pages;
+
+    error_pages.insert(std::pair<int, std::string>(400, "./public/error-pages/404/dist/index.html"));
+    error_pages.insert(std::pair<int, std::string>(500, "./public/error-pages/500/dist/index.html"));
+
     server.setName("webserv");
     server.setPort(port);
     server.setLocations(locations);
+    server.setErrorPages(error_pages);
+    server.setDirectoryRequestPage("./public/directory-page/dist/index.html");
 
 
 
