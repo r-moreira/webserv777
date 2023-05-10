@@ -18,6 +18,16 @@ public:
 
     ~Write();
 
+    void write_error_headers();
+
+    void write_file_response_headers();
+
+private:
+    void write_headers(const std::string &headers);
+    std::string getErrorHeaders();
+
+    std::string getFileHeaders(const std::string &file_path, size_t file_size);
+;
 };
 
 

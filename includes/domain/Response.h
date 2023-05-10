@@ -10,12 +10,14 @@
 #include "ErrorState.h"
 #include "../io/File.h"
 #include "../io/Read.h"
+#include "../io/Write.h"
 
 class Response {
 private:
     Event &_event;
     File _file;
     Read _read;
+    Write _write;
 
 public:
     Response(Event &event);
@@ -24,23 +26,15 @@ public:
 
     void write_response_file();
 
-    void write_file_response_headers();
-
     void write_default_error_page();
-
-    void write_error_headers();
 
     void write_error_response();
 
     void write_is_directory_response();
 
 private:
-    std::string getFileHeaders(const std::string& file_path, size_t file_size);
-    std::string getErrorHeaders();
-
     void write_requested_file();
 
-    void write_headers(const std::string &headers);
 };
 
 
