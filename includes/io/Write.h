@@ -13,6 +13,7 @@ class Write {
 
 private:
     Event &_event;
+    Headers _headers;
 
 public:
     Write(Event &event);

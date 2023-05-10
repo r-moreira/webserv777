@@ -4,7 +4,7 @@
 
 #include "../../includes/io/Write.h"
 
-Write::Write(Event &event): _event(event) {}
+Write::Write(Event &event): _event(event), _headers() {}
 
 Write::~Write() {}
 
@@ -49,7 +49,7 @@ void Write::write_file_response_headers() {
 
     std::cout << MAGENTA << "Writing file response headers" << RESET << std::endl;
 
-    write_headers(Headers::getFileHeaders(_event.getFilePath(), _event.getFileSize()));
+    write_headers(this->_headers.getFileHeaders(_event.getFilePath(), _event.getFileSize()));
     if (ErrorState::is_error_state(this->_event)) return;
 }
 
@@ -57,7 +57,8 @@ void Write::write_error_headers() {
     if (this->_event.isHeaderSent()) return;
 
     std::cout << CYAN << "Send error headers for status: " << this->_event.getHttpStatus() << RESET << std::endl;
-    write_headers(Headers::getErrorHeaders(this->_event.getHttpStatus()));
+
+    write_headers(this->_headers.getErrorHeaders(this->_event.getHttpStatus()));
     if (ErrorState::is_error_state(this->_event)) return;
 
     this->_event.setHeaderSent(true);

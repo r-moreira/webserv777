@@ -6,17 +6,19 @@
 #define WEBSERV_HEADERS_H
 
 #include "../webserv.h"
+#include "MimeTypes.h"
 
 class Headers {
+    MimeTypes _mime_types;
 
 public:
     Headers();
 
     ~Headers();
 
-    static std::string getErrorHeaders(event_http_status_enum_t status);
+    std::string getErrorHeaders(event_http_status_enum_t status);
 
-    static std::string getFileHeaders(const std::string &file_path, size_t file_size);
+    std::string getFileHeaders(const std::string &file_path, size_t file_size);
 };
 
 

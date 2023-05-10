@@ -5,9 +5,17 @@
 #ifndef WEBSERV_MIMETYPES_H
 #define WEBSERV_MIMETYPES_H
 
+#include "../webserv.h"
 
 class MimeTypes {
+private:
+    std::map<std::string, std::string> _mime_types;
 
+public:
+    MimeTypes();
+    ~MimeTypes();
+
+    std::string get_mime_type(const std::string &extension);
 };
 
 
