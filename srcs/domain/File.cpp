@@ -9,7 +9,7 @@ File::File(Event &event): _event(event) {}
 File::~File() {}
 
 //TODO:: Setar uma flag ou ativa estado de diretório no errno == EISDIR
-void File::open_file() {
+void File::open_response_file() {
     if (EventStateHelper::is_error_state(this->_event)) return;
 
     std::cout << "Opening file: " << this->_event.getFilePath() << std::endl;

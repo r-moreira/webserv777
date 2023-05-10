@@ -36,7 +36,7 @@ void EventHandler::process_event() {
 
     if (this->_event.getEventStatus() == Writing) {
         switch (this->_event.getEventSubStatus()) {
-            case OpeningFile: _file.open_file();
+            case OpeningResponseFile: _file.open_response_file();
             case WritingResponseFile: _response.write_response_file();
                 break;
             //case HandlingRedirection: _response.handle_redirection(); --> responder 302 para o navegador chamar outro site
@@ -45,8 +45,8 @@ void EventHandler::process_event() {
                 //break;
             // case WritingAutoIndex: _response.write_auto_index();
                 //break;
-            //case WritingDirectoryPage: _response.write_directory_page();
-                //break;
+            case WritingDirectoryResponse: _response.write_is_directory_response();
+                break;
             case WritingErrorResponse: _response.write_error_response();
                 break;
             default:
@@ -85,7 +85,9 @@ void EventHandler::print_event_status() {
             break;
         case DefiningResponseState: sub_status = "DefiningResponseState";
             break;
-        case OpeningFile: sub_status = "OpeningFile";
+        case OpeningResponseFile: sub_status = "OpeningFile";
+            break;
+        case WritingDirectoryResponse: sub_status = "WritingDirectoryResponse";
             break;
         case WritingResponseFile: sub_status = "WritingResponseFile";
             break;

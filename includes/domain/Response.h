@@ -28,6 +28,8 @@ public:
 
     void write_error_response();
 
+    void write_is_directory_response();
+
 private:
     std::string getFileHeaders(const std::string& file_path, size_t file_size);
     std::string getErrorHeaders();

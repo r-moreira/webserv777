@@ -78,7 +78,8 @@ void Response::read_requested_file() {
 
         if (errno == EISDIR) {
             std::cerr << RED << "Redirecionado para página de erro de diretório" << RESET << std::endl;
-            EventStateHelper::throw_error_state(this->_event, FORBIDDEN);
+            _event.setEventSubStatus(WritingDirectoryResponse);
+            _event.setHttpStatus(FORBIDDEN);
             return;
         }
         _event.setEventStatus(Ended);
@@ -134,20 +135,38 @@ std::string Response::getFileHeaders(const std::string& file_path, size_t file_s
     return "HTTP/1.1 200 Ok\r\n" + content_length + "Content-Type: text/html\r\n\r\n";
 }
 
+//TODO:: Checar se a pagina de diretório está configurada:
+// caso exista retorna-la,
+// caso contratio, retornar paginas de erro padrão do webserv
+void Response::write_is_directory_response() {
+    std::cout << MAGENTA << "Send directory error response" << RESET << std::endl;
 
+    // if existe uma pagina de erro de diretório configurada
+        // read_error_configured_page(path_da_config_da_pagina_diretório);
+        // write_error_headers();
+        // write_configured_error_page();
+    // else
+
+    write_error_headers();
+    write_default_error_page();
+
+    _event.setEventStatus(Ended);
+}
 
 //TODO:: Checar se existem paginas de erro padrão configuradas:
 // caso exista retorna-las,
 // caso contratio, retornar paginas de erro padrão do webserv
 void Response::write_error_response() {
     // if existe uma pagina de erro configurada para o erro atual
-        // read_error_configured_page();
+        // read_error_configured_page(path_da_config_da_pagina_de_erro)
         // write_error_headers();
         // write_configured_error_page();
 
     // else
     write_error_headers();
     write_default_error_page();
+
+    _event.setEventStatus(Ended);
 }
 
 void Response::write_error_headers() {
@@ -174,7 +193,6 @@ void Response::write_default_error_page() {
         std::cerr << RED << "Error while writing error page to client: " << strerror(errno) << RESET << std::endl;
     }
 
-    _event.setEventStatus(Ended);
     std::cout << GREEN << "Successfully sent error page to client" << RESET << std::endl;
 }
 
