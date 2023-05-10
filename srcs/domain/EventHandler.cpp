@@ -29,6 +29,7 @@ void EventHandler::process_event() {
             case ChoosingLocation: _request.choose_location();
             case ValidatingConstraints: _request.validate_constraints();
             case DefiningResponseState: _request.define_response_state();
+            //case UploadingFile: _response.upload_file();
                 break;
             default:
                 std::cerr << RED << "Invalid Reading Event Status" << RESET << std::endl;
@@ -40,13 +41,11 @@ void EventHandler::process_event() {
         switch (this->_event.getEventSubStatus()) {
             case SendingResponseFile: _response.send_response_file();
                 break;
-            //case HandlingRedirection: _response.handle_redirection(); --> responder 302 para o navegador chamar outro site
+            //case SendingRedirectionResponse: _response.handle_redirection(); --> responder 302 para o navegador chamar outro site
                 //break;
-            //case UploadingFile: _response.upload_file();
+            //case SendingCgiResponse: _response.send_cgi();
                 //break;
-            //case WritingCGI: _response.write_cgi();
-                //break;
-            // case WritingAutoIndex: _response.write_auto_index();
+            // case SendingAutoIndexResponse: _response.send_auto_index();
                 //break;
             case SendingDirectoryResponse: _response.send_is_directory_response();
                 break;
