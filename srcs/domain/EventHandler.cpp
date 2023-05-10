@@ -15,7 +15,8 @@ EventHandler::~EventHandler() {}
 
 
 //TODO:
-// Bug no erro diretório, mandar os headers apenas após a primeira leitura do arquivo, e antes do primeiro write do arquivo, para poder capturar o erro do diretório.
+// Bug no erro diretório, mandar os headers apenas após a primeira leitura do arquivo, e antes do primeiro write do arquivo,
+//  para poder capturar o erro do diretório sem enviar headers duas vezes
 void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Reading) {
 
