@@ -14,6 +14,7 @@
 #include <sstream>
 #include <cstring>
 #include <vector>
+#include <map>
 #include <sys/sendfile.h>
 #include <sys/epoll.h>
 #include <sys/types.h>

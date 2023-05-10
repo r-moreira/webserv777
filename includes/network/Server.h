@@ -5,9 +5,10 @@
 #ifndef WEBSERV_SERVER_H
 #define WEBSERV_SERVER_H
 
+#include "../webserv.h"
 #include "./Socket.h"
+#include "./Location.h"
 
-class ServerBuilder;
 
 class Server {
 
@@ -16,24 +17,34 @@ private:
     int _port;
     int _fd;
     long _max_body_size;
-
+    std::string _directory_request_page;
+    std::map<int, std::string> _error_pages;
+    std::map<std::string, Location> _locations;
 public:
     Server();
     ~Server();
 
-    friend class ServerBuilder;
+    const std::string &getName() const;
 
-    static ServerBuilder build();
-
-    std::string getName() const;
+    void setName(const std::string &name);
 
     int getPort() const;
 
+    void setPort(int port);
+
     int getFd() const;
 
-    int getMaxBodySize() const;
+    void setFd(int fd);
 
-    void setMaxBodySize(int maxBodySize);
+    long getMaxBodySize() const;
+
+    void setMaxBodySize(long maxBodySize);
+
+    const std::map<std::string, Location> &getLocations() const;
+
+    void setLocations(const std::map<std::string, Location> &locations);
+
+
 };
 
 std::ostream& operator << (std::ostream& os, const Server& obj);
