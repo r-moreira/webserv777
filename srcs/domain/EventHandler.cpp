@@ -13,10 +13,13 @@ EventHandler::~EventHandler() {}
 // Implementar suporte a pagina de diretório customizada, em caso de erro de request para diretório
 // Implementar suporte a pagina de erro customizada, em caso de erro geral
 
+//TODO:
+// Remover estado de OpenResponseFile, colocar dentro funcionalidade do estado de WritingResponseFile
+//  Lembrar colocar uma flag: is_file_opened e checar toda vez
 
 //TODO:
-// Bug no erro diretório, mandar os headers apenas após a primeira leitura do arquivo, e antes do primeiro write do arquivo,
-//  para poder capturar o erro do diretório sem enviar headers duas vezes
+// Mover classes para o pacote IO: File, Read (criar), Write (criar)
+// Mover classes para o pacote Domain: Server e Location
 void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Reading) {
 
