@@ -19,8 +19,8 @@ SRCS				= ${SRCS_DIR}/webserv.cpp\
 					  ${DOMAIN_DIR}/EventStateHelper.cpp\
 					  ${IO_DIR}/Multiplexer.cpp\
 					  ${NETWORK_DIR}/Server.cpp\
-					  ${NETWORK_DIR}/ServerBuilder.cpp\
 					  ${NETWORK_DIR}/Socket.cpp\
+					  ${NETWORK_DIR}/Location.cpp\
 					  ${PARSER_DIR}/ConfigParser.cpp\
 					  ${PARSER_DIR}/LocationParser.cpp\
 

@@ -37,7 +37,6 @@ void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Writing) {
         switch (this->_event.getEventSubStatus()) {
             case OpeningFile: _file.open_file();
-            case WritingFileResponseHeaders: _response.write_file_response_headers();
             case WritingResponseFile: _response.write_response_file();
                 break;
             //case HandlingRedirection: _response.handle_redirection(); --> responder 302 para o navegador chamar outro site

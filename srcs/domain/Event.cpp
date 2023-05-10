@@ -22,6 +22,8 @@ Event::Event(int server_fd, int client_fd) {
     this->_file_size = 0;
     this->_file_read_chunk_buffer[0] = '\0';
 
+    this->_header_sent = false;
+
     this->_event_status = Reading;
     this->_event_sub_status = ReadingRequest;
 
@@ -173,4 +175,13 @@ Location Event::getLocation() const {
 void Event::setLocation(Location location) {
     _location = location;
 }
+
+bool Event::isHeaderSent() const {
+    return _header_sent;
+}
+
+void Event::setHeaderSent(bool headerSent) {
+    _header_sent = headerSent;
+}
+
 

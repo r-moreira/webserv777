@@ -43,43 +43,21 @@ std::string content_type[] = {
         "Content-Type: image/jpeg\r\n\r\n",
 };
 
-void Response::write_file_response_headers() {
-    if (EventStateHelper::is_error_state(this->_event)) return;
-    write_headers(getFileHeaders(_event.getFilePath(), _event.getFileSize()));
-    if (EventStateHelper::is_error_state(this->_event)) return;
 
-    this->_event.setEventSubStatus(WritingResponseFile);
-}
-
-void Response::write_error_headers() {
-    std::cout << CYAN << "Send error headers for status: " << this->_event.getHttpStatus() << RESET << std::endl;
-    write_headers(getErrorHeaders());
-    if (EventStateHelper::is_error_state(this->_event)) return;
-
-    this->_event.setEventSubStatus(WritingErrorPage);
-}
 
 void Response::write_response_file() {
     read_requested_file();
+    write_file_response_headers();
     write_requested_file();
 }
 
-void Response::write_error_page() {
-    std::ostringstream error_page;
-    std::string html_tag_init = "<html><body><h1>";
-    std::string html_message = "Webserv Error: ";
-    long error_status_code = this->_event.getHttpStatus();
-    std::string html_tag_end =  "</h1></body></html>";
+void Response::write_file_response_headers() {
+    if (EventStateHelper::is_error_state(this->_event) || this->_event.isHeaderSent()) return;
 
-    error_page << html_tag_init << html_message << error_status_code << html_tag_end;
+    std::cout << MAGENTA << "Writing file response headers" << RESET << std::endl;
 
-    std::cout << CYAN << "Response Page:\n" << error_page.str() << RESET << std::endl;
-    if (send(_event.getClientFd(), error_page.str().c_str(), error_page.str().size(), 0) < 0) {
-        std::cerr << RED << "Error while writing error page to client: " << strerror(errno) << RESET << std::endl;
-    }
-
-    _event.setEventStatus(Ended);
-    std::cout << GREEN << "Successfully sent error page to client" << RESET << std::endl;
+    write_headers(getFileHeaders(_event.getFilePath(), _event.getFileSize()));
+    if (EventStateHelper::is_error_state(this->_event)) return;
 }
 
 void Response::read_requested_file() {
@@ -145,6 +123,7 @@ void Response::write_headers(const std::string &headers) {
         return;
     }
 
+    this->_event.setHeaderSent(true);
     std::cout << GREEN << "Successfully sent headers to client" << RESET << std::endl;
 }
 
@@ -167,6 +146,33 @@ std::string Response::getFileHeaders(const std::string& file_path, size_t file_s
         }
     }
     return "HTTP/1.1 200 Ok\r\n" + content_length + "Content-Type: text/html\r\n\r\n";
+}
+
+void Response::write_error_headers() {
+    std::cout << CYAN << "Send error headers for status: " << this->_event.getHttpStatus() << RESET << std::endl;
+    write_headers(getErrorHeaders());
+    if (EventStateHelper::is_error_state(this->_event)) return;
+
+    this->_event.setHeaderSent(true);
+    this->_event.setEventSubStatus(WritingErrorPage);
+}
+
+void Response::write_error_page() {
+    std::ostringstream error_page;
+    std::string html_tag_init = "<html><body><h1>";
+    std::string html_message = "Webserv Error: ";
+    long error_status_code = this->_event.getHttpStatus();
+    std::string html_tag_end =  "</h1></body></html>";
+
+    error_page << html_tag_init << html_message << error_status_code << html_tag_end;
+
+    std::cout << CYAN << "Response Page:\n" << error_page.str() << RESET << std::endl;
+    if (send(_event.getClientFd(), error_page.str().c_str(), error_page.str().size(), 0) < 0) {
+        std::cerr << RED << "Error while writing error page to client: " << strerror(errno) << RESET << std::endl;
+    }
+
+    _event.setEventStatus(Ended);
+    std::cout << GREEN << "Successfully sent error page to client" << RESET << std::endl;
 }
 
 std::string Response::getErrorHeaders() {

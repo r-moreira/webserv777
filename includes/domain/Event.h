@@ -33,6 +33,8 @@ private:
     event_status_t _event_status;
     event_sub_status_t _event_sub_status;
 
+    bool _header_sent;
+
     Server _server;
     Location _location;
 public:
@@ -111,6 +113,10 @@ public:
     file_type_t getFileType() const;
 
     void setFileType(file_type_t fileType);
+
+    bool isHeaderSent() const;
+
+    void setHeaderSent(bool headerSent);
 };
 
 
