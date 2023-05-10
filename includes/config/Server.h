@@ -6,8 +6,8 @@
 #define WEBSERV_SERVER_H
 
 #include "../webserv.h"
-#include "./Socket.h"
-#include "./Location.h"
+#include "../network/Socket.h"
+#include "Location.h"
 
 
 class Server {

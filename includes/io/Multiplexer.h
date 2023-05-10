@@ -8,7 +8,7 @@
 #include "../webserv.h"
 #include "../../includes/domain/EventHandler.h"
 #include "../../includes/network/Socket.h"
-#include "../network/Server.h"
+#include "../config/Server.h"
 
 class Multiplexer {
 private:

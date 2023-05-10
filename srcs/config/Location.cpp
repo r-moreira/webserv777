@@ -2,7 +2,7 @@
 // Created by rmore on 07/05/2023.
 //
 
-#include "../../includes/network/Location.h"
+#include "../../includes/config/Location.h"
 
 Location::Location() {
     this->_path = "/";

@@ -6,8 +6,8 @@
 #define WEBSERV_FILE_H
 
 
-#include "Event.h"
-#include "EventStateHelper.h"
+#include "../domain/Event.h"
+#include "../domain/ErrorState.h"
 
 class File {
 

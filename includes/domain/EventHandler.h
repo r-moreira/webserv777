@@ -9,7 +9,7 @@
 #include "Event.h"
 #include "Request.h"
 #include "Response.h"
-#include "File.h"
+#include "../io/File.h"
 
 /*
  * TODO: Encapsular métodos dentro de classes membros do EventHandler

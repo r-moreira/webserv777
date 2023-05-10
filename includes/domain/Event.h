@@ -7,7 +7,7 @@
 
 #include "../webserv.h"
 #include "../parser/RequestInfo.h"
-#include "../network/Server.h"
+#include "../config/Server.h"
 
 
 class Event {

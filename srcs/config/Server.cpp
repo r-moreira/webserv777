@@ -2,7 +2,7 @@
 // Created by rmore on 15/03/2023.
 //
 
-#include "../../includes/network/Server.h"
+#include "../../includes/config/Server.h"
 
 Server::Server() {
     this->_name = "webserv";

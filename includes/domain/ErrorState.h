@@ -2,8 +2,8 @@
 // Created by rmore on 08/05/2023.
 //
 
-#ifndef WEBSERV_EVENTSTATEHELPER_H
-#define WEBSERV_EVENTSTATEHELPER_H
+#ifndef WEBSERV_ERRORSTATE_H
+#define WEBSERV_ERRORSTATE_H
 
 
 #include "Event.h"
@@ -17,4 +17,4 @@ public:
 };
 
 
-#endif //WEBSERV_EVENTSTATEHELPER_H
+#endif //WEBSERV_ERRORSTATE_H

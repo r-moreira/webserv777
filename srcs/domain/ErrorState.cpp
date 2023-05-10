@@ -2,7 +2,7 @@
 // Created by rmore on 08/05/2023.
 //
 
-#include "../../includes/domain/EventStateHelper.h"
+#include "../../includes/domain/ErrorState.h"
 
 ErrorState::ErrorState() {}
 

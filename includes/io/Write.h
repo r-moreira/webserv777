@@ -6,7 +6,7 @@
 #define WEBSERV_WRITE_H
 
 #include "../domain/Event.h"
-#include "../domain/EventStateHelper.h"
+#include "../domain/ErrorState.h"
 
 class Write {
 
