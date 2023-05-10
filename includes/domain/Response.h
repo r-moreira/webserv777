@@ -9,11 +9,13 @@
 #include "Event.h"
 #include "EventStateHelper.h"
 #include "File.h"
+#include "../io/Read.h"
 
 class Response {
 private:
     Event &_event;
     File _file;
+    Read _read;
 
 public:
     Response(Event &event);

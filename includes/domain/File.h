@@ -19,7 +19,7 @@ public:
 
     ~File();
 
-    void open_response_file();
+    void open_file();
 };
 
 

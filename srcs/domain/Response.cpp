@@ -4,7 +4,7 @@
 
 #include "../../includes/domain/Response.h"
 
-Response::Response(Event &event): _event(event), _file(event) {}
+Response::Response(Event &event): _event(event), _file(event), _read(event) {}
 
 Response::~Response() {}
 
@@ -44,8 +44,8 @@ std::string content_type[] = {
 };
 
 void Response::write_response_file() {
-    _file.open_response_file();
-    read_requested_file();
+    _file.open_file();
+    _read.read_file();
     write_file_response_headers();
     write_requested_file();
 }
@@ -59,42 +59,6 @@ void Response::write_file_response_headers() {
     if (EventStateHelper::is_error_state(this->_event)) return;
 }
 
-void Response::read_requested_file() {
-    if (EventStateHelper::is_error_state(this->_event)) return;
-
-    std::cout << MAGENTA << "Reading request file: " << this->_event.getFilePath() << RESET << std::endl;
-
-    size_t read_size;
-    if (_event.getFileSize() > FILE_READ_CHUNK_SIZE) {
-        read_size = _event.getFileReadLeft() > FILE_READ_CHUNK_SIZE ? FILE_READ_CHUNK_SIZE : _event.getFileReadLeft();
-    } else {
-        read_size = _event.getFileSize();
-    }
-
-    std::cout << YELLOW << "Read Data Size: " << read_size << RESET << std::endl;
-    size_t chunk_bytes = fread((void *) this->_event.getFileReadChunkBuffer(), 1, read_size, _event.getFile());
-
-    if (ferror(_event.getFile())) {
-        std::cerr << RED << "Error while reading file: " << strerror(errno) << RESET << std::endl;
-
-        if (errno == EISDIR) {
-            std::cerr << RED << "Redirecionado para página de erro de diretório" << RESET << std::endl;
-            _event.setEventSubStatus(WritingDirectoryResponse);
-            _event.setHttpStatus(FORBIDDEN);
-            return;
-        }
-        _event.setEventStatus(Ended);
-        return;
-    }
-
-    _event.setFileReadBytes(_event.getFileReadBytes() + chunk_bytes);
-    std::cout << YELLOW << "Readed Data Size: " << chunk_bytes << RESET << std::endl;
-
-    _event.setFileReadLeft(_event.getFileSize() - _event.getFileReadBytes());
-    std::cout << YELLOW << "Read Left: " << _event.getFileReadLeft() << RESET << std::endl;
-
-    this->_event.setFileChunkReadBytes(chunk_bytes);
-}
 
 void Response::write_requested_file() {
     if (EventStateHelper::is_error_state(this->_event)) return;

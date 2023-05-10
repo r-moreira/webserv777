@@ -8,8 +8,7 @@ File::File(Event &event): _event(event) {}
 
 File::~File() {}
 
-//TODO:: Setar uma flag ou ativa estado de diretório no errno == EISDIR
-void File::open_response_file() {
+void File::open_file() {
     if (EventStateHelper::is_error_state(this->_event) || this->_event.isFileOpened()) return;
 
     std::cout << "Opening file: " << this->_event.getFilePath() << std::endl;
@@ -24,11 +23,6 @@ void File::open_response_file() {
             EventStateHelper::throw_error_state(this->_event, NOT_FOUND);
             return;
         }
-        /*if (errno == EISDIR) {
-            std::cerr << RED << "Redirecionado para página de erro de diretório" << RESET << std::endl;
-            EventStateHelper::throw_error_state(this->_event, FORBIDDEN);
-            return;
-        }*/
         this->_event.setFile(fptr);
         //Por algum motivo readbytes precisa ser inicializado neste momento
         this->_event.setFileReadBytes(0);

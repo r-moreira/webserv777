@@ -4,40 +4,13 @@
 
 #include "../../includes/domain/Request.h"
 
-Request::Request(Event &event): _event(event) {}
+Request::Request(Event &event): _event(event), _read(event) {}
 
 Request::~Request() {}
 
 
 void Request::read_request() {
-    if (EventStateHelper::is_error_state(this->_event)) return;
-
-    char buffer[READ_BUFFER_SIZE] = {};
-
-    RequestInfo request;
-
-    long bytes_read = read(this->_event.getClientFd(), buffer, READ_BUFFER_SIZE);
-
-    if (bytes_read == -1) {
-        std::cerr << RED << "Error while reading from client: " << strerror(errno) << RESET << std::endl;
-        EventStateHelper::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
-        return;
-    } else if (bytes_read == 0) {
-        std::cout << YELLOW << "Client disconnected" << RESET << std::endl;
-        EventStateHelper::throw_error_state(this->_event, CLIENT_CLOSED_REQUEST);
-        return;
-    }
-
-    this->_event.setRequestReadBytes(this->_event.getRequestReadBytes() + bytes_read);
-    std::string read_buffer = this->_event.getRequestReadBuffer();
-    this->_event.setRequestReadBuffer(read_buffer.append(buffer));
-
-    std::cout << YELLOW << "Read " << this->_event.getRequestReadBytes() << " bytes from client" << RESET << std::endl;
-    std::cout << GREEN << "HTTP Request:\n" << buffer << RESET << std::endl;
-
-    if (buffer[READ_BUFFER_SIZE - 1] == 0) {
-        this->_event.setEventSubStatus(ParsingRequest);
-    }
+    _read.read_request();
 }
 
 void Request::parse_request() {

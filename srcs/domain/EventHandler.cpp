@@ -12,6 +12,7 @@ EventHandler::~EventHandler() {}
 // Implementar suporte a location redirect, cgi, upload e auto_index
 // Implementar suporte a pagina de diretório customizada, em caso de erro de request para diretório
 // Implementar suporte a pagina de erro customizada, em caso de erro geral
+// Implementar suporte a upload de arquivos
 
 //TODO:
 // Remover estado de OpenResponseFile, colocar dentro funcionalidade do estado de WritingResponseFile
@@ -42,6 +43,8 @@ void EventHandler::process_event() {
             case WritingResponseFile: _response.write_response_file();
                 break;
             //case HandlingRedirection: _response.handle_redirection(); --> responder 302 para o navegador chamar outro site
+                //break;
+            //case UploadingFile: _response.upload_file();
                 //break;
             //case WritingCGI: _response.write_cgi();
                 //break;

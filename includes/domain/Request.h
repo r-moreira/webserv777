@@ -9,11 +9,13 @@
 #include "../../includes/parser/HttpRequestParser.h"
 #include "EventStateHelper.h"
 #include "../parser/RequestInfo.h"
+#include "../io/Read.h"
 
 class Request {
 
 private:
     Event &_event;
+    Read _read;
 
 public:
     Request(Event &event);
