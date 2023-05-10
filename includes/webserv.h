@@ -15,6 +15,7 @@
 #include <cstring>
 #include <vector>
 #include <map>
+#include <algorithm>
 #include <sys/sendfile.h>
 #include <sys/epoll.h>
 #include <sys/types.h>
@@ -52,6 +53,7 @@ typedef enum EVENT_SUB_STATUS {
     ReadingRequest,
     ParsingRequest,
     ChoosingServer,
+    ChoosingLocation,
     ValidatingConstraints,
     OpeningFile,
     WritingFileResponseHeaders,

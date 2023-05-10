@@ -27,6 +27,8 @@ public:
     void choose_server(std::vector<Server> servers);
 
     void validate_constraints();
+
+    void choose_location();
 };
 
 

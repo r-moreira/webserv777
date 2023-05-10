@@ -66,7 +66,7 @@ void Request::parse_request() {
 void Request::choose_server(std::vector<Server> servers) {
     if (EventStateHelper::is_error_state(this->_event)) return;
 
-    std::cout << BLUE << "\nChoosing Server:" << RESET << std::endl;
+    std::cout << BLUE << "Choosing Server:" << RESET << std::endl;
 
     for (std::vector<Server>::iterator it = servers.begin(); it != servers.end(); it++) {
         if (it->getFd() == this->_event.getServerFd()) {
@@ -85,13 +85,21 @@ void Request::choose_server(std::vector<Server> servers) {
         this->_event.getServer()->getName() << " port: " <<
         this->_event.getServer()->getPort() << RESET << std::endl << std::endl;
 
+    this->_event.setEventSubStatus(ChoosingLocation);
+}
+
+void Request::choose_location() {
+    if (EventStateHelper::is_error_state(this->_event)) return;
+
+    std::cout << CYAN << "Choosing Location:" << CYAN << std::endl;
+
+
+
     this->_event.setEventSubStatus(ValidatingConstraints);
 }
 
 void Request::validate_constraints() {
     if (EventStateHelper::is_error_state(this->_event)) return;
-
-    std::cout << BLUE << "Validating Constraints:" << RESET << std::endl;
 
     if (this->_event.getRequest().method != "GET" && this->_event.getRequest().method != "POST") {
         EventStateHelper::throw_error_state(this->_event, METHOD_NOT_ALLOWED);
