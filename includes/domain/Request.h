@@ -32,7 +32,7 @@ public:
 
 
 private:
-    std::string repace_path_to_root(std::string subject, const std::string &search, const std::string &replace);
+    static std::string repace_path_to_root(std::string request_uri, const std::string &request_path, const std::string &location_root);
 };
 
 

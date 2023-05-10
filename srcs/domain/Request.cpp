@@ -98,16 +98,13 @@ void Request::handle_location() {
     }
 
     bool found = false;
-    /*for (std::map<std::string, Location>::iterator it = locations.begin(); it != locations.end(); it++) {
+    for (std::map<std::string, Location>::iterator it = locations.begin(); it != locations.end(); it++) {
         if (this->_event.getRequest().uri.rfind(it->first, 0) == 0) {
-            this->_event.setLocation(&it->second);
+            this->_event.setLocation(it->second);
             found = true;
             break;
         }
-    }*/
-
-    this->_event.setLocation(locations.begin()->second);
-    found = true;
+    }
 
     if (!found) {
         std::cerr << RED << "Location not found" << RESET << std::endl;
@@ -115,47 +112,15 @@ void Request::handle_location() {
         return;
     }
 
-    std::string original = this->_event.getRequest().uri;
-    std::string substring = this->_event.getLocation().getPath();
-    std::size_t ind = original.find(substring); // Find the starting position of substring in the string
-    if(ind !=std::string::npos){
-        original.erase(ind,substring.length()); // erase function takes two parameter, the starting index in the string from where you want to erase characters and total no of characters you want to erase.
-        std::cout<<original<<"\n";
-    }else{
-        std::cout<<"Substring does not exist in the string\n";
-    }
-
-    this->_event.setFilePath(this->_event.getLocation().getRoot() + original);
-
-
-   /* std::cout << CYAN << "Replacing Path To Root" << CYAN << std::endl;
+    std::cout << CYAN << "Replacing Path To Root" << CYAN << std::endl;
     std::string file_path = repace_path_to_root(
             this->_event.getRequest().uri,
-            this->_event.getLocation()->getPath(),
-            this->_event.getLocation()->getRoot());
+            this->_event.getLocation().getPath(),
+            this->_event.getLocation().getRoot());
 
-    this->_event.setFilePath(file_path);*/
-
-    //TODO: Traduzir o path do request para root
-
+    this->_event.setFilePath(file_path);
     this->_event.setEventSubStatus(ValidatingConstraints);
 }
-
-/*
- *
-    std::string original = this->_event.getRequest().uri;
-    std::string substring = this->_event.getLocation()->getPath();
-    std::size_t ind = original.find(substring); // Find the starting position of substring in the string
-    if(ind !=std::string::npos){
-        original.erase(ind,substring.length()); // erase function takes two parameter, the starting index in the string from where you want to erase characters and total no of characters you want to erase.
-        std::cout<<original<<"\n";
-    }else{
-        std::cout<<"Substring does not exist in the string\n";
-    }
-
-    this->_event.setFilePath("./public" + original);
-
- */
 
 void Request::validate_constraints() {
     if (EventStateHelper::is_error_state(this->_event)) return;
@@ -184,12 +149,12 @@ void Request::validate_constraints() {
     this->_event.setEventSubStatus(OpeningFile);
 }
 
-std::string Request::repace_path_to_root(std::string subject, const std::string& search,
-                                         const std::string& replace) {
+std::string Request::repace_path_to_root(std::string request_uri, const std::string& request_path,
+                                         const std::string& location_root) {
     size_t pos = 0;
-    while ((pos = subject.find(search, pos)) != std::string::npos) {
-        subject.replace(pos, search.length(), replace);
-        pos += replace.length();
+    while ((pos = request_uri.find(request_path, pos)) != std::string::npos) {
+        request_uri.replace(pos, request_path.length(), location_root);
+        pos += location_root.length();
     }
-    return subject;
+    return request_uri;
 }

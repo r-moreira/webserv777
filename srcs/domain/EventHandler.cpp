@@ -10,8 +10,6 @@ EventHandler::~EventHandler() {}
 
 //TODO:
 // Implementar validação dos métodos HTTP no validate_constraints()
-// Implementar validação to tamanho do body no validate_constraints().
-//      Usar o Content-Length para isso, caso o header não exista, implementar um contador até o limite da config, se passar, retorna erro
 void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Reading) {
 
