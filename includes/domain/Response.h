@@ -22,9 +22,11 @@ public:
 
     void write_file_response_headers();
 
-    void write_error_page();
+    void write_default_error_page();
 
     void write_error_headers();
+
+    void write_error_response();
 
 private:
     std::string getFileHeaders(const std::string& file_path, size_t file_size);

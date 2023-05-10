@@ -57,10 +57,8 @@ typedef enum EVENT_SUB_STATUS {
     ValidatingConstraints,
     DefiningResponseState,
     OpeningFile,
-    WritingFileResponseHeaders,
     WritingResponseFile,
-    WritingErrorHeaders,
-    WritingErrorPage
+    WritingErrorResponse
 } event_sub_status_t;
 
 typedef enum FILE_TYPE {

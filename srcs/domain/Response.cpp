@@ -43,8 +43,6 @@ std::string content_type[] = {
         "Content-Type: image/jpeg\r\n\r\n",
 };
 
-
-
 void Response::write_response_file() {
     read_requested_file();
     write_file_response_headers();
@@ -114,18 +112,6 @@ void Response::write_requested_file() {
     }
 }
 
-void Response::write_headers(const std::string &headers) {
-    std::cout << CYAN << "Response Headers:\n" << headers << RESET << std::endl;
-
-    if (send(_event.getClientFd(), headers.c_str(), headers.size(), 0) < 0) {
-        std::cerr << RED << "Error while writing status header to client: " << strerror(errno) << RESET << std::endl;
-        EventStateHelper::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
-        return;
-    }
-
-    this->_event.setHeaderSent(true);
-    std::cout << GREEN << "Successfully sent headers to client" << RESET << std::endl;
-}
 
 std::string Response::getFileHeaders(const std::string& file_path, size_t file_size) {
     char size_t_byte_buffer[25] = {};
@@ -148,16 +134,33 @@ std::string Response::getFileHeaders(const std::string& file_path, size_t file_s
     return "HTTP/1.1 200 Ok\r\n" + content_length + "Content-Type: text/html\r\n\r\n";
 }
 
+
+
+//TODO:: Checar se existem paginas de erro padrão configuradas:
+// caso exista retorna-las,
+// caso contratio, retornar paginas de erro padrão do webserv
+void Response::write_error_response() {
+    // if existe uma pagina de erro configurada para o erro atual
+        // read_error_configured_page();
+        // write_error_headers();
+        // write_configured_error_page();
+
+    // else
+    write_error_headers();
+    write_default_error_page();
+}
+
 void Response::write_error_headers() {
+    if (this->_event.isHeaderSent()) return;
+
     std::cout << CYAN << "Send error headers for status: " << this->_event.getHttpStatus() << RESET << std::endl;
     write_headers(getErrorHeaders());
     if (EventStateHelper::is_error_state(this->_event)) return;
 
     this->_event.setHeaderSent(true);
-    this->_event.setEventSubStatus(WritingErrorPage);
 }
 
-void Response::write_error_page() {
+void Response::write_default_error_page() {
     std::ostringstream error_page;
     std::string html_tag_init = "<html><body><h1>";
     std::string html_message = "Webserv Error: ";
@@ -185,3 +188,15 @@ std::string Response::getErrorHeaders() {
     return headers.str();
 }
 
+void Response::write_headers(const std::string &headers) {
+    std::cout << CYAN << "Response Headers:\n" << headers << RESET << std::endl;
+
+    if (send(_event.getClientFd(), headers.c_str(), headers.size(), 0) < 0) {
+        std::cerr << RED << "Error while writing status header to client: " << strerror(errno) << RESET << std::endl;
+        EventStateHelper::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
+        return;
+    }
+
+    this->_event.setHeaderSent(true);
+    std::cout << GREEN << "Successfully sent headers to client" << RESET << std::endl;
+}

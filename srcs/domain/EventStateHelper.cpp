@@ -11,7 +11,7 @@ void EventStateHelper::throw_error_state(Event &event, event_http_status_enum_t 
 
     event.setHttpStatus(status);
     event.setEventStatus(Writing);
-    event.setEventSubStatus(WritingErrorHeaders);
+    event.setEventSubStatus(WritingErrorResponse);
 }
 
 bool EventStateHelper::is_error_state(Event &event) {
