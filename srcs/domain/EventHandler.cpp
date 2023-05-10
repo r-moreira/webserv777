@@ -9,11 +9,9 @@ EventHandler::EventHandler(Event &event, std::vector<Server> &servers) :_servers
 EventHandler::~EventHandler() {}
 
 //TODO:
-// Implementar validação dos métodos HTTP no validate_constraints()
-// Implementar validação dos headers no validate_constraints()
 // Implementar suporte a location redirect, cgi, upload e auto_index
-// Implementar suporte a pagina de diretório customizada
-// Implementar suporte a pagina de erro customizada
+// Implementar suporte a pagina de diretório customizada, em caso de erro de request para diretório
+// Implementar suporte a pagina de erro customizada, em caso de erro geral
 void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Reading) {
 
@@ -21,7 +19,7 @@ void EventHandler::process_event() {
             case ReadingRequest: _request.read_request();
             case ParsingRequest: _request.parse_request();
             case ChoosingServer: _request.choose_server(this->_servers);
-            case ChoosingLocation: _request.handle_location();
+            case ChoosingLocation: _request.choose_location();
             case ValidatingConstraints: _request.validate_constraints();
             case DefiningResponseState: _request.define_response_state();
                 break;

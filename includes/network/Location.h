@@ -32,10 +32,6 @@ public:
 
     void setLimitExcept(const std::vector<std::string> &limitExcept);
 
-    bool isCgiLock() const;
-
-    void setCgiLock(bool cgiLock);
-
     const std::string &getRedirectUrl() const;
 
     void setRedirectUrl(const std::string &redirectUrl);

@@ -26,10 +26,9 @@ public:
 
     void choose_server(std::vector<Server> servers);
 
-    void handle_location();
+    void choose_location();
 
     void validate_constraints();
-
 
     void define_response_state();
 

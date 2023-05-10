@@ -82,7 +82,7 @@ void Request::choose_server(std::vector<Server> servers) {
     this->_event.setEventSubStatus(ChoosingLocation);
 }
 
-void Request::handle_location() {
+void Request::choose_location() {
     if (EventStateHelper::is_error_state(this->_event)) return;
 
     std::cout << CYAN << "Handling Location:" << CYAN << std::endl;
@@ -117,12 +117,16 @@ void Request::handle_location() {
 void Request::validate_constraints() {
     if (EventStateHelper::is_error_state(this->_event)) return;
 
-    if (this->_event.getRequest().method != "GET" && this->_event.getRequest().method != "POST") {
+    std::cout << MAGENTA << "Validating Allowed Methods" << RESET <<std::endl;
+    std::vector<std::string> allowed_methods = this->_event.getLocation().getLimitExcept();
+    if (std::find(allowed_methods.begin(), allowed_methods.end(), this->_event.getRequest().method) == allowed_methods.end()) {
         EventStateHelper::throw_error_state(this->_event, METHOD_NOT_ALLOWED);
         return;
     }
 
     if (this->_event.getServer().getMaxBodySize() != -1) {
+        std::cout << MAGENTA << "Validating Content Length" << RESET <<std::endl;
+
         std::vector<RequestInfo::HeaderItem> headers = this->_event.getRequest().headers;
 
         for (std::vector<RequestInfo::HeaderItem>::iterator it = headers.begin(); it != headers.end(); it++) {
@@ -145,8 +149,11 @@ void Request::validate_constraints() {
 void Request::define_response_state() {
     if (EventStateHelper::is_error_state(this->_event)) return;
 
+    std::cout << CYAN << "Defining Response State" << RESET << std::endl;
+
+
     //Tipo regular: arquivo
-    std::cout << CYAN << "Replacing Path To Root" << CYAN << std::endl;
+    std::cout << MAGENTA << "Replacing Path To Root" << RESET << std::endl;
     std::string file_path = repace_path_to_root(
             this->_event.getRequest().uri,
             this->_event.getLocation().getPath(),
