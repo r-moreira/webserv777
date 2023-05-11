@@ -35,7 +35,7 @@ public:
     void define_response_state();
 
 private:
-    std::string path_to_root(std::string request_uri, const std::string &request_path, const std::string &location_root);
+    std::string path_to_root(std::string request_uri, const std::string &location_path, const std::string &location_root);
 };
 
 

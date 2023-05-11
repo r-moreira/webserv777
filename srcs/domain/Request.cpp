@@ -144,22 +144,23 @@ void Request::define_response_state() {
     this->_event.setEventStatus(Writing);
 }
 
-std::string Request::path_to_root(std::string request_uri, const std::string& request_path,
+std::string Request::path_to_root(std::string request_uri, const std::string& location_path,
                                   const std::string& location_root) {
 
-    //TODO: Para funcionar o índex, precisa bloquear os paths que não terminam com / ou ter também um location para o website com o root /
-    //std::string tmp = request_path
-    //if (request_uri == tmp && !this->_event.getServer().getIndex().empty()) {
-    //   request_uri = request_uri + "/" + this->_event.getServer().getIndex();
-    //}
+    std::string request_without_slash = request_uri.length() > 1 && request_uri[request_uri.length() - 1] == '/' ?
+                                        request_uri.substr(0, request_uri.length() - 1) : request_uri;
+
+    if (request_without_slash == location_path && !this->_event.getServer().getIndex().empty()) {
+       request_uri = request_uri + "/" + this->_event.getServer().getIndex();
+    }
 
     if (this->_event.getLocation().getPath() == "/") {
         return location_root + request_uri;
     }
 
     size_t pos = 0;
-    while ((pos = request_uri.find(request_path, pos)) != std::string::npos) {
-        request_uri.replace(pos, request_path.length(), location_root);
+    while ((pos = request_uri.find(location_path, pos)) != std::string::npos) {
+        request_uri.replace(pos, location_path.length(), location_root);
         pos += location_root.length();
     }
 
