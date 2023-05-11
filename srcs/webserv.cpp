@@ -51,10 +51,12 @@ Server build_server_three(int port) {
     Location website_location = Location();
     website_location.setPath("/");
     website_location.setRoot("./public/website");
+    website_location.setIndex("index.html");
 
     Location website_location2 = Location();
     website_location2.setPath("/puppy");
     website_location2.setRoot("./public/website");
+    website_location.setIndex("index.html");
 
     Location redirect_location = Location();
     redirect_location.setRedirectLock(true);
@@ -127,18 +129,18 @@ Server build_server_one(int port) {
     locations.clear();
 
 
-    Location hello_world = Location();
-    hello_world.setPath("/hello");
-    hello_world.setRoot("./public/hello-world");
+    Location hello_world_location = Location();
+    hello_world_location.setPath("/hello");
+    hello_world_location.setRoot("./public/hello-world");
+    hello_world_location.setIndex("index.html");
 
-    locations.insert(std::pair<std::string, Location>(hello_world.getPath(), hello_world));
+    locations.insert(std::pair<std::string, Location>(hello_world_location.getPath(), hello_world_location));
 
 
     std::map<int, std::string> error_pages;
     error_pages.insert(std::pair<int, std::string>(500, "./public/error-pages/500.html"));
 
     server.setName("webserv");
-    server.setIndex("hello.html");
     server.setPort(port);
     server.setMaxBodySize(10);
     server.setErrorPages(error_pages);

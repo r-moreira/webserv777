@@ -150,8 +150,8 @@ std::string Request::path_to_root(std::string request_uri, const std::string& lo
     std::string request_without_slash = request_uri.length() > 1 && request_uri[request_uri.length() - 1] == '/' ?
                                         request_uri.substr(0, request_uri.length() - 1) : request_uri;
 
-    if (request_without_slash == location_path && !this->_event.getServer().getIndex().empty()) {
-       request_uri = request_uri + "/" + this->_event.getServer().getIndex();
+    if (request_without_slash == location_path && !this->_event.getLocation().getIndex().empty()) {
+       request_uri = request_uri + "/" + this->_event.getLocation().getIndex();
     }
 
     if (this->_event.getLocation().getPath() == "/") {

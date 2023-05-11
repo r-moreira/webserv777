@@ -12,6 +12,7 @@ class Location {
 private:
     std::string _path;
     std::string _root;
+    std::string _index;
     std::vector<std::string> _limit_except;
     std::string _redirect_url;
     std::string _cgi_path;
@@ -63,6 +64,10 @@ public:
     bool isRedirectLock() const;
 
     void setRedirectLock(bool redirectLock);
+
+    const std::string &getIndex() const;
+
+    void setIndex(const std::string &index);
 
 };
 

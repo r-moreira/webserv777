@@ -7,6 +7,7 @@
 Location::Location() {
     this->_path = "/";
     this->_root = "./public";
+    this->_index = "index.html";
     this->_limit_except = std::vector<std::string>();
     this->_limit_except.push_back("GET");
     this->_limit_except.push_back("POST");
@@ -97,11 +98,20 @@ void Location::setRedirectLock(bool redirectLock) {
     _redirect_lock = redirectLock;
 }
 
+const std::string &Location::getIndex() const {
+    return _index;
+}
+
+void Location::setIndex(const std::string &index) {
+    _index = index;
+}
+
 
 std::ostream &operator<<(std::ostream &os, const Location &location) {
     os
         << "\tPath: " << location.getPath() << std::endl
         << "\tRoot: " << location.getRoot() << std::endl
+        << "\tIndex: " << location.getIndex() << std::endl
         << "\tRedirect Url: " << location.getRedirectUrl() << std::endl
         << "\tCgi Path: " << location.getCgiPath() << std::endl
         << "\tUpload Path: " << location.getUploadPath() << std::endl

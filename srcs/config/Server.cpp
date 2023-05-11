@@ -5,7 +5,6 @@
 #include "../../includes/config/Server.h"
 
 Server::Server() {
-    this->_index = "index.html";
     this->_port = 80;
     this->_fd = -1;
     this->_max_body_size = -1;
@@ -73,20 +72,10 @@ void Server::setErrorPages(const std::map<int, std::string> &errorPages) {
     _error_pages = errorPages;
 }
 
-const std::string &Server::getIndex() const {
-    return _index;
-}
-
-void Server::setIndex(const std::string &index) {
-    _index = index;
-}
-
-
 std::ostream &operator<<(std::ostream &os, const Server &server) {
     os
        << "Name: " << server.getName() << std::endl
        << "Port: " << server.getPort() << std::endl
-       << "Index: " << server.getIndex() << std::endl
        << "Max Body Size: " << server.getMaxBodySize() << std::endl
        << "File Descriptor: " << server.getFd() << std::endl
        << "Directory Page: " << server.getDirectoryRequestPage() << std::endl;
