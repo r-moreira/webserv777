@@ -55,6 +55,7 @@ void Request::choose_server(std::vector<Server> servers) {
     this->_event.setEventSubStatus(ChoosingLocation);
 }
 
+
 void Request::choose_location() {
     if (ErrorState::is_error_state(this->_event)) return;
 
@@ -69,11 +70,15 @@ void Request::choose_location() {
     }
 
     bool found = false;
+    size_t location_path_size = 0;
     for (std::map<std::string, Location>::iterator it = locations.begin(); it != locations.end(); it++) {
         if (this->_event.getRequest().uri.rfind(it->first, 0) == 0) {
-            this->_event.setLocation(it->second);
-            found = true;
-            break;
+
+            if (it->second.getPath().size() > location_path_size) {
+                this->_event.setLocation(it->second);
+                location_path_size = it->second.getPath().size();
+                found = true;
+            }
         }
     }
 
@@ -82,6 +87,8 @@ void Request::choose_location() {
         ErrorState::throw_error_state(this->_event, NOT_FOUND);
         return;
     }
+
+    std::cout << YELLOW << "Choosed location <" << std::endl << this->_event.getLocation() << RESET << std::endl;
 
     this->_event.setEventSubStatus(ValidatingConstraints);
 }
@@ -140,6 +147,12 @@ void Request::define_response_state() {
 std::string Request::path_to_root(std::string request_uri, const std::string& request_path,
                                   const std::string& location_root) {
 
+    //TODO: Para funcionar o índex, precisa bloquear os paths que não terminam com / ou ter também um location para o website com o root /
+    //std::string tmp = request_path
+    //if (request_uri == tmp && !this->_event.getServer().getIndex().empty()) {
+    //   request_uri = request_uri + "/" + this->_event.getServer().getIndex();
+    //}
+
     if (this->_event.getLocation().getPath() == "/") {
         return location_root + request_uri;
     }
@@ -149,5 +162,6 @@ std::string Request::path_to_root(std::string request_uri, const std::string& re
         request_uri.replace(pos, request_path.length(), location_root);
         pos += location_root.length();
     }
+
     return request_uri;
 }

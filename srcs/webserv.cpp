@@ -49,8 +49,12 @@ Server build_server_three(int port) {
     allowed_method_get.push_back("GET");
 
     Location website_location = Location();
-    website_location.setPath("/puppy");
+    website_location.setPath("/");
     website_location.setRoot("./public/website");
+
+    Location website_location2 = Location();
+    website_location2.setPath("/puppy");
+    website_location2.setRoot("./public/website");
 
     Location redirect_location = Location();
     redirect_location.setRedirectLock(true);
@@ -59,6 +63,7 @@ Server build_server_three(int port) {
     redirect_location.setLimitExcept(allowed_method_get);
 
     locations.insert(std::pair<std::string, Location>(website_location.getPath(), website_location));
+    locations.insert(std::pair<std::string, Location>(website_location2.getPath(), website_location2));
     locations.insert(std::pair<std::string, Location>(redirect_location.getPath(), redirect_location));
 
     std::map<int, std::string> error_pages;
@@ -128,10 +133,15 @@ Server build_server_one(int port) {
 
     locations.insert(std::pair<std::string, Location>(hello_world.getPath(), hello_world));
 
+
+    std::map<int, std::string> error_pages;
+    error_pages.insert(std::pair<int, std::string>(500, "./public/error-pages/500.html"));
+
     server.setName("webserv");
     server.setIndex("hello.html");
     server.setPort(port);
     server.setMaxBodySize(10);
+    server.setErrorPages(error_pages);
     server.setLocations(locations);
     return server;
 }
