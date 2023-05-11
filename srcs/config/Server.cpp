@@ -77,7 +77,7 @@ void Server::setErrorPages(const std::map<int, std::string> &errorPages) {
 //TODO: Printar todos os locations
 std::ostream &operator<<(std::ostream &os, const Server &server) {
 
-    os << "####### Server ####### " << std::endl
+    os
        << "Name: " << server.getName() << std::endl
        << "Port: " << server.getPort() << std::endl
        << "Max Body Size: " << server.getMaxBodySize() << std::endl
@@ -91,10 +91,11 @@ std::ostream &operator<<(std::ostream &os, const Server &server) {
         os.flush();
     }
 
-    os << "####### Locations #######" << std::endl;
+    os << "Location: ";
+    int i = 0;
     for (std::map<std::string, Location>::const_iterator it = server.getLocations().begin();
          it != server.getLocations().end(); ++it) {
-        os << it->second << std::endl;
+        os << ++i << std::endl << it->second << std::endl;
         os.flush();
     }
     return os;

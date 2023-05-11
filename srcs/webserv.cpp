@@ -2,6 +2,10 @@
 #include "../includes/io/Multiplexer.h"
 #include "../includes/parser/ConfigParser.hpp"
 
+Server build_server_one(int port);
+
+Server build_server_two(int port);
+
 int main(int argc, char **argv, char **env) {
     signal(SIGPIPE, SIG_IGN);
 
@@ -16,6 +20,27 @@ int main(int argc, char **argv, char **env) {
     srand(time(0));
     int port = 8080 + rand() % 10;
 
+    Server server = build_server_one(port);
+    Server server2 = build_server_two(port);
+
+    std::vector<Server> servers;
+    servers.insert(servers.begin(), server);
+    servers.insert(servers.begin() + 1, server2);
+
+    //Temporário, apenas para ver as configs
+    for (std::vector<Server>::iterator it = servers.begin(); it != servers.end(); it++) {
+        sleep(1);
+        it->setFd(Socket::setupServer(it->getPort()));
+        std::cout << BLUE << *it << RESET << std::endl << std::flush;
+    }
+
+    Multiplexer multiplexer(servers);
+    multiplexer.event_loop();
+
+    return EXIT_SUCCESS;
+}
+
+Server build_server_one(int port) {
     Location location = Location();
     location.setPath("/puppy");
     location.setRoot("./public/website");
@@ -37,8 +62,10 @@ int main(int argc, char **argv, char **env) {
     server.setErrorPages(error_pages);
     server.setDirectoryRequestPage("./public/directory-page/index.html");
 
+    return server;
+}
 
-
+Server build_server_two(int port) {
     Server server2 = Server();
     server2.setName("webserv2");
     server2.setPort(port + 1);
@@ -58,20 +85,5 @@ int main(int argc, char **argv, char **env) {
     locations2.insert(std::pair<std::string, Location>(location2.getPath(), location2));
 
     server2.setLocations(locations2);
-
-    std::vector<Server> servers;
-    servers.insert(servers.begin(), server);
-    servers.insert(servers.begin() + 1, server2);
-
-    //Temporário, apenas para ver as configs
-    for (std::vector<Server>::iterator it = servers.begin(); it != servers.end(); it++) {
-        sleep(1);
-        it->setFd(Socket::setupServer(it->getPort()));
-        std::cout << BLUE << *it << RESET << std::endl << std::flush;
-    }
-
-    Multiplexer multiplexer(servers);
-    multiplexer.event_loop();
-
-    return EXIT_SUCCESS;
+    return server2;
 }

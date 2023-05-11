@@ -9,6 +9,12 @@ Location::Location() {
     this->_root = "./public";
     this->_limit_except = std::vector<std::string>();
     this->_limit_except.push_back("GET");
+    this->_limit_except.push_back("POST");
+    this->_limit_except.push_back("DELETE");
+    this->_auto_index = false;
+    this->_cgi_lock = false;
+    this->_upload_lock = false;
+    this->_redirect_lock = false;
 }
 
 const std::string &Location::getPath() const {
@@ -51,14 +57,6 @@ void Location::setCgiPath(const std::string &cgiPath) {
     _cgi_path = cgiPath;
 }
 
-bool Location::isAutoindex() const {
-    return _auto_index;
-}
-
-void Location::setAutoindex(bool autoindex) {
-    Location::_auto_index = autoindex;
-}
-
 const std::string &Location::getUploadPath() const {
     return _upload_path;
 }
@@ -67,17 +65,51 @@ void Location::setUploadPath(const std::string &uploadPath) {
     _upload_path = uploadPath;
 }
 
+bool Location::isAutoIndex() const {
+    return _auto_index;
+}
+
+void Location::setAutoIndex(bool autoIndex) {
+    _auto_index = autoIndex;
+}
+
+bool Location::isCgiLock() const {
+    return _cgi_lock;
+}
+
+void Location::setCgiLock(bool cgiLock) {
+    _cgi_lock = cgiLock;
+}
+
+bool Location::isUploadLock() const {
+    return _upload_lock;
+}
+
+void Location::setUploadLock(bool uploadLock) {
+    _upload_lock = uploadLock;
+}
+
+bool Location::isRedirectLock() const {
+    return _redirect_lock;
+}
+
+void Location::setRedirectLock(bool redirectLock) {
+    _redirect_lock = redirectLock;
+}
+
 
 std::ostream &operator<<(std::ostream &os, const Location &location) {
     os
-        << "Location: " << std::endl
-        << "Path: " << location.getPath() << std::endl
-        << "Root: " << location.getRoot() << std::endl
-        << "Redirect Url: " << location.getRedirectUrl() << std::endl
-        << "Cgi Path: " << location.getCgiPath() << std::endl
-        << "Upload Path: " << location.getUploadPath() << std::endl
-        << "Autoindex: " << location.isAutoindex() << std::endl
-        << "Limit Except: ";
+        << "\tPath: " << location.getPath() << std::endl
+        << "\tRoot: " << location.getRoot() << std::endl
+        << "\tRedirect Url: " << location.getRedirectUrl() << std::endl
+        << "\tCgi Path: " << location.getCgiPath() << std::endl
+        << "\tUpload Path: " << location.getUploadPath() << std::endl
+        << "\tAuto Index: " << location.isAutoIndex() << std::endl
+        << "\tCgi Lock: " << location.isCgiLock()
+        << " | Upload Lock: " << location.isUploadLock()
+        << " | Redirect Lock: " << location.isRedirectLock() << std::endl
+        << "\tLimit Except: ";
 
     for (size_t i = 0; i < location.getLimitExcept().size(); i++) {
         os << location.getLimitExcept()[i] << " ";

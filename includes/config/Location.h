@@ -17,6 +17,10 @@ private:
     std::string _cgi_path;
     std::string _upload_path;
     bool _auto_index;
+    bool _cgi_lock;
+    bool _upload_lock;
+    bool _redirect_lock;
+
 public:
     Location();
 
@@ -40,13 +44,26 @@ public:
 
     void setCgiPath(const std::string &cgiPath);
 
-    bool isAutoindex() const;
-
-    void setAutoindex(bool autoindex);
-
     const std::string &getUploadPath() const;
 
     void setUploadPath(const std::string &uploadPath);
+
+    bool isAutoIndex() const;
+
+    void setAutoIndex(bool autoIndex);
+
+    bool isCgiLock() const;
+
+    void setCgiLock(bool cgiLock);
+
+    bool isUploadLock() const;
+
+    void setUploadLock(bool uploadLock);
+
+    bool isRedirectLock() const;
+
+    void setRedirectLock(bool redirectLock);
+
 };
 
 std::ostream& operator << (std::ostream& os, const Location& obj);
