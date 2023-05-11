@@ -18,3 +18,10 @@ bool ErrorState::is_error_state(Event &event) {
    return event.getHttpStatus() != OK;
 }
 
+
+void ErrorState::normalize_error_state(Event &event) {
+
+    std::cout << YELLOW << "Normalizando estado de erro" << RESET << std::endl;
+
+    event.setHttpStatus(OK);
+}

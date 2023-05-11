@@ -8,6 +8,7 @@ File::File(Event &event): _event(event) {}
 
 File::~File() {}
 
+//To Do fazer uma versõa função open_file que não checa se o arquivo foi aberto, verificar o isFileOpened se tem que ser ignorado também
 void File::open_file() {
     if (ErrorState::is_error_state(this->_event) || this->_event.isFileOpened()) return;
 

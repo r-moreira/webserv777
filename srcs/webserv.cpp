@@ -28,14 +28,14 @@ int main(int argc, char **argv, char **env) {
 
     std::map<int, std::string> error_pages;
 
-    error_pages.insert(std::pair<int, std::string>(400, "./public/error-pages/404/dist/index.html"));
-    error_pages.insert(std::pair<int, std::string>(500, "./public/error-pages/500/dist/index.html"));
+    error_pages.insert(std::pair<int, std::string>(404, "./public/error-pages/404.html"));
+    error_pages.insert(std::pair<int, std::string>(413, "./public/error-pages/413.html"));
 
     server.setName("webserv");
     server.setPort(port);
     server.setLocations(locations);
     server.setErrorPages(error_pages);
-    server.setDirectoryRequestPage("./public/directory-page/dist/index.html");
+    server.setDirectoryRequestPage("./public/directory-page/index.html");
 
 
 

@@ -18,17 +18,29 @@ void Response::send_response_file() {
 //TODO:: Checar se a pagina de diretório está configurada:
 // caso exista retorna-la,
 // caso contratio, retornar paginas de erro padrão do webserv
+// Fazer tratamento caso o arquivo não exista
 void Response::send_is_directory_response() {
     std::cout << MAGENTA << "Send directory error response" << RESET << std::endl;
 
-    // if existe uma pagina de erro de diretório configurada
-    // read_error_configured_page(path_da_config_da_pagina_diretório);
-    // _write.write_error_headers();
-    // _write.write_configured_error_page();
-    // else
 
-    _write.write_error_headers();
-    _write.write_default_error_page();
+    if (!_event.getServer().getDirectoryRequestPage().empty())
+    {
+        ErrorState::normalize_error_state(_event);
+        this->_event.setFileOpened(false);
+        this->_event.setFile(NULL);
+        this->_event.setFilePath(_event.getServer().getDirectoryRequestPage());
+        this->_event.setFileReadBytes(0);
+        this->_event.setFileChunkReadBytes(0);
+        this->_event.setFileSize(0);
+        _file.open_file();
+        _read.read_file();
+        _write.write_file_response_headers();
+        _write.write_requested_file();
+    }
+    else {
+        _write.write_error_headers();
+        _write.write_default_error_page();
+    }
 
     _event.setEventStatus(Ended);
 }

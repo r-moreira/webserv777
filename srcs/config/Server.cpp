@@ -87,7 +87,7 @@ std::ostream &operator<<(std::ostream &os, const Server &server) {
     os << "Error Pages >" << std::endl;
     for (std::map<int, std::string>::const_iterator it = server.getErrorPages().begin();
          it != server.getErrorPages().end(); ++it) {
-        os << "Error: " << it->first << " Page: " << it->second << std::endl;
+        os << "\t" << it->first << " Page: " << it->second << std::endl;
         os.flush();
     }
 

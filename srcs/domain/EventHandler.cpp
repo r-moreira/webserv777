@@ -10,14 +10,12 @@ EventHandler::~EventHandler() {}
 
 //TODO Features
 // Implementar suporte a location redirect, cgi, upload e auto_index
-// Implementar suporte a pagina de diretório customizada, em caso de erro de request para diretório
-// Implementar suporte a pagina de erro customizada, em caso de erro geral
-// Implementar suporte a upload de arquivos
+// Fazer o parser de configuração instânciar os servidores e locations
+// Fazer o parse da request http
 
 //TODO Atuais:
-// Fazer gerênciamento do estado do evento com base no location, retornar status code e pagina de exemplo
 // Fazer leitura de arquivos de paginas de erro/diretório com base na configuração para poder responde-la ao client
-// Fazer método para upload e arquivo no diretório da config
+// Fazer gerênciamento do estado do evento com base no location
 void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Reading) {
 
