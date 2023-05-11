@@ -15,6 +15,7 @@ EventHandler::~EventHandler() {}
 
 //TODO Atuais:
 // Fazer gerênciamento do estado do evento com base no location, retornar página de exemplo para ver se deu certo
+// Adicionar configuração index no servidor e na requisição padrão, procurar por arquivos index no diretório
 void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Reading) {
 

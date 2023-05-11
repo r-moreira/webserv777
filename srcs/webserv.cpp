@@ -6,6 +6,8 @@ Server build_server_one(int port);
 
 Server build_server_two(int port);
 
+Server build_server_three(int port);
+
 int main(int argc, char **argv, char **env) {
     signal(SIGPIPE, SIG_IGN);
 
@@ -13,21 +15,18 @@ int main(int argc, char **argv, char **env) {
         std::cout << CYAN << "Usage :  ./webserv {PATH TO CONFIGURATION FILE}" << RESET << std::endl;
         return EXIT_FAILURE;
     }
-    char tmp[256];
-    getcwd(tmp, 256);
-    std::cout << "Current working directory: " << tmp << std::endl;
 
     srand(time(0));
     int port = 8080 + rand() % 10;
-
     Server server = build_server_one(port);
-    Server server2 = build_server_two(port);
+    Server server2 = build_server_two(port + 1);
+    Server server3 = build_server_three(port + 2);
 
     std::vector<Server> servers;
     servers.insert(servers.begin(), server);
     servers.insert(servers.begin() + 1, server2);
+    servers.insert(servers.begin() + 2, server3);
 
-    //Temporário, apenas para ver as configs
     for (std::vector<Server>::iterator it = servers.begin(); it != servers.end(); it++) {
         sleep(1);
         it->setFd(Socket::setupServer(it->getPort()));
@@ -40,50 +39,99 @@ int main(int argc, char **argv, char **env) {
     return EXIT_SUCCESS;
 }
 
-Server build_server_one(int port) {
-    Location location = Location();
-    location.setPath("/puppy");
-    location.setRoot("./public/website");
-
+Server build_server_three(int port) {
     Server server = Server();
 
     std::map<std::string, Location> locations = server.getLocations();
     locations.clear();
-    locations.insert(std::pair<std::string, Location>(location.getPath(), location));
+
+    std::vector<std::string> allowed_method_get;
+    allowed_method_get.push_back("GET");
+
+    Location website_location = Location();
+    website_location.setPath("/puppy");
+    website_location.setRoot("./public/website");
+
+    Location redirect_location = Location();
+    redirect_location.setRedirectLock(true);
+    redirect_location.setPath("/redirect");
+    redirect_location.setRedirectUrl("https://google.com");
+    redirect_location.setLimitExcept(allowed_method_get);
+
+    locations.insert(std::pair<std::string, Location>(website_location.getPath(), website_location));
+    locations.insert(std::pair<std::string, Location>(redirect_location.getPath(), redirect_location));
 
     std::map<int, std::string> error_pages;
-
     error_pages.insert(std::pair<int, std::string>(404, "./public/error-pages/404.html"));
+    error_pages.insert(std::pair<int, std::string>(405, "./public/error-pages/413.html"));
     error_pages.insert(std::pair<int, std::string>(413, "./public/error-pages/413.html"));
 
-    server.setName("webserv");
+    server.setName("webserv3");
     server.setPort(port);
     server.setLocations(locations);
     server.setErrorPages(error_pages);
-    server.setDirectoryRequestPage("./public/directory-page/index.html");
-
     return server;
 }
 
 Server build_server_two(int port) {
-    Server server2 = Server();
-    server2.setName("webserv2");
-    server2.setPort(port + 1);
-    server2.setMaxBodySize(10);
+    Server server = Server();
+    std::map<std::string, Location> locations = server.getLocations();
+    locations.clear();
 
     std::vector<std::string> allowed_methods_get_post;
     allowed_methods_get_post.push_back("GET");
     allowed_methods_get_post.push_back("POST");
 
-    Location location2 = Location();
-    location2.setPath("/");
-    location2.setRoot("./public");
-    location2.setLimitExcept(allowed_methods_get_post);
+    Location cgi_location = Location();
+    cgi_location.setCgiLock(true);
+    cgi_location.setPath("/cgi");
+    cgi_location.setCgiPath("./public/cgi/hello.py");
+    cgi_location.setLimitExcept(allowed_methods_get_post);
 
-    std::map<std::string, Location> locations2 = server2.getLocations();
-    locations2.clear();
-    locations2.insert(std::pair<std::string, Location>(location2.getPath(), location2));
 
-    server2.setLocations(locations2);
-    return server2;
+    std::vector<std::string> allowed_method_post;
+    allowed_method_post.push_back("POST");
+
+    Location upload_location = Location();
+    upload_location.setUploadLock(true);
+    upload_location.setPath("/upload");
+    upload_location.setLimitExcept(allowed_method_post);
+
+
+    std::vector<std::string> allowed_method_get;
+    allowed_method_get.push_back("GET");
+
+    Location static_location = Location();
+    static_location.setPath("/images");
+    static_location.setRoot("./public/static");
+    static_location.setLimitExcept(allowed_method_get);
+
+    locations.insert(std::pair<std::string, Location>(cgi_location.getPath(), cgi_location));
+    locations.insert(std::pair<std::string, Location>(upload_location.getPath(), upload_location));
+    locations.insert(std::pair<std::string, Location>(static_location.getPath(), static_location));
+
+    server.setPort(port);
+    server.setDirectoryRequestPage("./public/directory-page/index.html");
+    server.setLocations(locations);
+    return server;
+}
+
+Server build_server_one(int port) {
+    Server server = Server();
+    std::map<std::string, Location> locations = server.getLocations();
+    locations.clear();
+
+
+    Location hello_world = Location();
+    hello_world.setPath("/hello");
+    hello_world.setRoot("./public/hello-world");
+
+    locations.insert(std::pair<std::string, Location>(hello_world.getPath(), hello_world));
+
+    server.setName("webserv");
+    server.setIndex("hello.html");
+    server.setPort(port);
+    server.setMaxBodySize(10);
+    server.setLocations(locations);
+    return server;
 }

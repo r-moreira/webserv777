@@ -52,7 +52,7 @@ int Socket::setupServer(int port) {
         exit(EXIT_FAILURE);
     }
 
-    std::cout << GREEN << "Server started to listen at port: " << port << RESET << std::endl;
+    std::cout << GREEN << "Server started to listen" << RESET << std::endl;
 
     set_non_blocking(server_fd);
     return server_fd;

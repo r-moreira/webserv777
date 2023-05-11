@@ -5,7 +5,7 @@
 #include "../../includes/config/Server.h"
 
 Server::Server() {
-    this->_name = "webserv";
+    this->_index = "index.html";
     this->_port = 80;
     this->_fd = -1;
     this->_max_body_size = -1;
@@ -73,6 +73,14 @@ void Server::setErrorPages(const std::map<int, std::string> &errorPages) {
     _error_pages = errorPages;
 }
 
+const std::string &Server::getIndex() const {
+    return _index;
+}
+
+void Server::setIndex(const std::string &index) {
+    _index = index;
+}
+
 
 //TODO: Printar todos os locations
 std::ostream &operator<<(std::ostream &os, const Server &server) {
@@ -80,9 +88,10 @@ std::ostream &operator<<(std::ostream &os, const Server &server) {
     os
        << "Name: " << server.getName() << std::endl
        << "Port: " << server.getPort() << std::endl
+       << "Index: " << server.getIndex() << std::endl
        << "Max Body Size: " << server.getMaxBodySize() << std::endl
-       << "Server FD: " << server.getFd() << std::endl
-       << "Directory Request Page: " << server.getDirectoryRequestPage() << std::endl;
+       << "File Descriptor: " << server.getFd() << std::endl
+       << "Directory Page: " << server.getDirectoryRequestPage() << std::endl;
 
     os << "Error Pages >" << std::endl;
     for (std::map<int, std::string>::const_iterator it = server.getErrorPages().begin();
@@ -91,11 +100,10 @@ std::ostream &operator<<(std::ostream &os, const Server &server) {
         os.flush();
     }
 
-    os << "Location: ";
     int i = 0;
     for (std::map<std::string, Location>::const_iterator it = server.getLocations().begin();
          it != server.getLocations().end(); ++it) {
-        os << ++i << std::endl << it->second << std::endl;
+        os << "Location " << ++i << " >" << std::endl << it->second << std::endl;
         os.flush();
     }
     return os;

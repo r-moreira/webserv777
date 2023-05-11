@@ -31,6 +31,8 @@ Multiplexer::~Multiplexer() {}
 
 
 void Multiplexer::event_loop() {
+    std::cout << GREEN << "Starting event loop" << RESET << std::endl;
+
     struct epoll_event epoll_events[MAX_EPOLL_EVENTS];
 
     while (true) {

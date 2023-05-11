@@ -166,14 +166,6 @@ void Event::setServer(Server server) {
     _server = server;
 }
 
-file_type_t Event::getFileType() const {
-    return _file_type;
-}
-
-void Event::setFileType(file_type_t fileType) {
-    _file_type = fileType;
-}
-
 event_http_status_enum_t Event::getHttpStatus() const {
     return _http_status;
 }

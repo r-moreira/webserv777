@@ -61,16 +61,6 @@ typedef enum EVENT_SUB_STATUS {
     SendingErrorResponse
 } event_sub_status_t;
 
-typedef enum FILE_TYPE {
-    Regular,
-    CGI,
-    AutoIndexPage,
-    DirectoryPage,
-    DefaultPage,
-    ErrorPage
-} file_type_t;
-
-
 typedef enum EVENT_HTTP_STATUS_ENUM {
     OK = 200,
     CREATED = 201,
@@ -81,7 +71,6 @@ typedef enum EVENT_HTTP_STATUS_ENUM {
     PAYLOAD_TOO_LARGE = 413,
     CLIENT_CLOSED_REQUEST = 499,
     INTERNAL_SERVER_ERROR = 500,
-    NOT_IMPLEMENTED = 501,
 } event_http_status_enum_t;
 
 
