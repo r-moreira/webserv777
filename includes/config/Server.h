@@ -21,9 +21,14 @@ private:
     long _max_body_size;
     std::string _directory_request_page;
     std::map<int, std::string> _error_pages;
-    std::map<std::string, Location> _locations;
+    std::vector<Location> _locations;
 public:
     Server();
+
+    const std::vector<Location> &getLocations() const;
+
+    void setLocations(const std::vector<Location> &locations);
+
     ~Server();
 
     const std::string &getName() const;
@@ -41,10 +46,6 @@ public:
     long getMaxBodySize() const;
 
     void setMaxBodySize(long maxBodySize);
-
-    const std::map<std::string, Location> &getLocations() const;
-
-    void setLocations(const std::map<std::string, Location> &locations);
 
     const std::string &getDirectoryRequestPage() const;
 

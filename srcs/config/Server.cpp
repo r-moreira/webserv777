@@ -9,7 +9,8 @@ Server::Server() {
     this->_fd = -1;
     this->_max_body_size = -1;
     Location location = Location();
-    this->_locations.insert(std::pair<std::string, Location>(location.getPath(), location));
+    std::vector<Location> locations;
+    locations.push_back(location);
 }
 
 Server::~Server() {
@@ -47,14 +48,6 @@ void Server::setMaxBodySize(long maxBodySize) {
     _max_body_size = maxBodySize;
 }
 
-const std::map<std::string, Location> &Server::getLocations() const {
-    return _locations;
-}
-
-void Server::setLocations(const std::map<std::string, Location> &locations) {
-    _locations = locations;
-}
-
 const std::string &Server::getDirectoryRequestPage() const {
     return _directory_request_page;
 }
@@ -87,6 +80,14 @@ void Server::setIndex(const std::string &index) {
     _index = index;
 }
 
+const std::vector<Location> &Server::getLocations() const {
+    return _locations;
+}
+
+void Server::setLocations(const std::vector<Location> &locations) {
+    _locations = locations;
+}
+
 std::ostream &operator<<(std::ostream &os, const Server &server) {
     os
        << "Name: " << server.getName() << std::endl
@@ -105,9 +106,9 @@ std::ostream &operator<<(std::ostream &os, const Server &server) {
     }
 
     int i = 0;
-    for (std::map<std::string, Location>::const_iterator it = server.getLocations().begin();
+    for (std::vector< Location>::const_iterator it = server.getLocations().begin();
          it != server.getLocations().end(); ++it) {
-        os << "Location " << ++i << " >" << std::endl << it->second << std::endl;
+        os << "Location " << ++i << " >" << std::endl << *it << std::endl;
         os.flush();
     }
     return os;

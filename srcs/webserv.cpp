@@ -42,7 +42,7 @@ int main(int argc, char **argv, char **env) {
 Server build_server_three(int port) {
     Server server = Server();
 
-    std::map<std::string, Location> locations = server.getLocations();
+    std::vector<Location> locations = server.getLocations();
     locations.clear();
 
     std::vector<std::string> allowed_method_get;
@@ -64,9 +64,9 @@ Server build_server_three(int port) {
     redirect_location.setRedirectUrl("https://google.com");
     redirect_location.setLimitExcept(allowed_method_get);
 
-    locations.insert(std::pair<std::string, Location>(website_location.getPath(), website_location));
-    locations.insert(std::pair<std::string, Location>(website_location2.getPath(), website_location2));
-    locations.insert(std::pair<std::string, Location>(redirect_location.getPath(), redirect_location));
+    locations.push_back(website_location);
+    locations.push_back(website_location2);
+    locations.push_back(redirect_location);
 
     std::map<int, std::string> error_pages;
     error_pages.insert(std::pair<int, std::string>(404, "./public/error-pages/404.html"));
@@ -82,7 +82,7 @@ Server build_server_three(int port) {
 
 Server build_server_two(int port) {
     Server server = Server();
-    std::map<std::string, Location> locations = server.getLocations();
+    std::vector<Location> locations = server.getLocations();
     locations.clear();
 
     std::vector<std::string> allowed_methods_get_post;
@@ -113,9 +113,9 @@ Server build_server_two(int port) {
     static_location.setRoot("./public/static");
     static_location.setLimitExcept(allowed_method_get);
 
-    locations.insert(std::pair<std::string, Location>(cgi_location.getPath(), cgi_location));
-    locations.insert(std::pair<std::string, Location>(upload_location.getPath(), upload_location));
-    locations.insert(std::pair<std::string, Location>(static_location.getPath(), static_location));
+    locations.push_back(cgi_location);
+    locations.push_back(upload_location);
+    locations.push_back(static_location);
 
     server.setPort(port);
     server.setDirectoryRequestPage("./public/directory-page/index.html");
@@ -125,13 +125,13 @@ Server build_server_two(int port) {
 
 Server build_server_one(int port) {
     Server server = Server();
-    std::map<std::string, Location> locations = server.getLocations();
+    std::vector<Location> locations = server.getLocations();
     locations.clear();
 
     Location hello_world_location = Location();
     hello_world_location.setPath("/hello");
 
-    locations.insert(std::pair<std::string, Location>(hello_world_location.getPath(), hello_world_location));
+    locations.push_back(hello_world_location);
 
     std::map<int, std::string> error_pages;
     error_pages.insert(std::pair<int, std::string>(500, "./public/error-pages/500.html"));

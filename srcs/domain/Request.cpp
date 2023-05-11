@@ -61,7 +61,7 @@ void Request::choose_location() {
 
     std::cout << CYAN << "Handling Location:" << CYAN << std::endl;
 
-    std::map<std::string, Location> locations = this->_event.getServer().getLocations();
+    std::vector<Location> locations = this->_event.getServer().getLocations();
 
     if (locations.empty()) {
         std::cerr << RED << "No locations found" << RESET << std::endl;
@@ -71,12 +71,12 @@ void Request::choose_location() {
 
     bool found = false;
     size_t location_path_size = 0;
-    for (std::map<std::string, Location>::iterator it = locations.begin(); it != locations.end(); it++) {
-        if (this->_event.getRequest().uri.rfind(it->first, 0) == 0) {
+    for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++) {
+        if (this->_event.getRequest().uri.rfind(it->getPath(), 0) == 0) {
 
-            if (it->second.getPath().size() > location_path_size) {
-                this->_event.setLocation(it->second);
-                location_path_size = it->second.getPath().size();
+            if (it->getPath().size() > location_path_size) {
+                this->_event.setLocation(*it);
+                location_path_size = it->getPath().size();
                 found = true;
             }
         }
