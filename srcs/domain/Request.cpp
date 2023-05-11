@@ -64,9 +64,7 @@ void Request::choose_location() {
     std::vector<Location> locations = this->_event.getServer().getLocations();
 
     if (locations.empty()) {
-        std::cerr << RED << "No locations found" << RESET << std::endl;
-        ErrorState::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
-        return;
+        locations.push_back(Location());
     }
 
     bool found = false;
@@ -142,14 +140,14 @@ void Request::define_response_state() {
 std::string Request::path_to_root() {
     std::string request_uri = this->_event.getRequest().uri;
     std::string location_path = this->_event.getLocation().getPath();
-    std::string location_root = "./";
-    std::string index = "index.html";
 
-    location_root = !this->_event.getServer().getRoot().empty() ? this->_event.getServer().getRoot() : location_root;
-    location_root = !this->_event.getLocation().getRoot().empty() ? this->_event.getLocation().getRoot() : location_root;
+    std::string location_root = !this->_event.getLocation().getRoot().empty()
+            ? this->_event.getLocation().getRoot()
+            : this->_event.getServer().getRoot();
 
-    index = !this->_event.getServer().getIndex().empty() ? this->_event.getServer().getIndex() : index;
-    index = !this->_event.getLocation().getIndex().empty() ? this->_event.getLocation().getIndex() : index;
+    std::string index = !this->_event.getLocation().getIndex().empty()
+            ? this->_event.getLocation().getIndex()
+            : this->_event.getServer().getIndex();
 
     std::cout << BLUE << "request_uri: " << request_uri << RESET << std::endl;
     std::cout << BLUE << "location_path: " << location_path << RESET << std::endl;

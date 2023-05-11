@@ -9,7 +9,7 @@ EventHandler::EventHandler(Event &event, std::vector<Server> &servers) :_servers
 EventHandler::~EventHandler() {}
 
 //TODO Features
-// Implementar suporte a location redirect, cgi, upload e auto_index
+// Implementar suporte a location redirect, cgi, upload e auto_index (Via server e location)
 // Fazer o parser de configuração instânciar os servidores e locations
 // Fazer o parse da request http
 // Apagar o arquivo quando o método for DELETE

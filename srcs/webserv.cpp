@@ -8,6 +8,12 @@ Server build_server_two(int port);
 
 Server build_server_three(int port);
 
+Server build_default_server(int port);
+
+std::vector<Server> servers_builder();
+
+void start_servers(std::vector<Server> &servers);
+
 int main(int argc, char **argv, char **env) {
     signal(SIGPIPE, SIG_IGN);
 
@@ -16,27 +22,47 @@ int main(int argc, char **argv, char **env) {
         return EXIT_FAILURE;
     }
 
-    srand(time(0));
-    int port = 8080 + rand() % 10;
-    Server server = build_server_one(port);
-    Server server2 = build_server_two(port + 1);
-    Server server3 = build_server_three(port + 2);
-
-    std::vector<Server> servers;
-    servers.insert(servers.begin(), server);
-    servers.insert(servers.begin() + 1, server2);
-    servers.insert(servers.begin() + 2, server3);
-
-    for (std::vector<Server>::iterator it = servers.begin(); it != servers.end(); it++) {
-        sleep(1);
-        it->setFd(Socket::setupServer(it->getPort()));
-        std::cout << BLUE << *it << RESET << std::endl << std::flush;
-    }
+    std::vector<Server> servers = servers_builder();
+    start_servers(servers);
 
     Multiplexer multiplexer(servers);
     multiplexer.event_loop();
 
     return EXIT_SUCCESS;
+}
+
+void start_servers(std::vector<Server> &servers) {
+    for (std::vector<Server>::iterator it = servers.begin(); it != servers.end(); it++) {
+        sleep(1);
+        it->setFd(Socket::setupServer(it->getPort()));
+        std::cout << BLUE << *it << RESET << std::endl << std::flush;
+    }
+}
+
+std::vector<Server> servers_builder() {
+    //Rand apenas para evitar conflito de porta.
+    srand(time(0));
+    int port = 8080 + rand() % 10;
+
+    Server default_server = build_default_server(port);
+    Server server = build_server_one(port + 1);
+    Server server2 = build_server_two(port + 2);
+    Server server3 = build_server_three(port + 3);
+
+    std::vector<Server> servers;
+    servers.insert(servers.begin(), default_server);
+    servers.insert(servers.begin() + 1, server);
+    servers.insert(servers.begin() + 2, server2);
+    servers.insert(servers.begin() + 3, server3);
+    return servers;
+}
+
+Server build_default_server(int port) {
+    Server server = Server();
+
+    // Não precisa setar nem a porta, por default será 8080, apenas para evitar conflito de porta.
+    server.setPort(port);
+    return server;
 }
 
 Server build_server_three(int port) {
@@ -101,6 +127,7 @@ Server build_server_two(int port) {
 
     Location upload_location = Location();
     upload_location.setUploadLock(true);
+    upload_location.setAutoIndex(true);
     upload_location.setPath("/upload");
     upload_location.setLimitExcept(allowed_method_post);
 
@@ -109,6 +136,7 @@ Server build_server_two(int port) {
     allowed_method_get.push_back("GET");
 
     Location static_location = Location();
+    upload_location.setAutoIndex(true);
     static_location.setPath("/images");
     static_location.setRoot("./public/static");
     static_location.setLimitExcept(allowed_method_get);
@@ -134,11 +162,13 @@ Server build_server_one(int port) {
     locations.push_back(hello_world_location);
 
     std::map<int, std::string> error_pages;
-    error_pages.insert(std::pair<int, std::string>(500, "./public/error-pages/500.html"));
+    error_pages.insert(std::pair<int, std::string>(404, "./public/error-pages/404.html"));
 
     server.setName("webserv");
     server.setIndex("hello.html");
     server.setRoot("./public/hello-world");
+    server.setDirectoryRequestPage("./public/directory-page/index.html");
+    server.setAutoindex(true);
     server.setPort(port);
     server.setMaxBodySize(10);
     server.setErrorPages(error_pages);

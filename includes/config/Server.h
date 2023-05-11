@@ -22,6 +22,7 @@ private:
     std::string _directory_request_page;
     std::map<int, std::string> _error_pages;
     std::vector<Location> _locations;
+    bool _autoindex;
 public:
     Server();
 
@@ -62,6 +63,10 @@ public:
     const std::string &getIndex() const;
 
     void setIndex(const std::string &index);
+
+    bool isAutoindex() const;
+
+    void setAutoindex(bool autoindex);
 };
 
 std::ostream& operator << (std::ostream& os, const Server& obj);

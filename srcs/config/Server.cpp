@@ -5,12 +5,12 @@
 #include "../../includes/config/Server.h"
 
 Server::Server() {
-    this->_port = 80;
+    this->_port = 8080;
+    this->_index = "index.html";
+    this->_root = "./";
     this->_fd = -1;
     this->_max_body_size = -1;
-    Location location = Location();
-    std::vector<Location> locations;
-    locations.push_back(location);
+    this->_autoindex = false;
 }
 
 Server::~Server() {
@@ -88,12 +88,21 @@ void Server::setLocations(const std::vector<Location> &locations) {
     _locations = locations;
 }
 
+bool Server::isAutoindex() const {
+    return _autoindex;
+}
+
+void Server::setAutoindex(bool autoindex) {
+    _autoindex = autoindex;
+}
+
 std::ostream &operator<<(std::ostream &os, const Server &server) {
     os
        << "Name: " << server.getName() << std::endl
        << "Port: " << server.getPort() << std::endl
        << "Root: " << server.getRoot() << std::endl
        << "Index: " << server.getIndex() << std::endl
+       << "Auto Index: " << server.isAutoindex() << std::endl
        << "Max Body Size: " << server.getMaxBodySize() << std::endl
        << "File Descriptor: " << server.getFd() << std::endl
        << "Directory Page: " << server.getDirectoryRequestPage() << std::endl;
