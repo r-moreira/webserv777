@@ -26,6 +26,7 @@ void EventHandler::process_event() {
             case ChoosingLocation: _request.choose_location();
             case ValidatingConstraints: _request.validate_constraints();
             case DefiningResponseState: _request.define_response_state();
+                break;
             default:
                 std::cerr << RED << "Invalid Reading Event Status" << RESET << std::endl;
                 break;
