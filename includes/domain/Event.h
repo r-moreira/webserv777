@@ -35,6 +35,9 @@ private:
     bool _header_sent;
     bool _file_opened;
     bool _error_response;
+    bool _forced_redirect;
+
+    std::string _forced_redirect_location;
 
     Server _server;
     Location _location;
@@ -124,6 +127,14 @@ public:
     bool isErrorResponse() const;
 
     void setErrorResponse(bool errorResponse);
+
+    bool isForcedRedirect() const;
+
+    void setForcedRedirect(bool forcedRedirect);
+
+    const std::string &getForcedRedirectLocation() const;
+
+    void setForcedRedirectLocation(const std::string &forcedRedirectLocation);
 };
 
 

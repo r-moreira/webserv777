@@ -25,6 +25,8 @@ Event::Event(int server_fd, int client_fd) {
     this->_header_sent = false;
     this->_file_opened = false;
     this->_error_response = false;
+    this->_forced_redirect = false;
+
 
     this->_event_status = Reading;
     this->_event_sub_status = ReadingRequest;
@@ -204,5 +206,21 @@ bool Event::isErrorResponse() const {
 
 void Event::setErrorResponse(bool errorResponse) {
     _error_response = errorResponse;
+}
+
+bool Event::isForcedRedirect() const {
+    return _forced_redirect;
+}
+
+void Event::setForcedRedirect(bool forcedRedirect) {
+    _forced_redirect = forcedRedirect;
+}
+
+const std::string &Event::getForcedRedirectLocation() const {
+    return _forced_redirect_location;
+}
+
+void Event::setForcedRedirectLocation(const std::string &forcedRedirectLocation) {
+    _forced_redirect_location = forcedRedirectLocation;
 }
 

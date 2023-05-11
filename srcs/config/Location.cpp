@@ -44,7 +44,7 @@ const std::string &Location::getRedirectLocation() const {
     return _redirect_location;
 }
 
-void Location::getRedirectLocation(const std::string &redirectLocation) {
+void Location::setRedirectLocation(const std::string &redirectLocation) {
     _redirect_location = redirectLocation;
 }
 

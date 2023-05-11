@@ -39,7 +39,7 @@ public:
 
     const std::string &getRedirectLocation() const;
 
-    void getRedirectLocation(const std::string &redirectLocation);
+    void setRedirectLocation(const std::string &redirectLocation);
 
     const std::string &getCgiPath() const;
 

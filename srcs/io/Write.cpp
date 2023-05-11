@@ -59,11 +59,20 @@ void Write::write_error_headers() {
     this->_event.setHeaderSent(true);
 }
 void Write::write_redirection_headers() {
+
+    if (this->_event.isForcedRedirect()) {
+        std::cout << CYAN << "Send forced redirection headers:" << RESET << std::endl;
+
+        write_headers(this->_headers.getRedirectionHeaders(this->_event.getForcedRedirectLocation()));
+        if (ErrorState::is_error_state(this->_event)) return;
+        this->_event.setHeaderSent(true);
+        return;
+    }
+
     std::cout << CYAN << "Send redirection headers:" << RESET << std::endl;
-
     write_headers(this->_headers.getRedirectionHeaders(this->_event.getLocation().getRedirectLocation()));
-    if (ErrorState::is_error_state(this->_event)) return;
 
+    if (ErrorState::is_error_state(this->_event)) return;
     this->_event.setHeaderSent(true);
 }
 

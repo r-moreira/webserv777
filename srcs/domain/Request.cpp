@@ -48,8 +48,7 @@ void Request::choose_server(std::vector<Server> servers) {
         }
     }
 
-    std::cout << BLUE << "Choosed server = name: " <<
-        this->_event.getServer().getName() << " port: " <<
+    std::cout << BLUE << "Choosed server = name: " << this->_event.getServer().getName() << " | port: " <<
         this->_event.getServer().getPort() << RESET << std::endl << std::endl;
 
     this->_event.setEventSubStatus(ChoosingLocation);
@@ -137,6 +136,21 @@ void Request::define_response_state() {
 
     std::cout << CYAN << "Defining Response State" << RESET << std::endl;
 
+
+    //Se o path da requisição for igual ao path da location e terminar sem a "/" é necessário fazer um redirect para adicionando a "/"
+    //  necessário para o navegador requisitar o diretório correto.
+    std::string request_uri = this->_event.getRequest().uri;
+    if (request_uri.length() > 1 && request_uri[request_uri.length() - 1] != '/' && request_uri == this->_event.getLocation().getPath()) {
+        std::cout << MAGENTA << "Redirecting to location with /" << RESET << std::endl;
+        std::string redirect_uri = request_uri + "/";
+        this->_event.setForcedRedirect(true);
+        this->_event.setForcedRedirectLocation(redirect_uri);
+        this->_event.setEventSubStatus(SendingRedirectionResponse);
+        this->_event.setEventStatus(Writing);
+        return;
+    }
+
+
     if (this->_event.getLocation().isRedirectLock()) {
         std::cout << MAGENTA << "Redirection Event" << RESET << std::endl;
 
@@ -176,7 +190,7 @@ std::string Request::path_to_root() {
                                     request_uri.substr(0, request_uri.length() - 1) : request_uri;
 
     if (request_without_slash == location_path) {
-       request_uri = request_uri + "/" + index;
+       request_uri = request_without_slash + "/" + index;
     }
 
     if (this->_event.getLocation().getPath() == "/") {
