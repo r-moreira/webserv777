@@ -91,6 +91,8 @@ std::ostream &operator<<(std::ostream &os, const Server &server) {
     os
        << "Name: " << server.getName() << std::endl
        << "Port: " << server.getPort() << std::endl
+       << "Root: " << server.getRoot() << std::endl
+       << "Index: " << server.getIndex() << std::endl
        << "Max Body Size: " << server.getMaxBodySize() << std::endl
        << "File Descriptor: " << server.getFd() << std::endl
        << "Directory Page: " << server.getDirectoryRequestPage() << std::endl;

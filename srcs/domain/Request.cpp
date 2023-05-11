@@ -151,6 +151,11 @@ std::string Request::path_to_root() {
     index = !this->_event.getServer().getIndex().empty() ? this->_event.getServer().getIndex() : index;
     index = !this->_event.getLocation().getIndex().empty() ? this->_event.getLocation().getIndex() : index;
 
+    std::cout << BLUE << "request_uri: " << request_uri << RESET << std::endl;
+    std::cout << BLUE << "location_path: " << location_path << RESET << std::endl;
+    std::cout << BLUE << "location_root: " << location_root << RESET << std::endl;
+    std::cout << BLUE << "index: " << index << RESET << std::endl;
+
     std::string request_without_slash = request_uri.length() > 1 && request_uri[request_uri.length() - 1] == '/' ?
                                     request_uri.substr(0, request_uri.length() - 1) : request_uri;
 
@@ -163,10 +168,8 @@ std::string Request::path_to_root() {
     }
 
     size_t pos = 0;
-    while ((pos = request_uri.find(location_path, pos)) != std::string::npos) {
-        request_uri.replace(pos, location_path.length(), location_root);
-        pos += location_root.length();
-    }
+    pos = request_uri.find(location_path, pos);
+    request_uri.replace(pos, location_path.length(), location_root);
 
     return request_uri;
 }
