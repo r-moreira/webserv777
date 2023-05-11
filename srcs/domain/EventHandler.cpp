@@ -15,13 +15,11 @@ EventHandler::~EventHandler() {}
 // Apagar o arquivo quando o método for DELETE
 // Setup multiple servers with different hostnames (use something like: curl --resolve
 //      example.com:80:127.0.0.1 http://example.com/ (http://example.com/)).
-// Talvez não precise checar o errno para ver se é diretório, considerar diretório se não houver extensao de arquivo e diferente do location.path
 
 //TODO Atuais:
 // Fazer gerênciamento do estado do evento com base no location, retornar página de exemplo para ver se deu certo
-// Adicionar opção de root e index no server
-//      Dentro de request.path_to_root, se não tiver root da location, usar o do server
-//      Dentro de request.path_to_index, se não tiver index da location, usar o do server
+// Verificar se é possível checar se é diretório sem usar o errno,
+//      ex: considerar diretório se não houver extensao de arquivo e diferente do location.path
 void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Reading) {
 
