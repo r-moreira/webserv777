@@ -23,8 +23,7 @@ void Response::send_is_directory_response() {
     std::cout << MAGENTA << "Send directory error response" << RESET << std::endl;
 
 
-    if (!_event.getServer().getDirectoryRequestPage().empty())
-    {
+    if (!_event.getServer().getDirectoryRequestPage().empty()) {
         ErrorState::normalize_error_state(_event);
         this->_event.setFileOpened(false);
         this->_event.setFile(NULL);
