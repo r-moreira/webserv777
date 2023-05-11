@@ -82,9 +82,7 @@ void Server::setIndex(const std::string &index) {
 }
 
 
-//TODO: Printar todos os locations
 std::ostream &operator<<(std::ostream &os, const Server &server) {
-
     os
        << "Name: " << server.getName() << std::endl
        << "Port: " << server.getPort() << std::endl
