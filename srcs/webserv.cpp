@@ -72,17 +72,23 @@ Server build_server_three(int port) {
     std::vector<std::string> allowed_method_get;
     allowed_method_get.push_back("GET");
 
-    Location website_location = Location();
-    website_location.setPath("/");
-    website_location.setRoot("./public/website");
-    website_location.setIndex("index.html");
-    website_location.setLimitExcept(allowed_method_get);
+    Location puppy_care_location_one = Location();
+    puppy_care_location_one.setPath("/");
+    puppy_care_location_one.setRoot("./public/puppy-care");
+    puppy_care_location_one.setIndex("index.html");
+    puppy_care_location_one.setLimitExcept(allowed_method_get);
 
-    Location website_location2 = Location();
-    website_location2.setPath("/puppy");
-    website_location2.setRoot("./public/website");
-    website_location.setIndex("index.html");
-    website_location.setLimitExcept(allowed_method_get);
+    Location puppy_care_location_two = Location();
+    puppy_care_location_two.setPath("/care");
+    puppy_care_location_two.setRoot("./public/puppy-care");
+    puppy_care_location_one.setIndex("index.html");
+    puppy_care_location_one.setLimitExcept(allowed_method_get);
+
+    Location pet_lover_location = Location();
+    pet_lover_location.setPath("/lover");
+    pet_lover_location.setRoot("./public/pet-lover");
+    pet_lover_location.setIndex("index.html");
+    pet_lover_location.setLimitExcept(allowed_method_get);
 
     Location redirect_location = Location();
     redirect_location.setRedirectLock(true);
@@ -90,8 +96,9 @@ Server build_server_three(int port) {
     redirect_location.setRedirectLocation("https://google.com");
     redirect_location.setLimitExcept(allowed_method_get);
 
-//    locations.push_back(website_location);
-    locations.push_back(website_location2);
+    locations.push_back(puppy_care_location_one);
+    locations.push_back(puppy_care_location_two);
+    locations.push_back(pet_lover_location);
     locations.push_back(redirect_location);
 
     std::map<int, std::string> error_pages;
