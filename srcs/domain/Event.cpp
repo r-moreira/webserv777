@@ -24,6 +24,7 @@ Event::Event(int server_fd, int client_fd) {
 
     this->_header_sent = false;
     this->_file_opened = false;
+    this->_error_response = false;
 
     this->_event_status = Reading;
     this->_event_sub_status = ReadingRequest;
@@ -36,6 +37,18 @@ Event::~Event() {
     }
     close(this->getClientFd());
 }
+
+
+void Event::clear_file_info() {
+    this->setFileOpened(false);
+    this->setFile(NULL);
+    this->setFilePath("");
+    this->setFileReadBytes(0);
+    this->setFileChunkReadBytes(0);
+    this->setFileSize(0);
+}
+
+
 
 int Event::getServerFd() const {
     return _server_fd;
@@ -193,4 +206,11 @@ void Event::setFileOpened(bool fileOpened) {
     _file_opened = fileOpened;
 }
 
+bool Event::isErrorResponse() const {
+    return _error_response;
+}
+
+void Event::setErrorResponse(bool errorResponse) {
+    _error_response = errorResponse;
+}
 

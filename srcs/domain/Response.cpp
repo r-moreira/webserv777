@@ -15,25 +15,16 @@ void Response::send_response_file() {
     _write.write_requested_file();
 }
 
-//TODO:: Checar se a pagina de diretório está configurada:
-// caso exista retorna-la,
-// caso contratio, retornar paginas de erro padrão do webserv
-// Fazer tratamento caso o arquivo não exista
 void Response::send_is_directory_response() {
     std::cout << MAGENTA << "Send directory error response" << RESET << std::endl;
 
-
     if (!_event.getServer().getDirectoryRequestPage().empty()) {
-        ErrorState::normalize_error_state(_event);
-        this->_event.setFileOpened(false);
-        this->_event.setFile(NULL);
+        this->_event.setErrorResponse(true);
+        this->_event.clear_file_info();
         this->_event.setFilePath(_event.getServer().getDirectoryRequestPage());
-        this->_event.setFileReadBytes(0);
-        this->_event.setFileChunkReadBytes(0);
-        this->_event.setFileSize(0);
         _file.open_file();
         _read.read_file();
-        _write.write_file_response_headers();
+        _write.write_error_headers();
         _write.write_requested_file();
     }
     else {
@@ -44,18 +35,22 @@ void Response::send_is_directory_response() {
     _event.setEventStatus(Ended);
 }
 
-//TODO:: Checar se existem paginas de erro padrão configuradas:
-// caso exista retorna-las,
-// caso contratio, retornar paginas de erro padrão do webserv
 void Response::send_error_response() {
-    // if existe uma pagina de erro configurada para o erro atual
-    // read_error_configured_page(path_da_config_da_pagina_de_erro)
-    // _write.write_error_headers();
-    // _write.write_configured_error_page();
+    std::cout << MAGENTA << "Send error response" << RESET << std::endl;
 
-    // else
-    _write.write_error_headers();
-    _write.write_default_error_page();
+    try {
+        std::string error_page_path = _event.getServer().getErrorPages().at(_event.getHttpStatus());
+        this->_event.setErrorResponse(true);
+        this->_event.clear_file_info();
+        this->_event.setFilePath(error_page_path);
+        _file.open_file();
+        _read.read_file();
+        _write.write_error_headers();
+        _write.write_requested_file();
+    } catch (std::out_of_range &e) {
+        _write.write_error_headers();
+        _write.write_default_error_page();
+    }
 
     _event.setEventStatus(Ended);
 }

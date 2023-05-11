@@ -14,8 +14,7 @@ EventHandler::~EventHandler() {}
 // Fazer o parse da request http
 
 //TODO Atuais:
-// Fazer leitura de arquivos de paginas de erro/diretório com base na configuração para poder responde-la ao client
-// Fazer gerênciamento do estado do evento com base no location
+// Fazer gerênciamento do estado do evento com base no location, retornar página de exemplo para ver se deu certo
 void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Reading) {
 

@@ -35,6 +35,7 @@ private:
 
     bool _header_sent;
     bool _file_opened;
+    bool _error_response;
 
     Server _server;
     Location _location;
@@ -44,6 +45,8 @@ public:
     Event(int server_fd, int client_fd);
 
     ~Event();
+
+    void clear_file_info();
 
     int getServerFd() const;
 
@@ -122,6 +125,10 @@ public:
     bool isFileOpened() const;
 
     void setFileOpened(bool fileOpened);
+
+    bool isErrorResponse() const;
+
+    void setErrorResponse(bool errorResponse);
 };
 
 
