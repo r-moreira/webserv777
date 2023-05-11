@@ -40,12 +40,12 @@ void Location::setLimitExcept(const std::vector<std::string> &limitExcept) {
     _limit_except = limitExcept;
 }
 
-const std::string &Location::getRedirectUrl() const {
-    return _redirect_url;
+const std::string &Location::getRedirectLocation() const {
+    return _redirect_location;
 }
 
-void Location::setRedirectUrl(const std::string &redirectUrl) {
-    _redirect_url = redirectUrl;
+void Location::getRedirectLocation(const std::string &redirectLocation) {
+    _redirect_location = redirectLocation;
 }
 
 const std::string &Location::getCgiPath() const {
@@ -107,10 +107,10 @@ void Location::setIndex(const std::string &index) {
 
 std::ostream &operator<<(std::ostream &os, const Location &location) {
     os
-        << "\tPath: " << location.getPath() << std::endl
-        << "\tRoot: " << location.getRoot() << std::endl
-        << "\tIndex: " << location.getIndex() << std::endl
-        << "\tRedirect Url: " << location.getRedirectUrl() << std::endl
+            << "\tPath: " << location.getPath() << std::endl
+            << "\tRoot: " << location.getRoot() << std::endl
+            << "\tIndex: " << location.getIndex() << std::endl
+            << "\tRedirect Url: " << location.getRedirectLocation() << std::endl
         << "\tCgi Path: " << location.getCgiPath() << std::endl
         << "\tUpload Path: " << location.getUploadPath() << std::endl
         << "\tAuto Index: " << location.isAutoIndex() << std::endl

@@ -9,10 +9,19 @@ Response::Response(Event &event): _event(event), _file(event), _read(event), _wr
 Response::~Response() {}
 
 void Response::send_response_file() {
+    std::cout << MAGENTA << "Send file response" << RESET << std::endl;
+
     _file.open_file();
     _read.read_file();
     _write.write_file_response_headers();
     _write.write_requested_file();
+}
+
+void Response::send_redirection() {
+    std::cout << MAGENTA << "Send redirection response" << RESET << std::endl;
+
+    _write.write_redirection_headers();
+    _event.setEventStatus(Ended);
 }
 
 void Response::send_is_directory_response() {

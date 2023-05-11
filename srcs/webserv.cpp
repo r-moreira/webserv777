@@ -87,7 +87,7 @@ Server build_server_three(int port) {
     Location redirect_location = Location();
     redirect_location.setRedirectLock(true);
     redirect_location.setPath("/redirect");
-    redirect_location.setRedirectUrl("https://google.com");
+    redirect_location.getRedirectLocation("https://google.com");
     redirect_location.setLimitExcept(allowed_method_get);
 
 //    locations.push_back(website_location);

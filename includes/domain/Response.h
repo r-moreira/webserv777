@@ -32,6 +32,8 @@ public:
 
     void send_is_directory_response();
 
+    void send_redirection();
+
 private:
     void write_requested_file();
 

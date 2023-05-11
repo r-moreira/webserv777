@@ -57,6 +57,7 @@ typedef enum EVENT_SUB_STATUS {
     ValidatingConstraints,
     DefiningResponseState,
     SendingResponseFile,
+    SendingRedirectionResponse,
     SendingDirectoryResponse,
     SendingErrorResponse
 } event_sub_status_t;

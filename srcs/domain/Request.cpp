@@ -63,6 +63,8 @@ void Request::choose_server(std::vector<Server> servers) {
 // Nesse caso, caso o servidor não possua um location raiz /:
 //  e vier uma requisição que bate exatamente com algum location path configurado sem o "/" no final,
 //  Criar uma location com o root do path configurado que veio sem o "/" no final para prosseguir com o evento
+
+// Ou trocar tudo isso por um redict para a location que vem sem o "/" no final, adicionando o "/" no final para o navegador chamar certo
 void Request::choose_location() {
     if (ErrorState::is_error_state(this->_event)) return;
 
@@ -135,7 +137,16 @@ void Request::define_response_state() {
 
     std::cout << CYAN << "Defining Response State" << RESET << std::endl;
 
-    std::cout << MAGENTA << "Evento regular, fluxo: Path To Root" << RESET << std::endl;
+    if (this->_event.getLocation().isRedirectLock()) {
+        std::cout << MAGENTA << "Redirection Event" << RESET << std::endl;
+
+        this->_event.setEventSubStatus(SendingRedirectionResponse);
+        this->_event.setEventStatus(Writing);
+        return;
+    }
+
+
+    std::cout << MAGENTA << "Regular Event" << RESET << std::endl;
     this->_event.setFilePath(path_to_root());
 
     //Mandar para o estado de acordo com o tipo de request/location

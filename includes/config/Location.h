@@ -14,7 +14,7 @@ private:
     std::string _root;
     std::string _index;
     std::vector<std::string> _limit_except;
-    std::string _redirect_url;
+    std::string _redirect_location;
     std::string _cgi_path;
     std::string _upload_path;
     bool _auto_index;
@@ -37,9 +37,9 @@ public:
 
     void setLimitExcept(const std::vector<std::string> &limitExcept);
 
-    const std::string &getRedirectUrl() const;
+    const std::string &getRedirectLocation() const;
 
-    void setRedirectUrl(const std::string &redirectUrl);
+    void getRedirectLocation(const std::string &redirectLocation);
 
     const std::string &getCgiPath() const;
 

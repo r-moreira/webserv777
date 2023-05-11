@@ -25,6 +25,8 @@ public:
 
     void write_file_response_headers();
 
+    void write_redirection_headers();
+
     void write_requested_file();
 
     void write_default_error_page();

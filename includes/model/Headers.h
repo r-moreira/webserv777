@@ -19,6 +19,8 @@ public:
     std::string getErrorHeaders(event_http_status_enum_t status);
 
     std::string getFileHeaders(const std::string &file_path, size_t file_size);
+
+    std::string getRedirectionHeaders(const std::string &location);
 };
 
 

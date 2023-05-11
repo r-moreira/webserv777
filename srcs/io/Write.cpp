@@ -58,6 +58,15 @@ void Write::write_error_headers() {
 
     this->_event.setHeaderSent(true);
 }
+void Write::write_redirection_headers() {
+    std::cout << CYAN << "Send redirection headers:" << RESET << std::endl;
+
+    write_headers(this->_headers.getRedirectionHeaders(this->_event.getLocation().getRedirectLocation()));
+    if (ErrorState::is_error_state(this->_event)) return;
+
+    this->_event.setHeaderSent(true);
+}
+
 
 void Write::write_headers(const std::string &headers) {
     std::cout << CYAN << "Response Headers:\n" << headers << RESET << std::endl;

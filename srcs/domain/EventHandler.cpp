@@ -16,6 +16,13 @@ EventHandler::~EventHandler() {}
 // Setup multiple servers with different hostnames (use something like: curl --resolve
 //      example.com:80:127.0.0.1 http://example.com/ (http://example.com/)).
 
+//TODO: IMPORTANTE!
+// Avaliar possível solução para o problema de não conseguir carregar páginas com mais de uma arquivo
+//      em caso de erro, porque atualmente o servidor redireciona internamente
+// Solução 1)
+//      Ao invés do servidor redirecionar internamente, mandar um redirect para o navegador requistar a página de erro
+//      E em toda requisição será necessário checar se é uma pagina de erro, para retornar o status de acordo
+
 //TODO Atuais:
 // Fazer gerênciamento do estado do evento com base no location, retornar página de exemplo para ver se deu certo
 // Suportar limit_except (Via server e location)
@@ -47,8 +54,8 @@ void EventHandler::process_event() {
                 break;
             //case UploadingFile: _response.upload_file();
                 break;
-            //case SendingRedirectionResponse: _response.handle_redirection(); --> responder 302 para o navegador chamar outro site
-                //break;
+            case SendingRedirectionResponse: _response.send_redirection();
+                break;
             //case SendingCgiResponse: _response.send_cgi();
                 //break;
             // case SendingAutoIndexResponse: _response.send_auto_index();
@@ -92,6 +99,8 @@ void EventHandler::print_event_status() {
         case ChoosingLocation: sub_status = "ChoosingLocation";
             break;
         case DefiningResponseState: sub_status = "DefiningResponseState";
+            break;
+        case SendingRedirectionResponse: sub_status = "SendingRedirectionResponse";
             break;
         case SendingDirectoryResponse: sub_status = "SendingDirectoryResponse";
             break;
