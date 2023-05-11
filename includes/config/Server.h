@@ -14,6 +14,8 @@ class Server {
 
 private:
     std::string _name;
+    std::string _root;
+    std::string _index;
     int _port;
     int _fd;
     long _max_body_size;
@@ -51,6 +53,14 @@ public:
     const std::map<int, std::string> &getErrorPages() const;
 
     void setErrorPages(const std::map<int, std::string> &errorPages);
+
+    const std::string &getRoot() const;
+
+    void setRoot(const std::string &root);
+
+    const std::string &getIndex() const;
+
+    void setIndex(const std::string &index);
 };
 
 std::ostream& operator << (std::ostream& os, const Server& obj);

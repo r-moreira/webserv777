@@ -131,12 +131,7 @@ void Request::define_response_state() {
     std::cout << CYAN << "Defining Response State" << RESET << std::endl;
 
     std::cout << MAGENTA << "Evento regular, fluxo: Path To Root" << RESET << std::endl;
-    std::string file_path = path_to_root(
-            this->_event.getRequest().uri,
-            this->_event.getLocation().getPath(),
-            this->_event.getLocation().getRoot());
-
-    this->_event.setFilePath(file_path);
+    this->_event.setFilePath(path_to_root());
 
     //Mandar para o estado de acordo com o tipo de request/location
     this->_event.setEventSubStatus(SendingResponseFile);
@@ -144,14 +139,23 @@ void Request::define_response_state() {
     this->_event.setEventStatus(Writing);
 }
 
-std::string Request::path_to_root(std::string request_uri, const std::string& location_path,
-                                  const std::string& location_root) {
+std::string Request::path_to_root() {
+    std::string request_uri = this->_event.getRequest().uri;
+    std::string location_path = this->_event.getLocation().getPath();
+    std::string location_root = "./";
+    std::string index = "index.html";
+
+    location_root = !this->_event.getServer().getRoot().empty() ? this->_event.getServer().getRoot() : location_root;
+    location_root = !this->_event.getLocation().getRoot().empty() ? this->_event.getLocation().getRoot() : location_root;
+
+    index = !this->_event.getServer().getIndex().empty() ? this->_event.getServer().getIndex() : index;
+    index = !this->_event.getLocation().getIndex().empty() ? this->_event.getLocation().getIndex() : index;
 
     std::string request_without_slash = request_uri.length() > 1 && request_uri[request_uri.length() - 1] == '/' ?
-                                        request_uri.substr(0, request_uri.length() - 1) : request_uri;
+                                    request_uri.substr(0, request_uri.length() - 1) : request_uri;
 
-    if (request_without_slash == location_path && !this->_event.getLocation().getIndex().empty()) {
-       request_uri = request_uri + "/" + this->_event.getLocation().getIndex();
+    if (request_without_slash == location_path) {
+       request_uri = request_uri + "/" + index;
     }
 
     if (this->_event.getLocation().getPath() == "/") {

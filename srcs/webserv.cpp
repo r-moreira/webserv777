@@ -128,19 +128,17 @@ Server build_server_one(int port) {
     std::map<std::string, Location> locations = server.getLocations();
     locations.clear();
 
-
     Location hello_world_location = Location();
     hello_world_location.setPath("/hello");
-    hello_world_location.setRoot("./public/hello-world");
-    hello_world_location.setIndex("index.html");
 
     locations.insert(std::pair<std::string, Location>(hello_world_location.getPath(), hello_world_location));
-
 
     std::map<int, std::string> error_pages;
     error_pages.insert(std::pair<int, std::string>(500, "./public/error-pages/500.html"));
 
     server.setName("webserv");
+    server.setIndex("hello.html");
+    server.setRoot("./public/hello-world");
     server.setPort(port);
     server.setMaxBodySize(10);
     server.setErrorPages(error_pages);

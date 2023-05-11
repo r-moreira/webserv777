@@ -6,8 +6,6 @@
 
 Location::Location() {
     this->_path = "/";
-    this->_root = "./public";
-    this->_index = "index.html";
     this->_limit_except = std::vector<std::string>();
     this->_limit_except.push_back("GET");
     this->_limit_except.push_back("POST");

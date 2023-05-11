@@ -8,7 +8,6 @@ Server::Server() {
     this->_port = 80;
     this->_fd = -1;
     this->_max_body_size = -1;
-
     Location location = Location();
     this->_locations.insert(std::pair<std::string, Location>(location.getPath(), location));
 }
@@ -70,6 +69,22 @@ const std::map<int, std::string> &Server::getErrorPages() const {
 
 void Server::setErrorPages(const std::map<int, std::string> &errorPages) {
     _error_pages = errorPages;
+}
+
+const std::string &Server::getRoot() const {
+    return _root;
+}
+
+void Server::setRoot(const std::string &root) {
+    _root = root;
+}
+
+const std::string &Server::getIndex() const {
+    return _index;
+}
+
+void Server::setIndex(const std::string &index) {
+    _index = index;
 }
 
 std::ostream &operator<<(std::ostream &os, const Server &server) {
