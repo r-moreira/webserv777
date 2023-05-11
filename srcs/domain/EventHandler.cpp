@@ -18,6 +18,10 @@ EventHandler::~EventHandler() {}
 
 //TODO Atuais:
 // Fazer gerênciamento do estado do evento com base no location, retornar página de exemplo para ver se deu certo
+// Suportar limit_except (Via server e location)
+// Suportar max_body_size (Via server e location)
+// Suportar error_page (Via server e location)
+// Suportar directory page (Via server e location)
 // Verificar se é possível checar se é diretório sem usar o errno,
 //      ex: considerar diretório se não houver extensao de arquivo e diferente do location.path
 void EventHandler::process_event() {
