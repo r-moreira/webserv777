@@ -26,7 +26,6 @@ void File::open_file() {
             return;
         }
         this->_event.setFile(fptr);
-        //Por algum motivo readbytes precisa ser inicializado neste momento
         this->_event.setFileReadBytes(0);
     }
 
