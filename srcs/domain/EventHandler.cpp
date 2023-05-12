@@ -11,9 +11,10 @@ EventHandler::~EventHandler() {}
 //TODO Server Features:
 // Implementar suporte a location redirect, cgi, upload e auto_index (Via server e location)
 // Fazer o parser de configuração instânciar os servidores e locations
-// Fazer o parse da request http
+// Refatorar o parse da request http
 // Apagar o arquivo quando o método for DELETE
-// Setup multiple servers with different hostnames (use something like: curl --resolve
+// Entender o que significa e implementar :
+//      Setup multiple servers with different hostnames (use something like: curl --resolve
 //      example.com:80:127.0.0.1 http://example.com/ (http://example.com/)).
 
 
@@ -45,6 +46,8 @@ void EventHandler::process_event() {
             case SendingResponseFile: _response.send_response_file();
                 break;
             //case UploadingFile: _response.upload_file();
+                break;
+            //case DeletingFile: _response.delete_file();
                 break;
             case SendingRedirectionResponse: _response.send_redirection();
                 break;
