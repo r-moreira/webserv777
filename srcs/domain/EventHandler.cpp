@@ -20,13 +20,6 @@ EventHandler::~EventHandler() {}
 // Suportar error_page (Via server e location)
 // Suportar directory page (Via server e location)
 
-//TODO: IMPORTANTE!
-// Avaliar possível solução para o problema de não conseguir carregar páginas com mais de uma arquivo
-//      em caso de erro, porque atualmente o servidor redireciona internamente
-// Solução 1)
-//      Ao invés do servidor redirecionar internamente, mandar um redirect para o navegador requistar a página de erro
-//      E em toda requisição será necessário checar se é uma pagina de erro, para retornar o status de acordo
-
 //TODO Atuais:
 // Fazer gerênciamento do estado do evento com base no location, retornar página de exemplo para ver se deu certo
 void EventHandler::process_event() {
@@ -58,7 +51,7 @@ void EventHandler::process_event() {
                 //break;
             // case SendingAutoIndexResponse: _response.send_auto_index();
                 //break;
-            case SendingDirectoryResponse: _response.send_is_direcory_response();
+            case SendingDirectoryResponse: _response.send_is_directory_response();
                 break;
             case SendingErrorResponse: _response.send_error_response();
                 break;
