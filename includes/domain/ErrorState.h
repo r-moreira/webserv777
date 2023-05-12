@@ -14,8 +14,6 @@ public:
 
     static void throw_error_state(Event &event, event_http_status_enum_t status);
     static bool is_error_state(Event &event);
-
-    static void normalize_error_state(Event &event);
 };
 
 

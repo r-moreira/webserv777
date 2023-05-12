@@ -9,6 +9,7 @@ File::File(Event &event): _event(event) {}
 File::~File() {}
 
 //TODO:: Fazer método para deletar arquivos, retornar erro em caso de diretório
+//TODO:: Criar método para criar arquivo quando for necessário upload de arquivos
 
 void File::open_file() {
     if (ErrorState::is_error_state(this->_event) || this->_event.isFileOpened()) return;

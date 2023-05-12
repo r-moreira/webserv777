@@ -8,20 +8,21 @@ EventHandler::EventHandler(Event &event, std::vector<Server> &servers) :_servers
 
 EventHandler::~EventHandler() {}
 
-//TODO Features
+//TODO Server Features:
 // Implementar suporte a location redirect, cgi, upload e auto_index (Via server e location)
 // Fazer o parser de configuração instânciar os servidores e locations
 // Fazer o parse da request http
 // Apagar o arquivo quando o método for DELETE
 // Setup multiple servers with different hostnames (use something like: curl --resolve
 //      example.com:80:127.0.0.1 http://example.com/ (http://example.com/)).
-// Suportar limit_except (Via server e location)
-// Suportar max_body_size (Via server e location)
-// Suportar error_page (Via server e location)
-// Suportar directory page (Via server e location)
+
 
 //TODO Atuais:
-// Fazer gerênciamento do estado do evento com base no location, retornar página de exemplo para ver se deu certo
+// Feature: Arquivos com configurações validas no escopo do server e location
+//      Suportar limit_except (Via location) - Apenas suportado no location atualmente
+//      Suportar max_body_size (Via location) - Apenas suportado no server atualmente
+//      Suportar error_page (Via location) - Apenas suportado no server atualmente
+//      Suportar directory page (Via location) - Apenas suportado no server atualmente
 void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Reading) {
 
