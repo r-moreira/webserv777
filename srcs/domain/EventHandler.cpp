@@ -20,9 +20,8 @@ EventHandler::~EventHandler() {}
 //      Checar os uso dos getters e setters do servidores e locations é uma forma de saber se tudo foi testado
 
 //TODO Atuais:
-// Feature: Arquivos com configurações validas no escopo do server e location
-//      Suportar error_page (Via location) - Apenas suportado no server atualmente
-//      Suportar directory page (Via location) - Apenas suportado no server atualmente
+// Upload de arquivo
+// Apagar o arquivo quando o método for DELETE
 void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Reading) {
 
