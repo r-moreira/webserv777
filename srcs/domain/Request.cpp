@@ -138,10 +138,10 @@ void Request::define_response_state() {
 
 
     //Se o path da requisição for igual ao path da location e terminar sem a "/" é necessário fazer um redirect para adicionando a "/"
-    //  necessário para o navegador requisitar o diretório correto.
+    //  se não o navegador requisitar o diretório incorreto.
     std::string request_uri = this->_event.getRequest().uri;
     if (request_uri.length() > 1 && request_uri[request_uri.length() - 1] != '/' && request_uri == this->_event.getLocation().getPath()) {
-        std::cout << MAGENTA << "Redirecting to location with /" << RESET << std::endl;
+        std::cout << MAGENTA << "Forcing redirect to location with /" << RESET << std::endl;
         std::string redirect_uri = request_uri + "/";
         this->_event.setForcedRedirect(true);
         this->_event.setForcedRedirectLocation(redirect_uri);
@@ -159,17 +159,37 @@ void Request::define_response_state() {
         return;
     }
 
-
     std::cout << MAGENTA << "Regular Event" << RESET << std::endl;
-    this->_event.setFilePath(path_to_root());
+    std::string file_path = path_to_root();
 
-    //Mandar para o estado de acordo com o tipo de request/location
+    if (is_directory(file_path)) {
+        std::cerr << RED << "Redirecionado para página de erro de diretório" << RESET << std::endl;
+        this->_event.setEventSubStatus(SendingDirectoryResponse);
+        this->_event.setHttpStatus(FORBIDDEN);
+        this->_event.setEventStatus(Writing);
+        return;
+    }
+
+    this->_event.setFilePath(file_path);
     this->_event.setEventSubStatus(SendingResponseFile);
-
     this->_event.setEventStatus(Writing);
+
+}
+
+bool Request::is_directory(const std::string& path) {
+    struct stat s;
+    if (stat(path.c_str(), &s) == 0) {
+        if (s.st_mode & S_IFDIR) {
+            std::cout << YELLOW << "Path is a directory: " << path <<RESET << std::endl;
+            return true;
+        }
+    }
+    return false;
 }
 
 std::string Request::path_to_root() {
+    std::cout << YELLOW << "Path to root" << RESET << std::endl;
+
     std::string request_uri = this->_event.getRequest().uri;
     std::string location_path = this->_event.getLocation().getPath();
 

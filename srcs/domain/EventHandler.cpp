@@ -29,8 +29,6 @@ EventHandler::~EventHandler() {}
 
 //TODO Atuais:
 // Fazer gerênciamento do estado do evento com base no location, retornar página de exemplo para ver se deu certo
-// Verificar se é possível checar se é diretório sem usar o errno,
-//      ex: considerar diretório se não houver extensao de arquivo e diferente do location.path
 void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Reading) {
 
@@ -60,7 +58,7 @@ void EventHandler::process_event() {
                 //break;
             // case SendingAutoIndexResponse: _response.send_auto_index();
                 //break;
-            case SendingDirectoryResponse: _response.send_is_directory_response();
+            case SendingDirectoryResponse: _response.send_is_direcory_response();
                 break;
             case SendingErrorResponse: _response.send_error_response();
                 break;

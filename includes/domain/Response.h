@@ -26,8 +26,6 @@ public:
 
     void send_response_file();
 
-    void write_default_error_page();
-
     void send_error_response();
 
     void send_is_directory_response();
@@ -35,7 +33,6 @@ public:
     void send_redirection();
 
 private:
-    void write_requested_file();
 
 };
 
