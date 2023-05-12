@@ -108,6 +108,14 @@ void Server::setLimitExcept(const std::vector<std::string> &limitExcept) {
     _limit_except = limitExcept;
 }
 
+const std::string &Server::getUploadPath() const {
+    return _upload_path;
+}
+
+void Server::setUploadPath(const std::string &uploadPath) {
+    _upload_path = uploadPath;
+}
+
 std::ostream &operator<<(std::ostream &os, const Server &server) {
     os
        << "Name: " << server.getName() << std::endl
@@ -117,6 +125,7 @@ std::ostream &operator<<(std::ostream &os, const Server &server) {
        << "Auto Index: " << server.isAutoindex() << std::endl
        << "Max Body Size: " << server.getMaxBodySize() << std::endl
        << "File Descriptor: " << server.getFd() << std::endl
+       << "Upload Path: " << server.getUploadPath() << std::endl
        << "Limit Except: ";
 
     for (size_t i = 0; i < server.getLimitExcept().size(); i++) {

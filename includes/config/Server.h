@@ -19,6 +19,7 @@ private:
     int _port;
     int _fd;
     long _max_body_size;
+    std::string _upload_path;
     std::string _directory_request_page;
     std::map<int, std::string> _error_pages;
     std::vector<std::string> _limit_except;
@@ -72,6 +73,10 @@ public:
     const std::vector<std::string> &getLimitExcept() const;
 
     void setLimitExcept(const std::vector<std::string> &limitExcept);
+
+    const std::string &getUploadPath() const;
+
+    void setUploadPath(const std::string &uploadPath);
 };
 
 std::ostream& operator << (std::ostream& os, const Server& obj);
