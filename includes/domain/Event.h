@@ -41,6 +41,7 @@ private:
 
     Server _server;
     Location _location;
+
 public:
     RequestInfo _request;
 

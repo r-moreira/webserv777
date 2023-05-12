@@ -107,10 +107,10 @@ void Location::setIndex(const std::string &index) {
 
 std::ostream &operator<<(std::ostream &os, const Location &location) {
     os
-            << "\tPath: " << location.getPath() << std::endl
-            << "\tRoot: " << location.getRoot() << std::endl
-            << "\tIndex: " << location.getIndex() << std::endl
-            << "\tRedirect Url: " << location.getRedirectLocation() << std::endl
+        << "\tPath: " << location.getPath() << std::endl
+        << "\tRoot: " << location.getRoot() << std::endl
+        << "\tIndex: " << location.getIndex() << std::endl
+        << "\tRedirect Url: " << location.getRedirectLocation() << std::endl
         << "\tCgi Path: " << location.getCgiPath() << std::endl
         << "\tUpload Path: " << location.getUploadPath() << std::endl
         << "\tAuto Index: " << location.isAutoIndex() << std::endl

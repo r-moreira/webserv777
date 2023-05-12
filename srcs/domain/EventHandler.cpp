@@ -15,6 +15,10 @@ EventHandler::~EventHandler() {}
 // Apagar o arquivo quando o método for DELETE
 // Setup multiple servers with different hostnames (use something like: curl --resolve
 //      example.com:80:127.0.0.1 http://example.com/ (http://example.com/)).
+// Suportar limit_except (Via server e location)
+// Suportar max_body_size (Via server e location)
+// Suportar error_page (Via server e location)
+// Suportar directory page (Via server e location)
 
 //TODO: IMPORTANTE!
 // Avaliar possível solução para o problema de não conseguir carregar páginas com mais de uma arquivo
@@ -25,10 +29,6 @@ EventHandler::~EventHandler() {}
 
 //TODO Atuais:
 // Fazer gerênciamento do estado do evento com base no location, retornar página de exemplo para ver se deu certo
-// Suportar limit_except (Via server e location)
-// Suportar max_body_size (Via server e location)
-// Suportar error_page (Via server e location)
-// Suportar directory page (Via server e location)
 // Verificar se é possível checar se é diretório sem usar o errno,
 //      ex: considerar diretório se não houver extensao de arquivo e diferente do location.path
 void EventHandler::process_event() {
