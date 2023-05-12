@@ -84,11 +84,16 @@ Server build_server_three(int port) {
     puppy_care_location_one.setIndex("index.html");
     puppy_care_location_one.setLimitExcept(allowed_method_get);
 
+    std::map<int, std::string> error_pages_lover_location;
+    error_pages_lover_location.insert(std::pair<int, std::string>(403, "./public/error-pages/403.html"));
+    error_pages_lover_location.insert(std::pair<int, std::string>(500, "./public/error-pages/500.html"));
+
     Location pet_lover_location = Location();
     pet_lover_location.setPath("/lover");
     pet_lover_location.setRoot("./public/pet-lover");
     pet_lover_location.setIndex("index.html");
     pet_lover_location.setLimitExcept(allowed_method_get);
+    pet_lover_location.setErrorPages(error_pages_lover_location);
 
     Location redirect_location = Location();
     redirect_location.setRedirectLock(true);
@@ -101,16 +106,16 @@ Server build_server_three(int port) {
     locations.push_back(pet_lover_location);
     locations.push_back(redirect_location);
 
-    std::map<int, std::string> error_pages;
-    error_pages.insert(std::pair<int, std::string>(404, "./public/error-pages/404.html"));
-    error_pages.insert(std::pair<int, std::string>(405, "./public/error-pages/413.html"));
-    error_pages.insert(std::pair<int, std::string>(413, "./public/error-pages/413.html"));
+    std::map<int, std::string> error_pages_server;
+    error_pages_server.insert(std::pair<int, std::string>(404, "./public/error-pages/404.html"));
+    error_pages_server.insert(std::pair<int, std::string>(405, "./public/error-pages/405.html"));
+    error_pages_server.insert(std::pair<int, std::string>(413, "./public/error-pages/413.html"));
 
     server.setName("puppystore.com");
     server.setPort(port);
     server.setLocations(locations);
     server.setDirectoryRequestPage("./public/directory-page/index.html");
-    server.setErrorPages(error_pages);
+    server.setErrorPages(error_pages_server);
     return server;
 }
 
@@ -163,22 +168,48 @@ Server build_server_one(int port) {
     Server server = Server();
     std::vector<Location> locations = server.getLocations();
 
+    std::map<int, std::string> error_page_413;
+    error_page_413.insert(std::pair<int, std::string>(413, "./public/error-pages/413.html"));
+
+    std::vector<std::string> allowed_methods_get_post;
+    allowed_methods_get_post.push_back("GET");
+    allowed_methods_get_post.push_back("POST");
+
+    std::vector<std::string> allowed_methods_get;
+    allowed_methods_get.push_back("GET");
+
+    Location redirect_location = Location();
+    redirect_location.setLimitExcept(allowed_methods_get);
+    redirect_location.setRedirectLock(true);
+
+    std::ostringstream redirection_path;
+    redirection_path << "http://localhost:" << (port - 1);
+    redirect_location.setRedirectLocation(redirection_path.str());
+
     Location hello_world_location = Location();
     hello_world_location.setPath("/hello");
+    hello_world_location.setRoot("./public/hello-world");
+    hello_world_location.setIndex("hello.html");
+    hello_world_location.setAutoIndex(true);
+    hello_world_location.setDirectoryRequestPage("./public/directory-page/alternative/index.html");
+    hello_world_location.setErrorPages(error_page_413);
+    hello_world_location.setLimitExcept(allowed_methods_get_post);
+    hello_world_location.setMaxBodySize(10);
 
     locations.push_back(hello_world_location);
+    locations.push_back(redirect_location);
 
-    std::map<int, std::string> error_pages;
-    error_pages.insert(std::pair<int, std::string>(404, "./public/error-pages/404.html"));
+    std::map<int, std::string> error_page_404;
+    error_page_404.insert(std::pair<int, std::string>(404, "./public/error-pages/404.html"));
 
     server.setName("greeting.com");
-    server.setIndex("hello.html");
-    server.setRoot("./public/hello-world");
+    server.setIndex("index.html");
+    server.setRoot("./");
     server.setDirectoryRequestPage("./public/directory-page/index.html");
     server.setAutoindex(true);
     server.setPort(port);
-    server.setMaxBodySize(10);
-    server.setErrorPages(error_pages);
+    server.setMaxBodySize(10000);
+    server.setErrorPages(error_page_404);
     server.setLocations(locations);
     return server;
 }

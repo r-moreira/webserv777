@@ -17,6 +17,9 @@ private:
     std::string _redirect_location;
     std::string _cgi_path;
     std::string _upload_path;
+    std::string _directory_request_page;
+    std::map<int, std::string> _error_pages;
+    long _max_body_size;
     bool _auto_index;
     bool _cgi_lock;
     bool _upload_lock;
@@ -69,6 +72,17 @@ public:
 
     void setIndex(const std::string &index);
 
+    long getMaxBodySize() const;
+
+    void setMaxBodySize(long maxBodySize);
+
+    const std::string &getDirectoryRequestPage() const;
+
+    void setDirectoryRequestPage(const std::string &directoryRequestPage);
+
+    const std::map<int, std::string> &getErrorPages() const;
+
+    void setErrorPages(const std::map<int, std::string> &errorPages);
 };
 
 std::ostream& operator << (std::ostream& os, const Location& obj);

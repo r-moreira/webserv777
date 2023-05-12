@@ -16,12 +16,11 @@ EventHandler::~EventHandler() {}
 // Entender o que significa e implementar :
 //      Setup multiple servers with different hostnames (use something like: curl --resolve
 //      example.com:80:127.0.0.1 http://example.com/ (http://example.com/)).
-
+// Testar com todas configurações possíveis
+//      Checar os uso dos getters e setters do servidores e locations é uma forma de saber se tudo foi testado
 
 //TODO Atuais:
 // Feature: Arquivos com configurações validas no escopo do server e location
-//      Suportar limit_except (Via location) - Apenas suportado no location atualmente
-//      Suportar max_body_size (Via location) - Apenas suportado no server atualmente
 //      Suportar error_page (Via location) - Apenas suportado no server atualmente
 //      Suportar directory page (Via location) - Apenas suportado no server atualmente
 void EventHandler::process_event() {

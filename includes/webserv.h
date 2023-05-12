@@ -64,7 +64,8 @@ typedef enum EVENT_SUB_STATUS {
 
 typedef enum EVENT_HTTP_STATUS_ENUM {
     OK = 200,
-    CREATED = 201,
+    CREATED = 201, //Upload
+    NO_CONTENT = 204, //Delete
     BAD_REQUEST = 400,
     FORBIDDEN = 403,
     NOT_FOUND = 404,

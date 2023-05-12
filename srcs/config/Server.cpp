@@ -11,6 +11,10 @@ Server::Server() {
     this->_fd = -1;
     this->_max_body_size = -1;
     this->_autoindex = false;
+    this->_limit_except = std::vector<std::string>();
+    this->_limit_except.push_back("GET");
+    this->_limit_except.push_back("POST");
+    this->_limit_except.push_back("DELETE");
 }
 
 Server::~Server() {
@@ -96,6 +100,14 @@ void Server::setAutoindex(bool autoindex) {
     _autoindex = autoindex;
 }
 
+const std::vector<std::string> &Server::getLimitExcept() const {
+    return _limit_except;
+}
+
+void Server::setLimitExcept(const std::vector<std::string> &limitExcept) {
+    _limit_except = limitExcept;
+}
+
 std::ostream &operator<<(std::ostream &os, const Server &server) {
     os
        << "Name: " << server.getName() << std::endl
@@ -105,9 +117,17 @@ std::ostream &operator<<(std::ostream &os, const Server &server) {
        << "Auto Index: " << server.isAutoindex() << std::endl
        << "Max Body Size: " << server.getMaxBodySize() << std::endl
        << "File Descriptor: " << server.getFd() << std::endl
-       << "Directory Page: " << server.getDirectoryRequestPage() << std::endl;
+       << "Limit Except: ";
 
-    os << "Error Pages >" << std::endl;
+    for (size_t i = 0; i < server.getLimitExcept().size(); i++) {
+        os << server.getLimitExcept()[i] << " ";
+        os.flush();
+    }
+
+    os << std::endl
+       << "Directory Page: " << server.getDirectoryRequestPage() << std::endl
+       << "Error Pages >" << std::endl;
+
     for (std::map<int, std::string>::const_iterator it = server.getErrorPages().begin();
          it != server.getErrorPages().end(); ++it) {
         os << "\t" << it->first << " Page: " << it->second << std::endl;

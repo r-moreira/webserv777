@@ -103,13 +103,20 @@ void Request::validate_constraints() {
     if (ErrorState::is_error_state(this->_event)) return;
 
     std::cout << MAGENTA << "Validating Allowed Methods" << RESET << std::endl;
-    std::vector<std::string> allowed_methods = this->_event.getLocation().getLimitExcept();
+    std::vector<std::string> allowed_methods = this->_event.getLocation().getLimitExcept().size() < 3
+                                               ? this->_event.getLocation().getLimitExcept()
+                                               : this->_event.getServer().getLimitExcept();
+
     if (std::find(allowed_methods.begin(), allowed_methods.end(), this->_event.getRequest().method) == allowed_methods.end()) {
         ErrorState::throw_error_state(this->_event, METHOD_NOT_ALLOWED);
         return;
     }
 
-    if (this->_event.getServer().getMaxBodySize() != -1) {
+    long max_body_size = this->_event.getLocation().getMaxBodySize() != -1
+            ? this->_event.getLocation().getMaxBodySize()
+            : this->_event.getServer().getMaxBodySize();
+
+    if (max_body_size != -1) {
         std::cout << MAGENTA << "Validating Content Length" << RESET <<std::endl;
 
         std::vector<RequestInfo::HeaderItem> headers = this->_event.getRequest().headers;
@@ -118,7 +125,7 @@ void Request::validate_constraints() {
             if (it->name == "Content-Length") {
                 long content_length = std::strtol(it->value.c_str(), NULL, 10);
 
-                if (content_length > this->_event.getServer().getMaxBodySize()) {
+                if (content_length > max_body_size) {
                     ErrorState::throw_error_state(this->_event, PAYLOAD_TOO_LARGE);
                     return;
                 }
@@ -130,12 +137,11 @@ void Request::validate_constraints() {
     this->_event.setEventSubStatus(DefiningResponseState);
 }
 
-//TODO: Definir o tipo da location e agir de acordo, nesse caso todas são do tipo regular, ou seja, requisitando aquivo, após trocar o path por root
+//TODO:: Adicionar o estados restantes
 void Request::define_response_state() {
     if (ErrorState::is_error_state(this->_event)) return;
 
     std::cout << CYAN << "Defining Response State" << RESET << std::endl;
-
 
     //Se o path da requisição for igual ao path da location e terminar sem a "/" é necessário fazer um redirect para adicionando a "/"
     //  se não o navegador requisitar o diretório incorreto.
@@ -143,13 +149,13 @@ void Request::define_response_state() {
     if (request_uri.length() > 1 && request_uri[request_uri.length() - 1] != '/' && request_uri == this->_event.getLocation().getPath()) {
         std::cout << MAGENTA << "Forcing redirect to location with /" << RESET << std::endl;
         std::string redirect_uri = request_uri + "/";
+
         this->_event.setForcedRedirect(true);
         this->_event.setForcedRedirectLocation(redirect_uri);
         this->_event.setEventSubStatus(SendingRedirectionResponse);
         this->_event.setEventStatus(Writing);
         return;
     }
-
 
     if (this->_event.getLocation().isRedirectLock()) {
         std::cout << MAGENTA << "Redirection Event" << RESET << std::endl;

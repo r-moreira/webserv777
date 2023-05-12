@@ -21,6 +21,7 @@ private:
     long _max_body_size;
     std::string _directory_request_page;
     std::map<int, std::string> _error_pages;
+    std::vector<std::string> _limit_except;
     std::vector<Location> _locations;
     bool _autoindex;
 public:
@@ -67,6 +68,10 @@ public:
     bool isAutoindex() const;
 
     void setAutoindex(bool autoindex);
+
+    const std::vector<std::string> &getLimitExcept() const;
+
+    void setLimitExcept(const std::vector<std::string> &limitExcept);
 };
 
 std::ostream& operator << (std::ostream& os, const Server& obj);

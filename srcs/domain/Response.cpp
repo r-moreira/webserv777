@@ -27,10 +27,15 @@ void Response::send_redirection() {
 void Response::send_is_directory_response() {
     std::cout << MAGENTA << "Send directory error response" << RESET << std::endl;
 
-    if (!_event.getServer().getDirectoryRequestPage().empty()) {
+    if (!_event.getServer().getDirectoryRequestPage().empty() || !_event.getLocation().getDirectoryRequestPage().empty()) {
         this->_event.setErrorResponse(true);
         this->_event.clear_file_info();
-        this->_event.setFilePath(_event.getServer().getDirectoryRequestPage());
+
+        std::string directory_page_path = !_event.getLocation().getDirectoryRequestPage().empty()
+                                                ? _event.getLocation().getDirectoryRequestPage()
+                                                : _event.getServer().getDirectoryRequestPage();
+
+        this->_event.setFilePath(directory_page_path);
         _file.open_file();
         _read.read_file();
         _write.write_error_headers();
@@ -47,16 +52,38 @@ void Response::send_is_directory_response() {
 void Response::send_error_response() {
     std::cout << MAGENTA << "Send error response" << RESET << std::endl;
 
+    bool server_has_error_page;
+    bool location_has_error_page;
+
     try {
-        std::string error_page_path = _event.getServer().getErrorPages().at(_event.getHttpStatus());
+        std::string server_error_page_path = _event.getServer().getErrorPages().at(_event.getHttpStatus());
+        server_has_error_page = true;
+    } catch (std::out_of_range &e) {
+        server_has_error_page = false;
+    }
+
+    try {
+        std::string location_error_page_path = _event.getLocation().getErrorPages().at(_event.getHttpStatus());
+        location_has_error_page = true;
+    } catch (std::out_of_range &e) {
+        location_has_error_page = false;
+    }
+
+    if (server_has_error_page || location_has_error_page) {
         this->_event.setErrorResponse(true);
         this->_event.clear_file_info();
+
+        std::string error_page_path = location_has_error_page
+                                                ? _event.getLocation().getErrorPages().at(_event.getHttpStatus())
+                                                : _event.getServer().getErrorPages().at(_event.getHttpStatus());
+
         this->_event.setFilePath(error_page_path);
         _file.open_file();
         _read.read_file();
         _write.write_error_headers();
         _write.write_requested_file();
-    } catch (std::out_of_range &e) {
+    }
+    else {
         _write.write_error_headers();
         _write.write_default_error_page();
     }

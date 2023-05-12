@@ -10,6 +10,7 @@ Location::Location() {
     this->_limit_except.push_back("GET");
     this->_limit_except.push_back("POST");
     this->_limit_except.push_back("DELETE");
+    this->_max_body_size = -1;
     this->_auto_index = false;
     this->_cgi_lock = false;
     this->_upload_lock = false;
@@ -104,6 +105,30 @@ void Location::setIndex(const std::string &index) {
     _index = index;
 }
 
+long Location::getMaxBodySize() const {
+    return _max_body_size;
+}
+
+void Location::setMaxBodySize(long maxBodySize) {
+    _max_body_size = maxBodySize;
+}
+
+const std::string &Location::getDirectoryRequestPage() const {
+    return _directory_request_page;
+}
+
+void Location::setDirectoryRequestPage(const std::string &directoryRequestPage) {
+    _directory_request_page = directoryRequestPage;
+}
+
+const std::map<int, std::string> &Location::getErrorPages() const {
+    return _error_pages;
+}
+
+void Location::setErrorPages(const std::map<int, std::string> &errorPages) {
+    _error_pages = errorPages;
+}
+
 
 std::ostream &operator<<(std::ostream &os, const Location &location) {
     os
@@ -114,6 +139,7 @@ std::ostream &operator<<(std::ostream &os, const Location &location) {
         << "\tCgi Path: " << location.getCgiPath() << std::endl
         << "\tUpload Path: " << location.getUploadPath() << std::endl
         << "\tAuto Index: " << location.isAutoIndex() << std::endl
+        << "\tMax Body Size: " << location.getMaxBodySize() << std::endl
         << "\tCgi Lock: " << location.isCgiLock()
         << " | Upload Lock: " << location.isUploadLock()
         << " | Redirect Lock: " << location.isRedirectLock() << std::endl
@@ -124,5 +150,14 @@ std::ostream &operator<<(std::ostream &os, const Location &location) {
         os.flush();
     }
 
+    os << std::endl
+       << "\tDirectory Page: " << location.getDirectoryRequestPage() << std::endl
+       << "\tError Pages >" << std::endl;
+
+    for (std::map<int, std::string>::const_iterator it = location.getErrorPages().begin();
+         it != location.getErrorPages().end(); ++it) {
+        os << "\t\t" << it->first << " Page: " << it->second << std::endl;
+        os.flush();
+    }
     return os;
 }
