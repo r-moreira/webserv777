@@ -12,7 +12,6 @@ EventHandler::~EventHandler() {}
 // Implementar suporte a location redirect, cgi, upload e auto_index (Via server e location)
 // Fazer o parser de configuração instânciar os servidores e locations
 // Refatorar o parse da request http
-// Apagar o arquivo quando o método for DELETE
 // Entender o que significa e implementar :
 //      Setup multiple servers with different hostnames (use something like: curl --resolve
 //      example.com:80:127.0.0.1 http://example.com/ (http://example.com/)).
