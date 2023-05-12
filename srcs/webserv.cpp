@@ -145,7 +145,6 @@ Server build_server_two(int port) {
     upload_location.setUploadPath("./public/upload/alternative");
     upload_location.setLimitExcept(allowed_method_post_delete);
 
-
     std::vector<std::string> allowed_method_get;
     allowed_method_get.push_back("GET");
 
