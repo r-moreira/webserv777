@@ -35,7 +35,7 @@
 
         ParseResult consume(RequestInfo &req, const char *begin, const char *end) {
             while (begin != end) {
-                char input = *begin++;
+                char input = *begin++; //Adicionar uma leitura do input aqui, fazendo um loop para ler todos os inputs, o parser vai ser chamado a cada input lido
 
                 switch (state) {
                     case RequestMethodStart:
@@ -207,7 +207,7 @@
                                     req.content.reserve(contentSize);
                                 } else if (strcasecmp(h.name.c_str(), "Transfer-Encoding") == 0) {
                                     if (strcasecmp(h.value.c_str(), "chunked") == 0)
-                                        chunked = true;
+                                        return ParsingError;
                                 }
                             }
                             state = ExpectingNewline_2;
@@ -241,9 +241,7 @@
                                 req.keepAlive = true;
                         }
 
-                        if (chunked) {
-                            state = ChunkSize;
-                        } else if (contentSize == 0) {
+                        if (contentSize == 0) {
                             if (input == '\n')
                                 return ParsingCompleted;
                             else
@@ -253,7 +251,7 @@
                         }
                         break;
                     }
-                    case Post:
+                    case Post: // Retornar, fazer o parse do post em outro lugar
                         --contentSize;
                         req.content.push_back(input);
 
@@ -261,8 +259,6 @@
                             return ParsingCompleted;
                         }
                         break;
-                    case ChunkSize:
-                        return ParsingError;
                 }
             }
 

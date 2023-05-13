@@ -13,8 +13,6 @@ void Read::read_request() {
 
     char buffer[READ_BUFFER_SIZE] = {};
 
-    RequestInfo request;
-
     long bytes_read = read(this->_event.getClientFd(), buffer, READ_BUFFER_SIZE);
 
     if (bytes_read == -1) {
