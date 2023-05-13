@@ -21,10 +21,17 @@ EventHandler::~EventHandler() {}
 
 //TODO Atuais:
 // Upload de arquivo
-// Apagar o arquivo quando o método for DELETE
+//      Como saber se o HTTP request é um arquivo: https://stackoverflow.com/questions/14872460/how-to-detect-a-file-upload-examining-the-http-message:
+//      Possível solução:
+//          1. Separar a classe Read Request e Parse Request em duas partes: Read Headers, Parse Header e Read Body, Parse Body
+//          2. Se for Get ou Delete, continuar o request normalmente sem o body
+//          3. Se for Post,
+//              1. Verificar se o content-type é multipart/form-data
+//      Refs: https://stackoverflow.com/questions/36184410/how-does-webserver-handle-http-post
 
-//TODO Bug:
-// Erro no redirecionamento quando o path não termina com "/" para quando métodos forem diferente de GET
+// Apagar o arquivo do path quando o método for DELETE
+
+
 
 void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Reading) {

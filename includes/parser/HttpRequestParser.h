@@ -15,7 +15,7 @@
     public:
         HttpRequestParser()
                 : state(RequestMethodStart), contentSize(0),
-                  chunkSize(0), chunked(false) {
+                 chunked(false) {
         }
 
         enum ParseResult {
@@ -262,106 +262,6 @@
                         }
                         break;
                     case ChunkSize:
-                        if (isalnum(input)) {
-                            chunkSizeStr.push_back(input);
-                        } else if (input == ';') {
-                            state = ChunkExtensionName;
-                        } else if (input == '\r') {
-                            state = ChunkSizeNewLine;
-                        } else {
-                            return ParsingError;
-                        }
-                        break;
-                    case ChunkExtensionName:
-                        if (isalnum(input) || input == ' ') {
-                            // skip
-                        } else if (input == '=') {
-                            state = ChunkExtensionValue;
-                        } else if (input == '\r') {
-                            state = ChunkSizeNewLine;
-                        } else {
-                            return ParsingError;
-                        }
-                        break;
-                    case ChunkExtensionValue:
-                        if (isalnum(input) || input == ' ') {
-                            // skip
-                        } else if (input == '\r') {
-                            state = ChunkSizeNewLine;
-                        } else {
-                            return ParsingError;
-                        }
-                        break;
-                    case ChunkSizeNewLine:
-                        if (input == '\n') {
-                            chunkSize = strtol(chunkSizeStr.c_str(), NULL, 16);
-                            chunkSizeStr.clear();
-                            req.content.reserve(req.content.size() + chunkSize);
-
-                            if (chunkSize == 0)
-                                state = ChunkSizeNewLine_2;
-                            else
-                                state = ChunkData;
-                        } else {
-                            return ParsingError;
-                        }
-                        break;
-                    case ChunkSizeNewLine_2:
-                        if (input == '\r') {
-                            state = ChunkSizeNewLine_3;
-                        } else if (isalpha(input)) {
-                            state = ChunkTrailerName;
-                        } else {
-                            return ParsingError;
-                        }
-                        break;
-                    case ChunkSizeNewLine_3:
-                        if (input == '\n') {
-                            return ParsingCompleted;
-                        } else {
-                            return ParsingError;
-                        }
-                        break;
-                    case ChunkTrailerName:
-                        if (isalnum(input)) {
-                            // skip
-                        } else if (input == ':') {
-                            state = ChunkTrailerValue;
-                        } else {
-                            return ParsingError;
-                        }
-                        break;
-                    case ChunkTrailerValue:
-                        if (isalnum(input) || input == ' ') {
-                            // skip
-                        } else if (input == '\r') {
-                            state = ChunkSizeNewLine;
-                        } else {
-                            return ParsingError;
-                        }
-                        break;
-                    case ChunkData:
-                        req.content.push_back(input);
-
-                        if (--chunkSize == 0) {
-                            state = ChunkDataNewLine_1;
-                        }
-                        break;
-                    case ChunkDataNewLine_1:
-                        if (input == '\r') {
-                            state = ChunkDataNewLine_2;
-                        } else {
-                            return ParsingError;
-                        }
-                        break;
-                    case ChunkDataNewLine_2:
-                        if (input == '\n') {
-                            state = ChunkSize;
-                        } else {
-                            return ParsingError;
-                        }
-                        break;
-                    default:
                         return ParsingError;
                 }
             }
@@ -427,20 +327,6 @@
             RequestHttpVersion_major,
             RequestHttpVersion_minorStart,
             RequestHttpVersion_minor,
-
-            ResponseStatusStart,
-            ResponseHttpVersion_ht,
-            ResponseHttpVersion_htt,
-            ResponseHttpVersion_http,
-            ResponseHttpVersion_slash,
-            ResponseHttpVersion_majorStart,
-            ResponseHttpVersion_major,
-            ResponseHttpVersion_minorStart,
-            ResponseHttpVersion_minor,
-            ResponseHttpVersion_spaceAfterVersion,
-            ResponseHttpVersion_statusCodeStart,
-            ResponseHttpVersion_spaceAfterStatusCode,
-            ResponseHttpVersion_statusTextStart,
             ResponseHttpVersion_newLine,
 
             HeaderLineStart,
@@ -448,27 +334,16 @@
             HeaderName,
             SpaceBeforeHeaderValue,
             HeaderValue,
+
             ExpectingNewline_2,
             ExpectingNewline_3,
 
             Post,
             ChunkSize,
-            ChunkExtensionName,
-            ChunkExtensionValue,
-            ChunkSizeNewLine,
-            ChunkSizeNewLine_2,
-            ChunkSizeNewLine_3,
-            ChunkTrailerName,
-            ChunkTrailerValue,
-
-            ChunkDataNewLine_1,
-            ChunkDataNewLine_2,
-            ChunkData,
         } state;
 
         size_t contentSize;
         std::string chunkSizeStr;
-        size_t chunkSize;
         bool chunked;
     };
 
