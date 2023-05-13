@@ -142,7 +142,7 @@ Server build_server_two(int port) {
     upload_location.setUploadLock(true);
     upload_location.setAutoIndex(true);
     upload_location.setPath("/upload");
-    upload_location.setUploadPath("./public/upload/alternative");
+    upload_location.setUploadPath("./public/uploaded-files/alternative");
     upload_location.setLimitExcept(allowed_method_post_delete);
 
     std::vector<std::string> allowed_method_get;
@@ -159,7 +159,8 @@ Server build_server_two(int port) {
     locations.push_back(static_location);
 
     server.setPort(port);
-    server.setUploadPath("./public/upload");
+    server.setUploadPath("./public/uploaded-files");
+    server.setUploadLock(true);
     server.setLocations(locations);
     return server;
 }

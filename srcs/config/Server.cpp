@@ -116,6 +116,14 @@ void Server::setUploadPath(const std::string &uploadPath) {
     _upload_path = uploadPath;
 }
 
+bool Server::isUploadLock() const {
+    return _upload_lock;
+}
+
+void Server::setUploadLock(bool uploadLock) {
+    _upload_lock = uploadLock;
+}
+
 std::ostream &operator<<(std::ostream &os, const Server &server) {
     os
        << "Name: " << server.getName() << std::endl
@@ -126,6 +134,7 @@ std::ostream &operator<<(std::ostream &os, const Server &server) {
        << "Max Body Size: " << server.getMaxBodySize() << std::endl
        << "File Descriptor: " << server.getFd() << std::endl
        << "Upload Path: " << server.getUploadPath() << std::endl
+       << "Upload Lock: " << server.isUploadLock() << std::endl
        << "Limit Except: ";
 
     for (size_t i = 0; i < server.getLimitExcept().size(); i++) {

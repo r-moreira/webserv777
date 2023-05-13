@@ -25,6 +25,7 @@ private:
     std::vector<std::string> _limit_except;
     std::vector<Location> _locations;
     bool _autoindex;
+    bool _upload_lock;
 public:
     Server();
 
@@ -77,6 +78,10 @@ public:
     const std::string &getUploadPath() const;
 
     void setUploadPath(const std::string &uploadPath);
+
+    bool isUploadLock() const;
+
+    void setUploadLock(bool uploadLock);
 };
 
 std::ostream& operator << (std::ostream& os, const Server& obj);
