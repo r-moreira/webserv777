@@ -48,8 +48,7 @@ void Request::choose_server(std::vector<Server> servers) {
         }
     }
 
-    std::cout << BLUE << "Choosed server = name: " << this->_event.getServer().getName() << " | port: " <<
-        this->_event.getServer().getPort() << RESET << std::endl << std::endl;
+    std::cout << BLUE << "Choosed server =" << this->_event.getServer() << RESET << std::endl << std::endl;
 
     this->_event.setEventSubStatus(ChoosingLocation);
 }

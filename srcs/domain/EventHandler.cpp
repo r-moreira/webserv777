@@ -22,6 +22,10 @@ EventHandler::~EventHandler() {}
 //TODO Atuais:
 // Upload de arquivo
 // Apagar o arquivo quando o método for DELETE
+
+//TODO Bug:
+// Erro no redirecionamento quando o path não termina com "/" para quando métodos forem diferente de GET
+
 void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Reading) {
 

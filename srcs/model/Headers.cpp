@@ -32,6 +32,6 @@ std::string Headers::getErrorHeaders(event_http_status_enum_t status) {
 std::string Headers::getRedirectionHeaders(const std::string &location) {
     std::ostringstream headers;
 
-    headers << "HTTP/1.1 " << 301 << " Moved Permanently\r\nLocation: " << location << "\r\n\r\n";
+    headers << "HTTP/1.1 " << 307 << " Temporary Redirect\r\nLocation: " << location << "\r\n\r\n";
     return headers.str();
 }
