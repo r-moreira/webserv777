@@ -4,14 +4,14 @@
 
 #include "../../includes/model/RequestData.h"
 
-RequestData::RequestData(): _versionMajor(0), _versionMinor(0), keepAlive(false) {}
+RequestData::RequestData(): _version_major(0), _version_minor(0), _keep_alive(false) {}
 
 RequestData::~RequestData() {}
 
 std::string RequestData::inspect() const {
     std::stringstream stream;
     stream << _method << " " << _uri << " HTTP/"
-           << _versionMajor << "." << _versionMinor << "\n";
+           << _version_major << "." << _version_minor << "\n";
 
     for (std::vector<RequestData::HeaderItem>::const_iterator it = _headers.begin();
          it != _headers.end(); ++it) {
@@ -20,7 +20,7 @@ std::string RequestData::inspect() const {
 
     std::string data(_content.begin(), _content.end());
     stream << data << "\n";
-    stream << "+ keep-alive: " << keepAlive << "\n";;
+    stream << "+ keep-alive: " << _keep_alive << "\n";;
     return stream.str();
 }
 
@@ -66,11 +66,11 @@ const std::string &RequestData::getUri() const {
 }
 
 int RequestData::getVersionMajor() const {
-    return _versionMajor;
+    return _version_major;
 }
 
 int RequestData::getVersionMinor() const {
-    return _versionMinor;
+    return _version_minor;
 }
 
 const std::vector<RequestData::HeaderItem> &RequestData::getHeaders() const {
@@ -82,17 +82,17 @@ const std::vector<char> &RequestData::getContent() const {
 }
 
 bool RequestData::isKeepAlive() const {
-    return keepAlive;
+    return _keep_alive;
 }
 
 void RequestData::setVersionMajor(int versionMajor) {
-    _versionMajor = versionMajor;
+    _version_major = versionMajor;
 }
 
 void RequestData::setVersionMinor(int versionMinor) {
-    _versionMinor = versionMinor;
+    _version_minor = versionMinor;
 }
 
 void RequestData::setKeepAlive(bool keepAlive) {
-    RequestData::keepAlive = keepAlive;
+    RequestData::_keep_alive = keepAlive;
 }

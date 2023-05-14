@@ -51,6 +51,13 @@ private:
     event_http_status _http_status;
 
     std::string _request_read_buffer;
+    std::string _remaining_read_buffer;
+public:
+    const std::string &getRemainingReadBuffer() const;
+
+    void setRemainingReadBuffer(const std::string &remainingReadBuffer);
+
+private:
     size_t _request_read_bytes;
 
     FILE *_file;
@@ -168,5 +175,6 @@ public:
     const RequestData &getRequest() const;
 
     void setRequest(const RequestData &request);
+
 };
 #endif //WEBSERV_EVENT_H

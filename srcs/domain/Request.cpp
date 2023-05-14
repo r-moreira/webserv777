@@ -11,6 +11,7 @@ Request::~Request() {}
 
 void Request::read_request() {
     _read.read_request();
+    this->parse_request();
 }
 
 void Request::parse_request() {
@@ -19,20 +20,35 @@ void Request::parse_request() {
     std::cout << MAGENTA << "Request Data:\n " << this->_event.getRequestReadBuffer() << RESET << std::endl;
 
     const char *buffer = this->_event.getRequestReadBuffer().c_str();
-
+    RequestParser::ParseState parse_state;
     RequestParser parser;
 
-    RequestParser::ParseResult result = parser.parse(_event._request, buffer, buffer + strlen(buffer));
+    while (buffer && *buffer) {
+        char c = *buffer;
 
-    if (result == RequestParser::ParsingCompleted) {
-        std::cout << WHITE << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
-    } else {
-        std::cerr << RED << "Parsing failed" << RESET << std::endl;
-        ErrorState::throw_error_state(this->_event, Event::BAD_REQUEST);
-        return;
+        parse_state = parser.parse(_event._request, c);
+
+        if (parse_state == RequestParser::ParsingCompleted || parse_state == RequestParser::FileUpload) {
+            std::cout << WHITE << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
+            this->_event.setEventSubStatus(Event::ChoosingServer);
+            this->_event.setRequestReadBuffer(buffer);
+
+            if (parse_state == RequestParser::FileUpload) {
+                std::cout << YELLOW << "Remaining Buffer: |" << this->_event.getRequestReadBuffer() << "|" << RESET<< std::endl;
+                this->_event.setRemainingReadBuffer(this->_event.getRequestReadBuffer());
+            }
+            return;
+        }
+
+        if (parse_state == RequestParser::ParsingError || parse_state == RequestParser::ParsingIncompleted){
+            std::cerr << RED << "Parsing failed" << RESET << std::endl;
+            ErrorState::throw_error_state(this->_event, Event::BAD_REQUEST);
+            return;
+        }
+
+        *buffer++;
     }
 
-    this->_event.setEventSubStatus(Event::ChoosingServer);
 }
 
 
@@ -137,6 +153,7 @@ void Request::validate_constraints() {
 }
 
 //TODO:: Adicionar o estados restantes
+// if request method = POST and Content-Type: multipart/form-data ou
 void Request::define_response_state() {
     if (ErrorState::is_error_state(this->_event)) return;
 

@@ -17,11 +17,11 @@ public:
 private:
     std::string _method;
     std::string _uri;
-    int _versionMajor;
-    int _versionMinor;
+    int _version_major;
+    int _version_minor;
     std::vector<RequestData::HeaderItem> _headers;
     std::vector<char> _content;
-    bool keepAlive;
+    bool _keep_alive;
 
 public:
     RequestData();

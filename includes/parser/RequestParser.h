@@ -11,16 +11,10 @@
 class RequestParser {
 
 private:
-    size_t contentSize;
+    size_t _content_size;
 
 public:
-    enum ParseResult {
-        ParsingCompleted,
-        ParsingIncompleted,
-        ParsingError
-    };
-
-    enum State {
+    enum ParseState {
         RequestMethodStart,
         RequestMethod,
         RequestUriStart,
@@ -45,26 +39,31 @@ public:
         ExpectingNewline_2,
         ExpectingNewline_3,
 
-        Post
+        Post,
+
+        ParsingCompleted,
+        FileUpload,
+        ParsingIncompleted,
+        ParsingError
     } state;
 
     RequestParser();
     ~RequestParser();
 
-    ParseResult parse(RequestData &req, const char *begin, const char *end);
+    ParseState parse(RequestData &req, char c);
 
 private:
     static bool checkIfConnection(const RequestData::HeaderItem &item);
 
-    ParseResult consume(RequestData &req, const char *begin, const char *end);
+    ParseState consume(RequestData &req, char c);
 
-    inline bool isChar(int c);
+    static inline bool isChar(int c);
 
-    inline bool isControl(int c);
+    static inline bool isControl(int c);
 
-    inline bool isSpecial(int c);
+    static inline bool isSpecial(int c);
 
-    inline bool isDigit(int c);
+    static inline bool isDigit(int c);
 
 
 };

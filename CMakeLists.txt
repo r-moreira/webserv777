@@ -11,8 +11,6 @@ add_executable(
         srcs/network/Socket.cpp includes/network/Socket.h
         srcs/config/Server.cpp includes/config/Server.h
         srcs/io/Multiplexer.cpp includes/io/Multiplexer.h
-        includes/parser/RequestInfo.h
-        includes/parser/HttpRequestParser.h
         srcs/domain/Event.cpp includes/domain/Event.h
         srcs/domain/EventHandler.cpp includes/domain/EventHandler.h
         srcs/domain/Request.cpp includes/domain/Request.h

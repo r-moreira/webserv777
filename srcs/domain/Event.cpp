@@ -40,6 +40,15 @@ Event::~Event() {
     close(this->getClientFd());
 }
 
+void Event::clear_file_info() {
+    this->setFileOpened(false);
+    this->setFile(NULL);
+    this->setFilePath("");
+    this->setFileReadBytes(0);
+    this->setFileChunkReadBytes(0);
+    this->setFileSize(0);
+}
+
 int Event::getClientFd() const {
     return _client_fd;
 }
@@ -212,15 +221,14 @@ void Event::setRequest(const RequestData &request) {
     _request = request;
 }
 
-
-void Event::clear_file_info() {
-    this->setFileOpened(false);
-    this->setFile(NULL);
-    this->setFilePath("");
-    this->setFileReadBytes(0);
-    this->setFileChunkReadBytes(0);
-    this->setFileSize(0);
+const std::string &Event::getRemainingReadBuffer() const {
+    return _remaining_read_buffer;
 }
+
+void Event::setRemainingReadBuffer(const std::string &remainingReadBuffer) {
+    _remaining_read_buffer = remainingReadBuffer;
+}
+
 
 
 

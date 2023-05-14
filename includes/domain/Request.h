@@ -37,7 +37,7 @@ public:
 private:
     std::string path_to_root();
 
-    bool is_directory(const std::string& path);
+    static bool is_directory(const std::string& path);
 };
 
 

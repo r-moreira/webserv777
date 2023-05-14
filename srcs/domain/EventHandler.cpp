@@ -17,6 +17,7 @@ EventHandler::~EventHandler() {}
 //      Setup multiple servers with different hostnames (use something like: curl --resolve
 //      example.com:80:127.0.0.1 http://example.com/ (http://example.com/)).
 // Aceitar POST apenas para upload de arquivo e outras coisas necessárias se precisar (Como CGI)
+// Trocar o throw error state por uma exception do C++ (https://www.cplusplus.com/doc/tutorial/exceptions/)
 // Testar com todas configurações possíveis
 //      Checar os uso dos getters e setters do servidores e locations é uma forma de saber se tudo foi testado
 
@@ -29,6 +30,7 @@ EventHandler::~EventHandler() {}
 //          3. Se for Post,
 //              1. Verificar se o content-type é multipart/form-data
 //      Refs: https://stackoverflow.com/questions/36184410/how-does-webserver-handle-http-post
+//      Refs: https://stackoverflow.com/questions/11254037/how-to-know-when-the-http-headers-part-is-ended
 
 // Apagar o arquivo do path quando o método for DELETE
 
@@ -39,7 +41,6 @@ void EventHandler::process_event() {
 
         switch (this->_event.getEventSubStatus()) {
             case Event::ReadingRequest: _request.read_request();
-            case Event::ParsingRequest: _request.parse_request();
             case Event::ChoosingServer: _request.choose_server(this->_servers);
             case Event::ChoosingLocation: _request.choose_location();
             case Event::ValidatingConstraints: _request.validate_constraints();

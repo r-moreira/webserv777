@@ -4,18 +4,22 @@
 
 #include "../../includes/parser/RequestParser.h"
 
-RequestParser::RequestParser() : state(RequestMethodStart), contentSize(0){}
+RequestParser::RequestParser() : state(RequestMethodStart), _content_size(0){}
 
 RequestParser::~RequestParser() {}
 
-RequestParser::ParseResult RequestParser::parse(RequestData &req, const char *begin, const char *end) {
-    return consume(req, begin, end);
+RequestParser::ParseState RequestParser::parse(RequestData &req, char c) {
+    return consume(req, c);
 }
 
-RequestParser::ParseResult RequestParser::consume(RequestData &req, const char *begin, const char *end) {
-    while (begin != end) {
-        char input = *begin++;
 
+//Colocar o parse Result dentro do State, virar ParseState. Mudar os parâmetros de parse e cosume para (RequestData &req, char c)
+//Fazer um loop dentro da função read_request lendo byte a byte até o estado se tornar ParsingCompleted ou FileUpload
+//Salvar o ParseState em uma variável global da classe Event
+//Na escola de qual fluxo seguir:
+//  Se for ParsingCompleted, continua o GET request normalmente
+//  Se for FileUpload, setar chama a função read_upload_file (Tentar dar uma forma conseguir ler dados binários)
+RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
         switch (state) {
             case RequestMethodStart:
                 if (!isChar(input) || isControl(input) || isSpecial(input)) {
@@ -179,8 +183,8 @@ RequestParser::ParseResult RequestParser::consume(RequestData &req, const char *
                         RequestData::HeaderItem h = req.getHeaders().back();
 
                         if (strcasecmp(h.name.c_str(), "Content-Length") == 0) {
-                            contentSize = atoi(h.value.c_str());
-                            req.reserveContent(contentSize);
+                            _content_size = atoi(h.value.c_str());
+                            req.reserveContent(_content_size);
                         } else if (strcasecmp(h.name.c_str(), "Transfer-Encoding") == 0) {
                             if (strcasecmp(h.value.c_str(), "chunked") == 0)
                                 return ParsingError;
@@ -218,7 +222,7 @@ RequestParser::ParseResult RequestParser::consume(RequestData &req, const char *
                         req.setKeepAlive(true);
                 }
 
-                if (contentSize == 0) {
+                if (_content_size == 0) {
                     if (input == '\n')
                         return ParsingCompleted;
                     else
@@ -229,17 +233,12 @@ RequestParser::ParseResult RequestParser::consume(RequestData &req, const char *
                 break;
             }
             case Post:
-                --contentSize;
-                req.contentPushBack(input);
-
-                if (contentSize == 0) {
-                    return ParsingCompleted;
-                }
-                break;
+                return FileUpload;
+            default:
+                return ParsingIncompleted;
         }
-    }
 
-    return ParsingIncompleted;
+    return state;
 }
 
 bool RequestParser::checkIfConnection(const RequestData::HeaderItem &item) {
