@@ -12,13 +12,6 @@ RequestParser::ParseState RequestParser::parse(RequestData &req, char c) {
     return consume(req, c);
 }
 
-
-//Colocar o parse Result dentro do State, virar ParseState. Mudar os parâmetros de parse e cosume para (RequestData &req, char c)
-//Fazer um loop dentro da função read_request lendo byte a byte até o estado se tornar ParsingCompleted ou FileUpload
-//Salvar o ParseState em uma variável global da classe Event
-//Na escola de qual fluxo seguir:
-//  Se for ParsingCompleted, continua o GET request normalmente
-//  Se for FileUpload, setar chama a função read_upload_file (Tentar dar uma forma conseguir ler dados binários)
 RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
 
     switch (state) {
