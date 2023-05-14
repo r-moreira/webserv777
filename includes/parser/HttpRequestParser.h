@@ -14,8 +14,7 @@
     class HttpRequestParser {
     public:
         HttpRequestParser()
-                : state(RequestMethodStart), contentSize(0),
-                 chunked(false) {
+                : state(RequestMethodStart), contentSize(0){
         }
 
         enum ParseResult {
@@ -34,8 +33,8 @@
         }
 
         ParseResult consume(RequestInfo &req, const char *begin, const char *end) {
-            while (begin != end) {
-                char input = *begin++; //Adicionar uma leitura do input aqui, fazendo um loop para ler todos os inputs, o parser vai ser chamado a cada input lido
+            while (begin != end /*begin != \0*/) {
+                char input = *begin++;
 
                 switch (state) {
                     case RequestMethodStart:
@@ -251,7 +250,7 @@
                         }
                         break;
                     }
-                    case Post: // Retornar, fazer o parse do post em outro lugar
+                    case Post:
                         --contentSize;
                         req.content.push_back(input);
 
@@ -334,13 +333,10 @@
             ExpectingNewline_2,
             ExpectingNewline_3,
 
-            Post,
-            ChunkSize,
+            Post
         } state;
 
         size_t contentSize;
-        std::string chunkSizeStr;
-        bool chunked;
     };
 
 

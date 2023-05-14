@@ -26,7 +26,9 @@ SRCS				= ${SRCS_DIR}/webserv.cpp\
 					  ${MODEL_DIR}/Headers.cpp\
 					  ${MODEL_DIR}/MimeTypes.cpp\
 					  ${MODEL_DIR}/Pages.cpp\
+					  ${MODEL_DIR}/RequestData.cpp\
 					  ${NETWORK_DIR}/Socket.cpp\
+					  ${PARSER_DIR}/RequestParser.cpp\
 					  ${PARSER_DIR}/ConfigParser.cpp\
 					  ${PARSER_DIR}/LocationParser.cpp
 

@@ -13,9 +13,6 @@ add_executable(
         srcs/io/Multiplexer.cpp includes/io/Multiplexer.h
         includes/parser/RequestInfo.h
         includes/parser/HttpRequestParser.h
-        includes/parser/UrlParser.h
-        includes/parser/ResponseInfo.h
-        includes/parser/HttpResponseParser.h
         srcs/domain/Event.cpp includes/domain/Event.h
         srcs/domain/EventHandler.cpp includes/domain/EventHandler.h
         srcs/domain/Request.cpp includes/domain/Request.h
@@ -27,4 +24,6 @@ add_executable(
         srcs/io/Read.cpp includes/io/Read.h
         srcs/io/Write.cpp includes/io/Write.h
         srcs/model/Headers.cpp includes/model/Headers.h
-        srcs/model/MimeTypes.cpp includes/model/MimeTypes.h srcs/model/Pages.cpp includes/model/Pages.h)
+        srcs/model/MimeTypes.cpp includes/model/MimeTypes.h
+        srcs/model/Pages.cpp includes/model/Pages.h
+        srcs/parser/RequestParser.cpp includes/parser/RequestParser.h srcs/model/RequestData.cpp includes/model/RequestData.h)
