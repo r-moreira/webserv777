@@ -21,7 +21,7 @@ void Response::send_redirection() {
     std::cout << MAGENTA << "Send redirection response" << RESET << std::endl;
 
     _write.write_redirection_headers();
-    _event.setEventStatus(Ended);
+    _event.setEventStatus(Event::Ended);
 }
 
 void Response::send_is_directory_response() {
@@ -46,7 +46,7 @@ void Response::send_is_directory_response() {
         _write.write_default_error_page();
     }
 
-    _event.setEventStatus(Ended);
+    _event.setEventStatus(Event::Ended);
 }
 
 void Response::send_error_response() {
@@ -88,5 +88,5 @@ void Response::send_error_response() {
         _write.write_default_error_page();
     }
 
-    _event.setEventStatus(Ended);
+    _event.setEventStatus(Event::Ended);
 }

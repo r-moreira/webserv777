@@ -40,17 +40,13 @@ Event::~Event() {
     close(this->getClientFd());
 }
 
-
-void Event::clear_file_info() {
-    this->setFileOpened(false);
-    this->setFile(NULL);
-    this->setFilePath("");
-    this->setFileReadBytes(0);
-    this->setFileChunkReadBytes(0);
-    this->setFileSize(0);
+int Event::getClientFd() const {
+    return _client_fd;
 }
 
-
+void Event::setClientFd(int clientFd) {
+    _client_fd = clientFd;
+}
 
 int Event::getServerFd() const {
     return _server_fd;
@@ -60,12 +56,12 @@ void Event::setServerFd(int serverFd) {
     _server_fd = serverFd;
 }
 
-int Event::getClientFd() const {
-    return _client_fd;
+Event::event_http_status Event::getHttpStatus() const {
+    return _http_status;
 }
 
-void Event::setClientFd(int clientFd) {
-    _client_fd = clientFd;
+void Event::setHttpStatus(Event::event_http_status httpStatus) {
+    _http_status = httpStatus;
 }
 
 const std::string &Event::getRequestReadBuffer() const {
@@ -74,14 +70,6 @@ const std::string &Event::getRequestReadBuffer() const {
 
 void Event::setRequestReadBuffer(const std::string &requestReadBuffer) {
     _request_read_buffer = requestReadBuffer;
-}
-
-const std::string &Event::getFilePath() const {
-    return _file_path;
-}
-
-void Event::setFilePath(const std::string &filePath) {
-    _file_path = filePath;
 }
 
 size_t Event::getRequestReadBytes() const {
@@ -98,6 +86,14 @@ FILE *Event::getFile() const {
 
 void Event::setFile(FILE *file) {
     _file = file;
+}
+
+const std::string &Event::getFilePath() const {
+    return _file_path;
+}
+
+void Event::setFilePath(const std::string &filePath) {
+    _file_path = filePath;
 }
 
 size_t Event::getFileReadBytes() const {
@@ -136,44 +132,20 @@ const char *Event::getFileReadChunkBuffer() const {
     return _file_read_chunk_buffer;
 }
 
-event_status_t Event::getEventStatus() const {
+Event::event_status Event::getEventStatus() const {
     return _event_status;
 }
 
-void Event::setEventStatus(event_status_t eventStatus) {
+void Event::setEventStatus(Event::event_status eventStatus) {
     _event_status = eventStatus;
 }
 
-event_sub_status_t Event::getEventSubStatus() const {
+Event::event_sub_status Event::getEventSubStatus() const {
     return _event_sub_status;
 }
 
-void Event::setEventSubStatus(event_sub_status_t eventSubStatus) {
+void Event::setEventSubStatus(Event::event_sub_status eventSubStatus) {
     _event_sub_status = eventSubStatus;
-}
-
-Server Event::getServer() const {
-    return _server;
-}
-
-void Event::setServer(Server server) {
-    _server = server;
-}
-
-event_http_status_enum_t Event::getHttpStatus() const {
-    return _http_status;
-}
-
-void Event::setHttpStatus(event_http_status_enum_t httpStatus) {
-    _http_status = httpStatus;
-}
-
-Location Event::getLocation() const {
-    return _location;
-}
-
-void Event::setLocation(Location location) {
-    _location = location;
 }
 
 bool Event::isHeaderSent() const {
@@ -216,6 +188,22 @@ void Event::setForcedRedirectLocation(const std::string &forcedRedirectLocation)
     _forced_redirect_location = forcedRedirectLocation;
 }
 
+const Server &Event::getServer() const {
+    return _server;
+}
+
+void Event::setServer(const Server &server) {
+    _server = server;
+}
+
+const Location &Event::getLocation() const {
+    return _location;
+}
+
+void Event::setLocation(const Location &location) {
+    _location = location;
+}
+
 const RequestData &Event::getRequest() const {
     return _request;
 }
@@ -223,3 +211,16 @@ const RequestData &Event::getRequest() const {
 void Event::setRequest(const RequestData &request) {
     _request = request;
 }
+
+
+void Event::clear_file_info() {
+    this->setFileOpened(false);
+    this->setFile(NULL);
+    this->setFilePath("");
+    this->setFileReadBytes(0);
+    this->setFileChunkReadBytes(0);
+    this->setFileSize(0);
+}
+
+
+

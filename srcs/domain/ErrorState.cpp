@@ -6,15 +6,15 @@
 
 ErrorState::ErrorState() {}
 
-void ErrorState::throw_error_state(Event &event, event_http_status_enum_t status) {
+void ErrorState::throw_error_state(Event &event, Event::event_http_status status) {
     std::cout << YELLOW << "Ativando estado de erro para o status " << status << RESET << std::endl;
 
     event.setErrorResponse(false);
     event.setHttpStatus(status);
-    event.setEventStatus(Writing);
-    event.setEventSubStatus(SendingErrorResponse);
+    event.setEventStatus(Event::Writing);
+    event.setEventSubStatus(Event::SendingErrorResponse);
 }
 
 bool ErrorState::is_error_state(Event &event) {
-   return event.getHttpStatus() != OK && !event.isErrorResponse();
+   return event.getHttpStatus() != Event::OK && !event.isErrorResponse();
 }

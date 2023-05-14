@@ -6,6 +6,7 @@
 #define WEBSERV_HEADERS_H
 
 #include "../webserv.h"
+#include "../domain/Event.h"
 #include "MimeTypes.h"
 
 class Headers {
@@ -16,7 +17,7 @@ public:
 
     ~Headers();
 
-    std::string getErrorHeaders(event_http_status_enum_t status);
+    std::string getErrorHeaders(Event::event_http_status status);
 
     std::string getFileHeaders(const std::string &file_path, size_t file_size);
 

@@ -15,14 +15,14 @@ void Write::write_requested_file() {
     long bytes_sent = send(_event.getClientFd() , _event.getFileReadChunkBuffer(), _event.getFileChunkReadBytes(), 0);
     if (bytes_sent < 0) {
         std::cerr << RED << "Error while writing to client: " << strerror(errno) << RESET << std::endl;
-        _event.setEventStatus(Ended);
+        _event.setEventStatus(Event::Ended);
         return;
     }
 
     std::cout << YELLOW << "Transmitted Data Size " << bytes_sent << " Bytes." << RESET << std::endl;
 
     if (_event.getFileReadLeft() <= 0) {
-        _event.setEventStatus(Ended);
+        _event.setEventStatus(Event::Ended);
         std::cout << GREEN << "File Transfer Complete." << RESET << std::endl;
     }
 }
@@ -82,7 +82,7 @@ void Write::write_headers(const std::string &headers) {
 
     if (send(_event.getClientFd(), headers.c_str(), headers.size(), 0) < 0) {
         std::cerr << RED << "Error while writing status header to client: " << strerror(errno) << RESET << std::endl;
-        ErrorState::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
+        ErrorState::throw_error_state(this->_event, Event::INTERNAL_SERVER_ERROR);
         return;
     }
 

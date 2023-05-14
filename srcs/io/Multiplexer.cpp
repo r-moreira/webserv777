@@ -51,11 +51,11 @@ void Multiplexer::event_loop() {
                 eventHandler.process_event();
 
                 switch (event->getEventStatus()) {
-                    case Reading:
+                    case Event::Reading:
                         if (client_read_event_callback(event) == -1) continue; break;
-                    case Writing:
+                    case Event::Writing:
                         if (client_write_event_callback(event) == -1) continue; break;
-                    case Ended:
+                    case Event::Ended:
                         delete event; break;
                     default:
                         std::cerr << RED << "Error: Invalid event_status on event_loop" << RESET << std::endl;

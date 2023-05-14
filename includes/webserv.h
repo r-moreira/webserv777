@@ -43,37 +43,6 @@
 #define READ_BUFFER_SIZE 8192
 #define FILE_READ_CHUNK_SIZE 30720
 
-typedef enum EVENT_STATUS {
-    Reading,
-    Writing,
-    Ended
-} event_status_t;
-
-typedef enum EVENT_SUB_STATUS {
-    ReadingRequest,
-    ParsingRequest,
-    ChoosingServer,
-    ChoosingLocation,
-    ValidatingConstraints,
-    DefiningResponseState,
-    SendingResponseFile,
-    SendingRedirectionResponse,
-    SendingDirectoryResponse,
-    SendingErrorResponse
-} event_sub_status_t;
-
-typedef enum EVENT_HTTP_STATUS_ENUM {
-    OK = 200,
-    CREATED = 201, //Upload
-    NO_CONTENT = 204, //Delete
-    BAD_REQUEST = 400,
-    FORBIDDEN = 403,
-    NOT_FOUND = 404,
-    METHOD_NOT_ALLOWED = 405,
-    PAYLOAD_TOO_LARGE = 413,
-    CLIENT_CLOSED_REQUEST = 499,
-    INTERNAL_SERVER_ERROR = 500,
-} event_http_status_enum_t;
 
 
 

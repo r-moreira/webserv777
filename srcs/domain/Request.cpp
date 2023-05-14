@@ -28,11 +28,11 @@ void Request::parse_request() {
         std::cout << WHITE << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
     } else {
         std::cerr << RED << "Parsing failed" << RESET << std::endl;
-        ErrorState::throw_error_state(this->_event, BAD_REQUEST);
+        ErrorState::throw_error_state(this->_event, Event::BAD_REQUEST);
         return;
     }
 
-    this->_event.setEventSubStatus(ChoosingServer);
+    this->_event.setEventSubStatus(Event::ChoosingServer);
 }
 
 
@@ -50,7 +50,7 @@ void Request::choose_server(std::vector<Server> servers) {
 
     std::cout << BLUE << "Choosed server =" << this->_event.getServer() << RESET << std::endl << std::endl;
 
-    this->_event.setEventSubStatus(ChoosingLocation);
+    this->_event.setEventSubStatus(Event::ChoosingLocation);
 }
 
 
@@ -89,13 +89,13 @@ void Request::choose_location() {
 
     if (!found) {
         std::cerr << RED << "Location not found" << RESET << std::endl;
-        ErrorState::throw_error_state(this->_event, NOT_FOUND);
+        ErrorState::throw_error_state(this->_event, Event::NOT_FOUND);
         return;
     }
 
     std::cout << YELLOW << "Choosed location <" << std::endl << this->_event.getLocation() << RESET << std::endl;
 
-    this->_event.setEventSubStatus(ValidatingConstraints);
+    this->_event.setEventSubStatus(Event::ValidatingConstraints);
 }
 
 void Request::validate_constraints() {
@@ -107,7 +107,7 @@ void Request::validate_constraints() {
                                                : this->_event.getServer().getLimitExcept();
 
     if (std::find(allowed_methods.begin(), allowed_methods.end(), this->_event.getRequest().getMethod()) == allowed_methods.end()) {
-        ErrorState::throw_error_state(this->_event, METHOD_NOT_ALLOWED);
+        ErrorState::throw_error_state(this->_event, Event::METHOD_NOT_ALLOWED);
         return;
     }
 
@@ -125,15 +125,15 @@ void Request::validate_constraints() {
                 long content_length = std::strtol(it->value.c_str(), NULL, 10);
 
                 if (content_length > max_body_size) {
-                    ErrorState::throw_error_state(this->_event, PAYLOAD_TOO_LARGE);
+                    ErrorState::throw_error_state(this->_event, Event::PAYLOAD_TOO_LARGE);
                     return;
                 }
             }
         }
     }
 
-    this->_event.setEventStatus(Writing);
-    this->_event.setEventSubStatus(DefiningResponseState);
+    this->_event.setEventStatus(Event::Writing);
+    this->_event.setEventSubStatus(Event::DefiningResponseState);
 }
 
 //TODO:: Adicionar o estados restantes
@@ -151,16 +151,16 @@ void Request::define_response_state() {
 
         this->_event.setForcedRedirect(true);
         this->_event.setForcedRedirectLocation(redirect_uri);
-        this->_event.setEventSubStatus(SendingRedirectionResponse);
-        this->_event.setEventStatus(Writing);
+        this->_event.setEventSubStatus(Event::SendingRedirectionResponse);
+        this->_event.setEventStatus(Event::Writing);
         return;
     }
 
     if (this->_event.getLocation().isRedirectLock()) {
         std::cout << MAGENTA << "Redirection Event" << RESET << std::endl;
 
-        this->_event.setEventSubStatus(SendingRedirectionResponse);
-        this->_event.setEventStatus(Writing);
+        this->_event.setEventSubStatus(Event::SendingRedirectionResponse);
+        this->_event.setEventStatus(Event::Writing);
         return;
     }
 
@@ -169,15 +169,15 @@ void Request::define_response_state() {
 
     if (is_directory(file_path)) {
         std::cerr << RED << "Redirecionado para página de erro de diretório" << RESET << std::endl;
-        this->_event.setEventSubStatus(SendingDirectoryResponse);
-        this->_event.setHttpStatus(FORBIDDEN);
-        this->_event.setEventStatus(Writing);
+        this->_event.setEventSubStatus(Event::SendingDirectoryResponse);
+        this->_event.setHttpStatus(Event::FORBIDDEN);
+        this->_event.setEventStatus(Event::Writing);
         return;
     }
 
     this->_event.setFilePath(file_path);
-    this->_event.setEventSubStatus(SendingResponseFile);
-    this->_event.setEventStatus(Writing);
+    this->_event.setEventSubStatus(Event::SendingResponseFile);
+    this->_event.setEventStatus(Event::Writing);
 
 }
 

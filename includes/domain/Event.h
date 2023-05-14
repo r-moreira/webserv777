@@ -11,12 +11,44 @@
 
 
 class Event {
+public:
+    enum event_status {
+        Reading,
+        Writing,
+        Ended
+    };
+
+    enum event_sub_status {
+        ReadingRequest,
+        ParsingRequest,
+        ChoosingServer,
+        ChoosingLocation,
+        ValidatingConstraints,
+        DefiningResponseState,
+        SendingResponseFile,
+        SendingRedirectionResponse,
+        SendingDirectoryResponse,
+        SendingErrorResponse
+    };
+
+    enum event_http_status {
+        OK = 200,
+        CREATED = 201, //Upload
+        NO_CONTENT = 204, //Delete
+        BAD_REQUEST = 400,
+        FORBIDDEN = 403,
+        NOT_FOUND = 404,
+        METHOD_NOT_ALLOWED = 405,
+        PAYLOAD_TOO_LARGE = 413,
+        CLIENT_CLOSED_REQUEST = 499,
+        INTERNAL_SERVER_ERROR = 500,
+    };
 
 private:
     int _client_fd;
     int _server_fd;
 
-    event_http_status_enum_t _http_status;
+    event_http_status _http_status;
 
     std::string _request_read_buffer;
     size_t _request_read_bytes;
@@ -29,8 +61,8 @@ private:
     size_t _file_size;
     char _file_read_chunk_buffer[FILE_READ_CHUNK_SIZE];
 
-    event_status_t _event_status;
-    event_sub_status_t _event_sub_status;
+    Event::event_status _event_status;
+    Event::event_sub_status _event_sub_status;
 
     bool _header_sent;
     bool _file_opened;
@@ -51,37 +83,21 @@ public:
 
     void clear_file_info();
 
-    int getServerFd() const;
-
-    void setServerFd(int serverFd);
-
     int getClientFd() const;
 
     void setClientFd(int clientFd);
 
-    Server getServer() const;
+    int getServerFd() const;
 
-    void setServer(Server server);
+    void setServerFd(int serverFd);
 
-    Location getLocation() const;
+    event_http_status getHttpStatus() const;
 
-    void setLocation(Location location);
-
-    event_http_status_enum_t getHttpStatus() const;
-
-    void setHttpStatus(event_http_status_enum_t httpStatus);
-
-    const RequestData &getRequest() const;
-
-    void setRequest(const RequestData &request);
+    void setHttpStatus(event_http_status httpStatus);
 
     const std::string &getRequestReadBuffer() const;
 
     void setRequestReadBuffer(const std::string &requestReadBuffer);
-
-    const std::string &getFilePath() const;
-
-    void setFilePath(const std::string &filePath);
 
     size_t getRequestReadBytes() const;
 
@@ -90,6 +106,10 @@ public:
     FILE *getFile() const;
 
     void setFile(FILE *file);
+
+    const std::string &getFilePath() const;
+
+    void setFilePath(const std::string &filePath);
 
     size_t getFileReadBytes() const;
 
@@ -109,13 +129,13 @@ public:
 
     const char *getFileReadChunkBuffer() const;
 
-    event_status_t getEventStatus() const;
+    event_status getEventStatus() const;
 
-    void setEventStatus(event_status_t eventStatus);
+    void setEventStatus(event_status eventStatus);
 
-    event_sub_status_t getEventSubStatus() const;
+    event_sub_status getEventSubStatus() const;
 
-    void setEventSubStatus(event_sub_status_t eventSubStatus);
+    void setEventSubStatus(event_sub_status eventSubStatus);
 
     bool isHeaderSent() const;
 
@@ -136,7 +156,17 @@ public:
     const std::string &getForcedRedirectLocation() const;
 
     void setForcedRedirectLocation(const std::string &forcedRedirectLocation);
+
+    const Server &getServer() const;
+
+    void setServer(const Server &server);
+
+    const Location &getLocation() const;
+
+    void setLocation(const Location &location);
+
+    const RequestData &getRequest() const;
+
+    void setRequest(const RequestData &request);
 };
-
-
 #endif //WEBSERV_EVENT_H

@@ -23,7 +23,7 @@ void File::open_file() {
         if (fptr == NULL) {
             std::cerr << RED << "Error while opening file: " << this->_event.getFilePath() << " " << strerror(errno) << RESET << std::endl;
 
-            ErrorState::throw_error_state(this->_event, NOT_FOUND);
+            ErrorState::throw_error_state(this->_event, Event::NOT_FOUND);
             return;
         }
         this->_event.setFile(fptr);
@@ -34,7 +34,7 @@ void File::open_file() {
     int fd = fileno(this->_event.getFile());
     if (fd < 1) {
         std::cerr << RED << "Error while getting file descriptor: " << strerror(errno) << RESET << std::endl;
-        ErrorState::throw_error_state(this->_event, INTERNAL_SERVER_ERROR);
+        ErrorState::throw_error_state(this->_event, Event::INTERNAL_SERVER_ERROR);
         return;
     }
 

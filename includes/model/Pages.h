@@ -6,6 +6,7 @@
 #define WEBSERV_PAGES_H
 
 #include "../webserv.h"
+#include "../domain/Event.h"
 
 class Pages {
 public:
@@ -13,7 +14,7 @@ public:
 
     ~Pages();
 
-    static std::string get_default_error_page(event_http_status_enum_t status);
+    static std::string get_default_error_page(Event::event_http_status status);
 };
 
 

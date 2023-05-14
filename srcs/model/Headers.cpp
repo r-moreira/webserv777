@@ -22,7 +22,7 @@ std::string Headers::getFileHeaders(const std::string& file_path, size_t file_si
     return "HTTP/1.1 200 Ok\r\n" + content_length + "Content-Type: " + this->_mime_types.get_mime_type(extension) + "\r\n\r\n";
 }
 
-std::string Headers::getErrorHeaders(event_http_status_enum_t status) {
+std::string Headers::getErrorHeaders(Event::event_http_status status) {
     std::ostringstream headers;
 
     headers << "HTTP/1.1 " << status << "\r\nContent-Type: text/html\r\n\r\n";
