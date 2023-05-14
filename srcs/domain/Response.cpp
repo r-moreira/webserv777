@@ -24,6 +24,32 @@ void Response::send_redirection() {
     _event.setEventStatus(Event::Ended);
 }
 
+void Response::send_upload_response() {
+    std::cout << MAGENTA << "Send upload response" << RESET << std::endl;
+
+    std::string upload_path;
+    upload_path = !this->_event.getLocation().getUploadPath().empty()
+            ? this->_event.getLocation().getUploadPath()
+            : this->_event.getServer().getUploadPath();
+
+    if (upload_path.empty()) {
+        std::cout << RED << "Upload path not found" << RESET << std::endl;
+        this->_event.setHttpStatus(Event::INTERNAL_SERVER_ERROR);
+        send_error_response();
+        return;
+    }
+
+    upload_path = upload_path[upload_path.length() - 1] == '/' ? upload_path : upload_path + "/";
+
+    //temporario, fazer parse do nome depois
+    this->_event.setFilePath(upload_path + "test_file.txt");
+
+    _file.create_file(); //Aqui o tratamento de erro com ErrorState não está funcionando por já estar no Write
+    _write.write_created_headers();
+    _event.setEventStatus(Event::Ended);
+}
+
+
 void Response::send_is_directory_response() {
     std::cout << MAGENTA << "Send directory error response" << RESET << std::endl;
 

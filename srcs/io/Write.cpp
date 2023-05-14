@@ -59,7 +59,6 @@ void Write::write_error_headers() {
     this->_event.setHeaderSent(true);
 }
 void Write::write_redirection_headers() {
-
     if (this->_event.isForcedRedirect()) {
         std::cout << CYAN << "Send forced redirection headers:" << RESET << std::endl;
 
@@ -77,6 +76,17 @@ void Write::write_redirection_headers() {
 }
 
 
+void Write::write_created_headers() {
+    if (ErrorState::is_error_state(this->_event) || this->_event.isHeaderSent()) return;
+
+    std::cout << CYAN << "Send created headers:" << RESET << std::endl;
+
+    write_headers(this->_headers.getCreatedHeaders(this->_event.getFilePath()));
+    if (ErrorState::is_error_state(this->_event)) return;
+    this->_event.setHeaderSent(true);
+}
+
+
 void Write::write_headers(const std::string &headers) {
     std::cout << CYAN << "Response Headers:\n" << headers << RESET << std::endl;
 
@@ -89,3 +99,4 @@ void Write::write_headers(const std::string &headers) {
     this->_event.setHeaderSent(true);
     std::cout << GREEN << "Successfully sent headers to client" << RESET << std::endl;
 }
+

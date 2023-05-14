@@ -7,7 +7,6 @@
 
 
 #include "Event.h"
-#include "ErrorState.h"
 #include "../io/File.h"
 #include "../io/Read.h"
 #include "../io/Write.h"
@@ -32,7 +31,7 @@ public:
 
     void send_redirection();
 
-private:
+    void send_upload_response();
 
 };
 

@@ -26,6 +26,7 @@ public:
         ValidatingConstraints,
         DefiningResponseState,
         SendingResponseFile,
+        SendingUploadResponse,
         SendingRedirectionResponse,
         SendingDirectoryResponse,
         SendingErrorResponse

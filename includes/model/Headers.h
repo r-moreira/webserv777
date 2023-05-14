@@ -22,6 +22,8 @@ public:
     std::string getFileHeaders(const std::string &file_path, size_t file_size);
 
     std::string getRedirectionHeaders(const std::string &location);
+
+    const std::string getCreatedHeaders(const std::string &location);
 };
 
 

@@ -31,6 +31,8 @@ public:
 
     void write_default_error_page();
 
+    void write_created_headers();
+
 private:
     void write_headers(const std::string &headers);
 };

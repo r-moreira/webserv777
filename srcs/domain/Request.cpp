@@ -31,11 +31,11 @@ void Request::parse_request() {
         if (parse_state == RequestParser::ParsingCompleted || parse_state == RequestParser::FileUpload) {
             std::cout << WHITE << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
             this->_event.setEventSubStatus(Event::ChoosingServer);
-            this->_event.setRequestReadBuffer(buffer);
 
             if (parse_state == RequestParser::FileUpload) {
-                std::cout << YELLOW << "Remaining Buffer: |" << this->_event.getRequestReadBuffer() << "|" << RESET<< std::endl;
                 this->_event.setRemainingReadBuffer(this->_event.getRequestReadBuffer());
+                std::cout << YELLOW << "Remaining Buffer: |" << this->_event.getRemainingReadBuffer() << "|" << RESET<< std::endl;
+
             }
             return;
         }
@@ -153,7 +153,7 @@ void Request::validate_constraints() {
 }
 
 //TODO:: Adicionar o estados restantes
-// if request method = POST and Content-Type: multipart/form-data ou
+// if request method = POST -> upload file
 void Request::define_response_state() {
     if (ErrorState::is_error_state(this->_event)) return;
 
@@ -177,6 +177,13 @@ void Request::define_response_state() {
         std::cout << MAGENTA << "Redirection Event" << RESET << std::endl;
 
         this->_event.setEventSubStatus(Event::SendingRedirectionResponse);
+        this->_event.setEventStatus(Event::Writing);
+        return;
+    }
+
+    if (this->_event.getRequest().getMethod() == "POST") {
+        std::cout << MAGENTA << "Upload Event" << RESET << std::endl;
+        this->_event.setEventSubStatus(Event::SendingUploadResponse);
         this->_event.setEventStatus(Event::Writing);
         return;
     }

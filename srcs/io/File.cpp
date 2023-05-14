@@ -11,6 +11,23 @@ File::~File() {}
 //TODO:: Fazer método para deletar arquivos, retornar erro em caso de diretório
 //TODO:: Criar método para criar arquivo quando for necessário upload de arquivos
 
+void File::create_file() {
+    if (ErrorState::is_error_state(this->_event) || this->_event.isFileOpened()) return;
+
+    std::cout << "Creating file: " << this->_event.getFilePath() << std::endl;
+
+    FILE *fptr;
+    fptr = fopen(this->_event.getFilePath().c_str(), "wb");
+    if (fptr == NULL) {
+        std::cerr << RED << "Error while creating file: " << this->_event.getFilePath() << " " << strerror(errno) << RESET << std::endl;
+
+        //Não funciona
+        ErrorState::throw_error_state(this->_event, Event::INTERNAL_SERVER_ERROR);
+        return;
+    }
+    this->_event.setFile(fptr);
+}
+
 void File::open_file() {
     if (ErrorState::is_error_state(this->_event) || this->_event.isFileOpened()) return;
 

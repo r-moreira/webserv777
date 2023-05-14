@@ -35,3 +35,10 @@ std::string Headers::getRedirectionHeaders(const std::string &location) {
     headers << "HTTP/1.1 " << 307 << " Temporary Redirect\r\nLocation: " << location << "\r\n\r\n";
     return headers.str();
 }
+
+const std::string Headers::getCreatedHeaders(const std::string &location) {
+    std::ostringstream headers;
+
+    headers << "HTTP/1.1 " << 201 << " Created\r\nLocation: " << location << "\r\n\r\n";
+    return headers.str();
+}

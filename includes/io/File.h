@@ -20,6 +20,8 @@ public:
     ~File();
 
     void open_file();
+
+    void create_file();
 };
 
 

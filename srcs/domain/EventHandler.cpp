@@ -34,6 +34,7 @@ EventHandler::~EventHandler() {}
 
 // Apagar o arquivo do path quando o método for DELETE
 
+// Test: Criar uma rota GET DELETE com location apontando para o diretório de upload no servidor de upload/cgi
 
 
 void EventHandler::process_event() {
@@ -56,7 +57,7 @@ void EventHandler::process_event() {
         switch (this->_event.getEventSubStatus()) {
             case Event::SendingResponseFile: _response.send_response_file();
                 break;
-            //case UploadingFile: _response.upload_file();
+            case Event::SendingUploadResponse: _response.send_upload_response();
                 break;
             //case DeletingFile: _response.delete_file();
                 break;
