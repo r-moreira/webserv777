@@ -11,6 +11,7 @@ Server::Server() {
     this->_fd = -1;
     this->_max_body_size = -1;
     this->_autoindex = false;
+    this->_upload_lock = false;
     this->_limit_except = std::vector<std::string>();
     this->_limit_except.push_back("GET");
     this->_limit_except.push_back("POST");

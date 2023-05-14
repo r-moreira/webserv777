@@ -45,8 +45,10 @@ void Response::send_upload_response() {
     this->_event.setFilePath(upload_path + "test_file.txt");
 
     _file.create_file(); //Aqui o tratamento de erro com ErrorState não está funcionando por já estar no Write
+
     _write.write_created_headers();
-    _event.setEventStatus(Event::Ended);
+
+    if (!ErrorState::is_error_state(this->_event)) _event.setEventStatus(Event::Ended);
 }
 
 
