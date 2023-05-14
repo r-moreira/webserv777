@@ -11,6 +11,7 @@
 
 
 class Event {
+
 public:
     enum event_status {
         Reading,
@@ -53,12 +54,6 @@ private:
 
     std::string _request_read_buffer;
     std::string _remaining_read_buffer;
-public:
-    const std::string &getRemainingReadBuffer() const;
-
-    void setRemainingReadBuffer(const std::string &remainingReadBuffer);
-
-private:
     size_t _request_read_bytes;
 
     FILE *_file;
@@ -90,6 +85,7 @@ public:
     ~Event();
 
     void clear_file_info();
+
 
     int getClientFd() const;
 
@@ -176,6 +172,10 @@ public:
     const RequestData &getRequest() const;
 
     void setRequest(const RequestData &request);
+
+    const std::string &getRemainingReadBuffer() const;
+
+    void setRemainingReadBuffer(const std::string &remainingReadBuffer);
 
 };
 #endif //WEBSERV_EVENT_H
