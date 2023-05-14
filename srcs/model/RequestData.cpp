@@ -24,56 +24,73 @@ std::string RequestData::inspect() const {
     return stream.str();
 }
 
-const std::string &RequestData::getMethod() const {
-    return _method;
+
+void RequestData::methodPushBack(char c) {
+    _method.push_back(c);
 }
 
-void RequestData::setMethod(const std::string &method) {
-    _method = method;
+void RequestData::uriPushBack(char c) {
+    _uri.push_back(c);
+}
+
+void RequestData::headerItemPushBackNameReserve(char c) {
+    _headers.push_back(RequestData::HeaderItem());
+    _headers.back().name.reserve(16);
+    _headers.back().value.reserve(16);
+    _headers.back().name.push_back(c);
+}
+
+void RequestData::headerItemPushBackName(char c) {
+    _headers.back().name.push_back(c);
+}
+
+
+void RequestData::headerItemPushBackValue(char c) {
+    _headers.back().value.push_back(c);
+}
+
+void RequestData::reserveContent(size_t size) {
+    _content.reserve(size);
+}
+
+void RequestData::contentPushBack(char c) {
+    _content.push_back(c);
+}
+
+const std::string &RequestData::getMethod() const {
+    return _method;
 }
 
 const std::string &RequestData::getUri() const {
     return _uri;
 }
 
-void RequestData::setUri(const std::string &uri) {
-    _uri = uri;
-}
-
 int RequestData::getVersionMajor() const {
     return _versionMajor;
-}
-
-void RequestData::setVersionMajor(int versionMajor) {
-    _versionMajor = versionMajor;
 }
 
 int RequestData::getVersionMinor() const {
     return _versionMinor;
 }
 
-void RequestData::setVersionMinor(int versionMinor) {
-    _versionMinor = versionMinor;
-}
-
 const std::vector<RequestData::HeaderItem> &RequestData::getHeaders() const {
     return _headers;
-}
-
-void RequestData::setHeaders(const std::vector<RequestData::HeaderItem> &headers) {
-    _headers = headers;
 }
 
 const std::vector<char> &RequestData::getContent() const {
     return _content;
 }
 
-void RequestData::setContent(const std::vector<char> &content) {
-    _content = content;
-}
-
 bool RequestData::isKeepAlive() const {
     return keepAlive;
+}
+
+void RequestData::setVersionMajor(int versionMajor) {
+    _versionMajor = versionMajor;
+}
+
+void RequestData::setVersionMinor(int versionMinor) {
+    _versionMinor = versionMinor;
 }
 
 void RequestData::setKeepAlive(bool keepAlive) {

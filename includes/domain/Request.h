@@ -6,10 +6,10 @@
 #define WEBSERV_REQUEST_H
 
 #include "Event.h"
-#include "../../includes/parser/HttpRequestParser.h"
 #include "ErrorState.h"
-#include "../parser/RequestInfo.h"
 #include "../io/Read.h"
+#include "../../includes/parser/RequestParser.h"
+#include "../model/RequestData.h"
 
 class Request {
 

@@ -20,11 +20,11 @@ void Request::parse_request() {
 
     const char *buffer = this->_event.getRequestReadBuffer().c_str();
 
-    HttpRequestParser parser;
+    RequestParser parser;
 
-    HttpRequestParser::ParseResult result = parser.parse(_event._request, buffer, buffer + strlen(buffer));
+    RequestParser::ParseResult result = parser.parse(_event._request, buffer, buffer + strlen(buffer));
 
-    if (result == HttpRequestParser::ParsingCompleted) {
+    if (result == RequestParser::ParsingCompleted) {
         std::cout << WHITE << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
     } else {
         std::cerr << RED << "Parsing failed" << RESET << std::endl;
@@ -77,7 +77,7 @@ void Request::choose_location() {
     bool found = false;
     size_t location_path_size = 0;
     for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++) {
-        if (this->_event.getRequest().uri.rfind(it->getPath(), 0) == 0) {
+        if (this->_event.getRequest().getUri().rfind(it->getPath(), 0) == 0) {
 
             if (it->getPath().size() > location_path_size) {
                 this->_event.setLocation(*it);
@@ -106,7 +106,7 @@ void Request::validate_constraints() {
                                                ? this->_event.getLocation().getLimitExcept()
                                                : this->_event.getServer().getLimitExcept();
 
-    if (std::find(allowed_methods.begin(), allowed_methods.end(), this->_event.getRequest().method) == allowed_methods.end()) {
+    if (std::find(allowed_methods.begin(), allowed_methods.end(), this->_event.getRequest().getMethod()) == allowed_methods.end()) {
         ErrorState::throw_error_state(this->_event, METHOD_NOT_ALLOWED);
         return;
     }
@@ -118,9 +118,9 @@ void Request::validate_constraints() {
     if (max_body_size != -1) {
         std::cout << MAGENTA << "Validating Content Length" << RESET <<std::endl;
 
-        std::vector<RequestInfo::HeaderItem> headers = this->_event.getRequest().headers;
+        std::vector<RequestData::HeaderItem> headers = this->_event.getRequest().getHeaders();
 
-        for (std::vector<RequestInfo::HeaderItem>::iterator it = headers.begin(); it != headers.end(); it++) {
+        for (std::vector<RequestData::HeaderItem>::iterator it = headers.begin(); it != headers.end(); it++) {
             if (it->name == "Content-Length") {
                 long content_length = std::strtol(it->value.c_str(), NULL, 10);
 
@@ -144,7 +144,7 @@ void Request::define_response_state() {
 
     //Se o path da requisição for igual ao path da location e terminar sem a "/" é necessário fazer um redirect para adicionando a "/"
     //  se não o navegador requisitar o diretório incorreto.
-    std::string request_uri = this->_event.getRequest().uri;
+    std::string request_uri = this->_event.getRequest().getUri();
     if (request_uri.length() > 1 && request_uri[request_uri.length() - 1] != '/' && request_uri == this->_event.getLocation().getPath()) {
         std::cout << MAGENTA << "Forcing redirect to location with /" << RESET << std::endl;
         std::string redirect_uri = request_uri + "/";
@@ -195,7 +195,7 @@ bool Request::is_directory(const std::string& path) {
 std::string Request::path_to_root() {
     std::cout << YELLOW << "Path to root" << RESET << std::endl;
 
-    std::string request_uri = this->_event.getRequest().uri;
+    std::string request_uri = this->_event.getRequest().getUri();
     std::string location_path = this->_event.getLocation().getPath();
 
     std::string location_root = !this->_event.getLocation().getRoot().empty()

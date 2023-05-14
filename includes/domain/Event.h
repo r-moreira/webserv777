@@ -6,8 +6,8 @@
 #define WEBSERV_EVENT_H
 
 #include "../webserv.h"
-#include "../parser/RequestInfo.h"
 #include "../config/Server.h"
+#include "../model/RequestData.h"
 
 
 class Event {
@@ -43,7 +43,7 @@ private:
     Location _location;
 
 public:
-    RequestInfo _request;
+    RequestData _request;
 
     Event(int server_fd, int client_fd);
 
@@ -71,9 +71,9 @@ public:
 
     void setHttpStatus(event_http_status_enum_t httpStatus);
 
-    const RequestInfo &getRequest() const;
+    const RequestData &getRequest() const;
 
-    void setRequest(const RequestInfo &request);
+    void setRequest(const RequestData &request);
 
     const std::string &getRequestReadBuffer() const;
 

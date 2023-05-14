@@ -10,7 +10,7 @@ Event::Event(int server_fd, int client_fd) {
 
     this->_http_status = OK;
 
-    this->_request = RequestInfo();
+    this->_request = RequestData();
     this->_request_read_buffer = "";
     this->_request_read_bytes = 0;
 
@@ -66,14 +66,6 @@ int Event::getClientFd() const {
 
 void Event::setClientFd(int clientFd) {
     _client_fd = clientFd;
-}
-
-const RequestInfo &Event::getRequest() const {
-    return _request;
-}
-
-void Event::setRequest(const RequestInfo &request) {
-    _request = request;
 }
 
 const std::string &Event::getRequestReadBuffer() const {
@@ -224,3 +216,10 @@ void Event::setForcedRedirectLocation(const std::string &forcedRedirectLocation)
     _forced_redirect_location = forcedRedirectLocation;
 }
 
+const RequestData &Event::getRequest() const {
+    return _request;
+}
+
+void Event::setRequest(const RequestData &request) {
+    _request = request;
+}

@@ -27,36 +27,43 @@ public:
     RequestData();
     ~RequestData();
 
+    //Fazer push back dos atributos membros privados da classe
+
     std::string inspect() const;
 
-    const std::string &getMethod() const;
+    void methodPushBack(char c);
 
-    void setMethod(const std::string &method);
+    void uriPushBack(char c);
 
-    const std::string &getUri() const;
+    void headerItemPushBackNameReserve(char  c);
 
-    void setUri(const std::string &uri);
+    void headerItemPushBackValue(char  c);
 
-    int getVersionMajor() const;
+    void headerItemPushBackName(char  c);
+
+    void reserveContent(size_t size);
+
+    void contentPushBack(char c);
 
     void setVersionMajor(int versionMajor);
 
-    int getVersionMinor() const;
-
     void setVersionMinor(int versionMinor);
-
-    const std::vector<RequestData::HeaderItem> &getHeaders() const;
-
-    void setHeaders(const std::vector<RequestData::HeaderItem> &headers);
-
-    const std::vector<char> &getContent() const;
-
-    void setContent(const std::vector<char> &content);
-
-    bool isKeepAlive() const;
 
     void setKeepAlive(bool keepAlive);
 
+    const std::string &getMethod() const;
+
+    const std::string &getUri() const;
+
+    int getVersionMajor() const;
+
+    int getVersionMinor() const;
+
+    const std::vector<RequestData::HeaderItem> &getHeaders() const;
+
+    const std::vector<char> &getContent() const;
+
+    bool isKeepAlive() const;
 };
 
 
