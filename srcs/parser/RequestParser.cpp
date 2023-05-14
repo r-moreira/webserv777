@@ -9,7 +9,7 @@ RequestParser::RequestParser() : state(RequestMethodStart), contentSize(0){}
 RequestParser::~RequestParser() {}
 
 RequestParser::ParseResult RequestParser::parse(RequestData &req, const char *begin, const char *end) {
-    return RequestParser::ParsingError;
+    return consume(req, begin, end);
 }
 
 RequestParser::ParseResult RequestParser::consume(RequestData &req, const char *begin, const char *end) {

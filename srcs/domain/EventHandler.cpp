@@ -16,6 +16,7 @@ EventHandler::~EventHandler() {}
 // Entender o que significa e implementar :
 //      Setup multiple servers with different hostnames (use something like: curl --resolve
 //      example.com:80:127.0.0.1 http://example.com/ (http://example.com/)).
+// Aceitar POST apenas para upload de arquivo e outras coisas necessárias se precisar (Como CGI)
 // Testar com todas configurações possíveis
 //      Checar os uso dos getters e setters do servidores e locations é uma forma de saber se tudo foi testado
 

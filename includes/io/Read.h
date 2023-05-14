@@ -19,6 +19,8 @@ public:
 
     ~Read();
 
+    void read_request_info();
+
     void read_request();
 
     void read_file();

@@ -33,7 +33,7 @@
         }
 
         ParseResult consume(RequestInfo &req, const char *begin, const char *end) {
-            while (begin != end /*begin != \0*/) {
+            while (begin != end) {
                 char input = *begin++;
 
                 switch (state) {

@@ -8,6 +8,11 @@ Read::Read(Event &event): _event(event) {}
 
 Read::~Read() {}
 
+void Read::read_request_info() {
+}
+
+//Esse método será usado para ler o request body do cliente. Trocar o nome para read_request_body()
+//Logo após será chamado um método para escrever o arquivo: write_file()
 void Read::read_request() {
     if (ErrorState::is_error_state(this->_event)) return;
 
