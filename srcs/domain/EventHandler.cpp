@@ -59,7 +59,7 @@ void EventHandler::process_event() {
                 break;
             case Event::SendingUploadResponse: _response.send_upload_response();
                 break;
-            //case DeletingFile: _response.delete_file();
+            //case SendingDeletingFileResponse: _response.send_delete_file_response()();
                 break;
             case Event::SendingRedirectionResponse: _response.send_redirection();
                 break;
