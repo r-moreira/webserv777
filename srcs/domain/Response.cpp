@@ -45,11 +45,12 @@ void Response::send_upload_response() {
         //temporario, fazer parse do nome depois -> requestData._content_disposition
         this->_event.setFilePath(upload_path + "test_file.txt");
         this->_event.setRemainingFileUploadBytes(this->_event.getRequest().getFileUploadRemainingBytes());
+        this->_event.setFileReadLeft(this->_event.getRequest().getFileUploadRemainingBytes());
+        _file.create_file();
     }
 
-    _file.create_file();
-
     _write.write_remaining_read_buffer_to_file();
+
     if (this->_event.getRemainingFileUploadBytes() != 0) {
         _read.read_upload_file();
         _write.write_upload_file();
