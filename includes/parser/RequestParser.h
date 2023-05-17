@@ -45,6 +45,8 @@ public:
         ContentDisposition,
         ExpectingNewline_4,
         FileContentType,
+        SpaceBeforeFileContentTypeValue,
+        FileContentTypeValue,
         ExpectingNewline_5,
 
         ParsingCompleted,

@@ -33,8 +33,8 @@ void Request::parse_request() {
             std::cout << WHITE << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
             this->_event.setEventSubStatus(Event::ChoosingServer);
 
-            if (parse_state == _event.getRequest().isIsFileUpload()) {
-                this->_event.setRemainingReadBuffer(this->_event.getRequestReadBuffer());
+            if (_event.getRequest().isIsFileUpload()) {
+                this->_event.setRemainingReadBuffer(buffer + 1);
                 std::cout << YELLOW << "Remaining Buffer: |" << this->_event.getRemainingReadBuffer() << "|" << RESET<< std::endl;
 
             }
@@ -50,9 +50,10 @@ void Request::parse_request() {
         *buffer++;
     }
 
-    if (parse_state == RequestParser::ParsingIncompleted || parse_state == RequestParser::ParsingError || parse_state != RequestParser::ParsingCompleted) {
+    if (parse_state != RequestParser::ParsingCompleted) {
         std::cout << RED << "Parsing Error" << RESET << std::endl;
         std::cout << RED << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
+        ErrorState::throw_error_state(this->_event, Event::BAD_REQUEST);
         return;
     }
 }

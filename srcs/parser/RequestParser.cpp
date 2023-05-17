@@ -274,7 +274,25 @@ RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
                 return ParsingError;
             }
             break;
-        case FileContentType:
+        case FileContentType: //TODO: Colocar mais uma etapa, fazer o pushback apenas depois do :
+            if (input == '\r') {
+                return ParsingError;
+            } else {
+                if (input == ':') {
+                    state = SpaceBeforeFileContentTypeValue;
+                }
+                _content_size--;
+                break;
+            }
+        case SpaceBeforeFileContentTypeValue:
+            if (input == ' ') {
+                state = FileContentTypeValue;
+                _content_size--;
+            } else {
+                return ParsingError;
+            }
+            break;
+        case FileContentTypeValue:
             if (input == '\r') {
                 state = ExpectingNewline_5;
                 _content_size--;
