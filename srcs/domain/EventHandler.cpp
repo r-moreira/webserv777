@@ -23,6 +23,7 @@ EventHandler::~EventHandler() {}
 //TODO Atuais:
 //      TODOs:
 //          Corrigir provblema ao fazer upload de algo que passa o buffer incial do request
+//                  Provavelmente o read não tá preenchendo todo o buffer. Checar write_upload_file() e read_upload_file()
 //          Testar o upload de um arquivo de texto grande
 //          Estudar como fazer upload de arquivos binários (imagem, pdf, etc)
 //      Avaliar:

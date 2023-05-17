@@ -48,12 +48,15 @@ void Response::send_upload_response() {
     }
 
     _file.create_file();
-    _write.write_created_headers();
-    _write.write_remaining_read_buffer_to_file();
 
+    _write.write_remaining_read_buffer_to_file();
     if (this->_event.getRemainingFileUploadBytes() != 0) {
         _read.read_upload_file();
         _write.write_upload_file();
+    }
+
+    if (this->_event.getRemainingFileUploadBytes() == 0) {
+        _write.write_created_headers();
     }
 }
 

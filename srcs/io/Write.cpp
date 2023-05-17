@@ -39,6 +39,9 @@ void Write::write_upload_file() {
         return;
     }
 
+    std::cout << YELLOW << "Written Data Size " << bytes_written << " Bytes." << RESET << std::endl;
+
+
     if (_event.getFileReadLeft() <= 0) {
         _event.setEventStatus(Event::Ended);
         std::cout << GREEN << "File Transfer Complete." << RESET << std::endl;
