@@ -55,8 +55,6 @@ void Response::send_upload_response() {
         _read.read_upload_file();
         _write.write_upload_file();
     }
-
-    if (!ErrorState::is_error_state(this->_event)) _event.setEventStatus(Event::Ended);
 }
 
 

@@ -315,8 +315,8 @@ RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
                 state = ParsingCompleted;
                 _content_size--;
                 //Calculating file size without extra body info
-                size_t endBoundary =  req.getBoundary().size() + 2; // + 2 = "--" at end of boundary
-                req.setFileUploadRemainingBytes(_content_size - endBoundary - 6); //-4 = after headers "\r\n\r\n" and after body "\r\n", before end boundary
+                size_t endBoundary =  req.getBoundary().size() + 2; //+2 = "--" at end of boundary
+                req.setFileUploadRemainingBytes(_content_size - endBoundary - 6); //-6 = after headers "\r\n\r\n" and after body "\r\n", before end boundary
            } else {
                 return ParsingError;
             }

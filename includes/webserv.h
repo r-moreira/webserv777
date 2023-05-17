@@ -41,7 +41,7 @@
 #define BOLDBLACK   "\033[1m\033[30m"      /* Bold Black */
 
 #define MAX_EPOLL_EVENTS 64
-#define READ_BUFFER_SIZE 8192
+#define READ_BUFFER_SIZE 30720
 #define FILE_READ_CHUNK_SIZE 30720
 
 

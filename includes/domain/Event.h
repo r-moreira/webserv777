@@ -89,7 +89,6 @@ public:
 
     void clear_file_info();
 
-
     int getClientFd() const;
 
     void setClientFd(int clientFd);
