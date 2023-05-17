@@ -39,15 +39,17 @@ public:
         ExpectingNewline,
         ExpectingNewline_2,
 
-        Post,
+        PostBoundary,
         ExpectingNewline_3,
-        Boundary,
         ContentDisposition,
         ExpectingNewline_4,
         FileContentType,
         SpaceBeforeFileContentTypeValue,
         FileContentTypeValue,
         ExpectingNewline_5,
+
+        ExpectingLineEnd,
+        ExpectingNewline_6,
 
         ParsingCompleted,
         ParsingError,

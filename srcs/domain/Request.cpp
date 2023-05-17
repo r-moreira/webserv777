@@ -42,8 +42,7 @@ void Request::parse_request() {
         }
 
         if (parse_state == RequestParser::ParsingError || parse_state == RequestParser::ParsingIncompleted){
-            std::cerr << RED << "Parsing failed" << RESET << _event.getRequest().inspect() << std::endl;
-            std::cout << RED << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
+            std::cerr << RED << "Parsing failed:\n" << RESET << _event.getRequest().inspect() << std::endl;
             ErrorState::throw_error_state(this->_event, Event::BAD_REQUEST);
             return;
         }

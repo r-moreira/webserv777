@@ -219,31 +219,27 @@ RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
                 else
                     return ParsingError;
             } else {
-                state = Post;
-            }
-            break;
-        }
-        case Post: {
-            std::vector<RequestData::HeaderItem> headers = req.getHeaders();
-            std::vector<RequestData::HeaderItem>::iterator it = std::find_if(headers.begin(),
-                                                                             headers.end(),
-                                                                             checkIfContentType);
-            if (it != headers.end()) {
-                if (it->value.rfind("multipart/form-data;", 0) == 0) {
-                    req.setIsFileUpload(true);
-                    req.setBoundary(it->value.substr(it->value.find("boundary=") + 9));
+                state = PostBoundary;
+                std::vector<RequestData::HeaderItem> headers_ = req.getHeaders();
+                std::vector<RequestData::HeaderItem>::iterator it_ = std::find_if(headers.begin(),
+                                                                                 headers.end(),
+                                                                                 checkIfContentType);
+                if (it_ != headers_.end()) {
+                    if (it_->value.rfind("multipart/form-data;", 0) == 0) {
+                        req.setIsFileUpload(true);
+                        req.setBoundary(it_->value.substr(it_->value.find("boundary=") + 9));
+
+                    } else {
+                        return ParsingError;
+                    }
 
                 } else {
                     return ParsingError;
                 }
-
-            } else {
-                return ParsingError;
             }
-            state = Boundary;  //Por enquanto o POST só está sendo usado para tratar upload de arquivo, qualquer coisa fora disso é erro
             break;
         }
-        case Boundary:
+        case PostBoundary:
             if (input == '\r') {
                 state = ExpectingNewline_3;
             }
@@ -273,7 +269,7 @@ RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
                 return ParsingError;
             }
             break;
-        case FileContentType: //TODO: Colocar mais uma etapa, fazer o pushback apenas depois do :
+        case FileContentType:
             if (input == '\r') {
                 return ParsingError;
             }
@@ -300,10 +296,28 @@ RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
             break;
         case ExpectingNewline_5:
             if (input == '\n') {
+                state = ExpectingLineEnd;
+                _content_size--;
+             } else {
+                return ParsingError;
+            }
+            break;
+        case ExpectingLineEnd:
+            if (input == '\r') {
+                state = ExpectingNewline_6;
+                _content_size--;
+            } else {
+                return ParsingError;
+            }
+            break;
+        case ExpectingNewline_6:
+            if (input == '\n') {
                 state = ParsingCompleted;
                 _content_size--;
-                req.setRemainingBytes(_content_size - req.getBoundary().size() - 9); //-4 = /r/n and boundary end "--", -5 ???
-            } else {
+                //Calculating file size without extra body info
+                size_t endBoundary =  req.getBoundary().size() + 2; // + 2 = "--" at end of boundary
+                req.setRemainingBytes(_content_size - endBoundary - 6); //-4 = after headers "\r\n\r\n" and after body "\r\n", before end boundary
+           } else {
                 return ParsingError;
             }
             break;
