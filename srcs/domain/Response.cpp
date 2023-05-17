@@ -44,7 +44,7 @@ void Response::send_upload_response() {
     //temporario, fazer parse do nome depois
     this->_event.setFilePath(upload_path + "test_file.txt");
     _file.create_file();
-    //_write.write_uploaded_file();   //TODO: implementar. Não esquecer de checar erro state
+    //_write.write_uploaded_file();   //TODO: implementar. Não esquecer de checar erro state dentro do método
     _write.write_created_headers();
     if (!ErrorState::is_error_state(this->_event)) _event.setEventStatus(Event::Ended);
 }

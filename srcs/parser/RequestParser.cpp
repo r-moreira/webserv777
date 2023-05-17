@@ -134,7 +134,7 @@ RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
             break;
         case HeaderLineStart:
             if (input == '\r') {
-                state = ExpectingNewline_3;
+                state = ExpectingNewline_2;
             } else if (!req.getHeaders().empty() && (input == ' ' || input == '\t')) {
                 state = HeaderLws;
             } else if (!isChar(input) || isControl(input) || isSpecial(input)) {
@@ -146,7 +146,7 @@ RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
             break;
         case HeaderLws:
             if (input == '\r') {
-                state = ExpectingNewline_2;
+                state = ExpectingNewline;
             } else if (input == ' ' || input == '\t') {
             } else if (isControl(input)) {
                 return ParsingError;
@@ -184,38 +184,35 @@ RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
                             return ParsingError;
                     }
                 }
-                state = ExpectingNewline_2;
+                state = ExpectingNewline;
             } else if (isControl(input)) {
                 return ParsingError;
             } else {
                 req.headerItemPushBackValue(input);
             }
             break;
-        case ExpectingNewline_2:
+        case ExpectingNewline:
             if (input == '\n') {
                 state = HeaderLineStart;
             } else {
                 return ParsingError;
             }
             break;
-        case ExpectingNewline_3: {
+        case ExpectingNewline_2: {
             std::vector<RequestData::HeaderItem> headers = req.getHeaders();
             std::vector<RequestData::HeaderItem>::iterator it = std::find_if(headers.begin(),
                                                                              headers.end(),
                                                                              checkIfConnection);
-
             if (it != headers.end()) {
                 if (strcasecmp(it->value.c_str(), "Keep-Alive") == 0) {
                     req.setKeepAlive(true);
-                } else  // == Close
-                {
+                } else {
                     req.setKeepAlive(false);
                 }
             } else {
                 if (req.getVersionMajor() > 1 || (req.getVersionMajor() == 1 && req.getVersionMinor() == 1))
                     req.setKeepAlive(true);
             }
-
             if (_content_size == 0) {
                 if (input == '\n')
                     return ParsingCompleted;
@@ -226,12 +223,75 @@ RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
             }
             break;
         }
-        case Post:
-            //TODO: Fazer o parse do body, retornar novos atributos na classe RequestData
-            //  Ao invés de retornar File Upload, retornar parsing completed
-            //  E na classe RequestData adicionar 3 bool flags: File Request (GET) , File Upload (POST) e File Delete (DELETE).
-            //  Tem que ter apenas uma verdadeira, caso contrário, retornar ParsingError
-            return FileUpload;
+        case Post: {
+            std::vector<RequestData::HeaderItem> headers = req.getHeaders();
+            std::vector<RequestData::HeaderItem>::iterator it = std::find_if(headers.begin(),
+                                                                             headers.end(),
+                                                                             checkIfContentType);
+            if (it != headers.end()) {
+                if (it->value.rfind("multipart/form-data;", 0) == 0) {
+                    req.setIsFileUpload(true);
+                    req.setBoundary(it->value.substr(it->value.find("boundary=") + 9));
+
+                } else {
+                    return ParsingError;
+                }
+
+            } else {
+                return ParsingError;
+            }
+            state = Boundary;  //Por enquanto o POST só está sendo usado para tratar upload de arquivo, qualquer coisa fora disso é erro
+            break;
+        }
+        case Boundary:
+            if (input == '\r') {
+                state = ExpectingNewline_3;
+            }
+            _content_size--;
+            break;
+        case ExpectingNewline_3:
+            if (input == '\n') {
+                state = ContentDisposition;
+                _content_size--;
+            } else {
+                return ParsingError;
+            }
+            break;
+        case ContentDisposition:
+            if (input == '\r') {
+                state = ExpectingNewline_4;
+                _content_size--;
+            } else {
+                req.contentDispositionPushBack(input);
+                _content_size--;
+            }
+            break;
+        case ExpectingNewline_4:
+            if (input == '\n') {
+                state = FileContentType;
+                _content_size--;
+            } else {
+                return ParsingError;
+            }
+            break;
+        case FileContentType:
+            if (input == '\r') {
+                state = ExpectingNewline_5;
+                _content_size--;
+            } else {
+                req.uploadFileTypePushBack(input);
+                _content_size--;
+            }
+            break;
+        case ExpectingNewline_5:
+            if (input == '\n') {
+                state = ParsingCompleted;
+                _content_size--;
+                req.setRemainingBytes(_content_size - req.getBoundary().size() - 4); //-4 = /r/n and boundary end "--"
+            } else {
+                return ParsingError;
+            }
+            break;
         default:
             return ParsingIncompleted;
     }
@@ -241,6 +301,10 @@ RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
 
 bool RequestParser::checkIfConnection(const RequestData::HeaderItem &item) {
     return strcasecmp(item.name.c_str(), "Connection") == 0;
+}
+
+bool RequestParser::checkIfContentType(const RequestData::HeaderItem &item) {
+    return strcasecmp(item.name.c_str(), "Content-Type") == 0;
 }
 
 bool RequestParser::isChar(int c) {

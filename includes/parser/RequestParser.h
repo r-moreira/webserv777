@@ -36,15 +36,20 @@ public:
         SpaceBeforeHeaderValue,
         HeaderValue,
 
+        ExpectingNewline,
         ExpectingNewline_2,
-        ExpectingNewline_3,
 
         Post,
+        ExpectingNewline_3,
+        Boundary,
+        ContentDisposition,
+        ExpectingNewline_4,
+        FileContentType,
+        ExpectingNewline_5,
 
         ParsingCompleted,
-        FileUpload,
+        ParsingError,
         ParsingIncompleted,
-        ParsingError
     } state;
 
     RequestParser();
@@ -53,7 +58,9 @@ public:
     ParseState parse(RequestData &req, char c);
 
 private:
-    static bool checkIfConnection(const RequestData::HeaderItem &item);
+    static bool checkIfConnection(const RequestData::HeaderItem &item);;
+
+    static bool checkIfContentType(const RequestData::HeaderItem &item);
 
     ParseState consume(RequestData &req, char c);
 
@@ -64,8 +71,6 @@ private:
     static inline bool isSpecial(int c);
 
     static inline bool isDigit(int c);
-
-
 };
 
 

@@ -28,11 +28,12 @@ void Request::parse_request() {
 
         parse_state = parser.parse(_event._request, c);
 
-        if (parse_state == RequestParser::ParsingCompleted || parse_state == RequestParser::FileUpload) {
+
+        if (parse_state == RequestParser::ParsingCompleted) {
             std::cout << WHITE << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
             this->_event.setEventSubStatus(Event::ChoosingServer);
 
-            if (parse_state == RequestParser::FileUpload) {
+            if (parse_state == _event.getRequest().isIsFileUpload()) {
                 this->_event.setRemainingReadBuffer(this->_event.getRequestReadBuffer());
                 std::cout << YELLOW << "Remaining Buffer: |" << this->_event.getRemainingReadBuffer() << "|" << RESET<< std::endl;
 
@@ -41,7 +42,7 @@ void Request::parse_request() {
         }
 
         if (parse_state == RequestParser::ParsingError || parse_state == RequestParser::ParsingIncompleted){
-            std::cerr << RED << "Parsing failed" << RESET << std::endl;
+            std::cerr << RED << "Parsing failed" << RESET << _event.getRequest().inspect() << std::endl;
             ErrorState::throw_error_state(this->_event, Event::BAD_REQUEST);
             return;
         }
@@ -49,6 +50,11 @@ void Request::parse_request() {
         *buffer++;
     }
 
+    if (parse_state == RequestParser::ParsingIncompleted || parse_state == RequestParser::ParsingError || parse_state != RequestParser::ParsingCompleted) {
+        std::cout << RED << "Parsing Error" << RESET << std::endl;
+        std::cout << RED << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
+        return;
+    }
 }
 
 
@@ -64,7 +70,7 @@ void Request::choose_server(std::vector<Server> servers) {
         }
     }
 
-    std::cout << BLUE << "Choosed server =" << this->_event.getServer() << RESET << std::endl << std::endl;
+    std::cout << BLUE << "Choosed server =\n" << this->_event.getServer() << RESET << std::endl << std::endl;
 
     this->_event.setEventSubStatus(Event::ChoosingLocation);
 }
