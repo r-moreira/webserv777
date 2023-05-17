@@ -37,16 +37,16 @@ void Read::read_upload_file() {
     if (ErrorState::is_error_state(this->_event)) return;
 
     std::cout << MAGENTA << "Reading uploaded file from client" << RESET << std::endl;
-    std::memset((void *) this->_event.getFileReadChunkBuffer(), '\0', FILE_READ_CHUNK_SIZE);
+    std::memset((void *) this->_event.getUploadFileChunkBuffer(), '\0', UPLOAD_BUFFER_SIZE);
 
     size_t read_size;
-    if (this->_event.getRemainingFileUploadBytes() > FILE_READ_CHUNK_SIZE) {
-        read_size = this->_event.getFileReadLeft() > FILE_READ_CHUNK_SIZE ? FILE_READ_CHUNK_SIZE : _event.getFileReadLeft();
+    if (this->_event.getRemainingFileUploadBytes() > UPLOAD_BUFFER_SIZE) {
+        read_size = this->_event.getFileReadLeft() > UPLOAD_BUFFER_SIZE ? UPLOAD_BUFFER_SIZE : _event.getFileReadLeft();
     } else {
         read_size = this->_event.getRemainingFileUploadBytes();
     }
 
-    long chunk_bytes = read(this->_event.getClientFd(), (void *) this->_event.getFileReadChunkBuffer(), read_size);
+    long chunk_bytes = read(this->_event.getClientFd(), (void *) this->_event.getUploadFileChunkBuffer(), read_size);
 
     if (chunk_bytes == -1) {
         std::cerr << RED << "Error while reading from client: " << strerror(errno) << RESET << std::endl;

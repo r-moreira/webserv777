@@ -57,6 +57,7 @@ private:
     size_t _request_read_bytes;
 
     size_t _remaining_file_upload_bytes;
+    char _upload_file_chunk_buffer[UPLOAD_BUFFER_SIZE];
 
     FILE *_file;
     std::string _file_path;
@@ -187,5 +188,6 @@ public:
 
     void setRemainingReadBytesWritedToFile(bool remainingReadBytesWritedToFile);
 
+    const char *getUploadFileChunkBuffer() const;
 };
 #endif //WEBSERV_EVENT_H

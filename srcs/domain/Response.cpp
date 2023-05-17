@@ -56,7 +56,7 @@ void Response::send_upload_response() {
         _write.write_upload_file();
     }
 
-    if (this->_event.getRemainingFileUploadBytes() == 0) {
+    if (this->_event.getRemainingFileUploadBytes() == 0 || this->_event.getFileReadLeft() == 0) {
         _write.write_created_headers();
     }
 }

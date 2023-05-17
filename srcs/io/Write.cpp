@@ -32,7 +32,7 @@ void Write::write_upload_file() {
 
     std::cout << CYAN << "Writing uploaded file to disk" << RESET << std::endl;
 
-    size_t bytes_written = fwrite(this->_event.getFileReadChunkBuffer(), 1, _event.getFileChunkReadBytes(), this->_event.getFile());
+    size_t bytes_written = fwrite(this->_event.getUploadFileChunkBuffer(), 1, _event.getFileChunkReadBytes(), this->_event.getFile());
     if (bytes_written != _event.getFileChunkReadBytes()) {
         std::cerr << RED << "Error while writing file to disk: " << strerror(errno) << RESET << std::endl;
         ErrorState::throw_error_state(this->_event, Event::INTERNAL_SERVER_ERROR);

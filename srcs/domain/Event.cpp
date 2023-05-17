@@ -15,6 +15,7 @@ Event::Event(int server_fd, int client_fd) {
     this->_request_read_bytes = 0;
 
     this->_remaining_file_upload_bytes = 0;
+    this->_upload_file_chunk_buffer[0] = '\0';
 
     this->_file = NULL;
     this->_file_path = "";
@@ -246,6 +247,10 @@ bool Event::isRemainingReadBytesWritedToFile() const {
 
 void Event::setRemainingReadBytesWritedToFile(bool remainingReadBytesWritedToFile) {
     _remaining_read_bytes_writed_to_file = remainingReadBytesWritedToFile;
+}
+
+const char *Event::getUploadFileChunkBuffer() const {
+    return _upload_file_chunk_buffer;
 }
 
 
