@@ -260,11 +260,10 @@ RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
         case ContentDisposition:
             if (input == '\r') {
                 state = ExpectingNewline_4;
-                _content_size--;
             } else {
                 req.contentDispositionPushBack(input);
-                _content_size--;
             }
+            _content_size--;
             break;
         case ExpectingNewline_4:
             if (input == '\n') {
@@ -277,13 +276,12 @@ RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
         case FileContentType: //TODO: Colocar mais uma etapa, fazer o pushback apenas depois do :
             if (input == '\r') {
                 return ParsingError;
-            } else {
-                if (input == ':') {
-                    state = SpaceBeforeFileContentTypeValue;
-                }
-                _content_size--;
-                break;
             }
+            if (input == ':') {
+                state = SpaceBeforeFileContentTypeValue;
+            }
+            _content_size--;
+            break;
         case SpaceBeforeFileContentTypeValue:
             if (input == ' ') {
                 state = FileContentTypeValue;
@@ -295,17 +293,16 @@ RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
         case FileContentTypeValue:
             if (input == '\r') {
                 state = ExpectingNewline_5;
-                _content_size--;
             } else {
                 req.uploadFileTypePushBack(input);
-                _content_size--;
             }
+            _content_size--;
             break;
         case ExpectingNewline_5:
             if (input == '\n') {
                 state = ParsingCompleted;
                 _content_size--;
-                req.setRemainingBytes(_content_size - req.getBoundary().size() - 4); //-4 = /r/n and boundary end "--"
+                req.setRemainingBytes(_content_size - req.getBoundary().size() - 9); //-4 = /r/n and boundary end "--", -5 ???
             } else {
                 return ParsingError;
             }

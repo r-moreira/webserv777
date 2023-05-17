@@ -27,6 +27,25 @@ void Write::write_requested_file() {
     }
 }
 
+void Write::write_uploaded_file() {
+    if (ErrorState::is_error_state(this->_event)) return;
+    char buffer[READ_BUFFER_SIZE] = {};
+
+    std::cout << CYAN << "Writing uploaded file to disk" << RESET << std::endl;
+
+    // Write file to disk
+
+    size_t remaining_bytes = this->_event.getRemainingReadBuffer().size();
+    size_t bytes_written = fwrite(this->_event.getRemainingReadBuffer().c_str(), 1, this->_event.getRequest().getRemainingBytes(), this->_event.getFile());
+    if (bytes_written != remaining_bytes) {
+        std::cerr << RED << "Error while writing file to disk: " << strerror(errno) << RESET << std::endl;
+        ErrorState::throw_error_state(this->_event, Event::INTERNAL_SERVER_ERROR);
+        return;
+    }
+
+}
+
+
 void Write::write_default_error_page() {
     std::string default_error_page = Pages::get_default_error_page(this->_event.getHttpStatus());
 
@@ -99,4 +118,3 @@ void Write::write_headers(const std::string &headers) {
     this->_event.setHeaderSent(true);
     std::cout << GREEN << "Successfully sent headers to client" << RESET << std::endl;
 }
-

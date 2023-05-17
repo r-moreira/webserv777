@@ -33,6 +33,8 @@ public:
 
     void write_created_headers();
 
+    void write_uploaded_file();
+
 private:
     void write_headers(const std::string &headers);
 };
