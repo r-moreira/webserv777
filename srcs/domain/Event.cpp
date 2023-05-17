@@ -14,6 +14,8 @@ Event::Event(int server_fd, int client_fd) {
     this->_request_read_buffer = "";
     this->_request_read_bytes = 0;
 
+    this->_remaining_file_upload_bytes = 0;
+
     this->_file = NULL;
     this->_file_path = "";
     this->_file_read_bytes = 0;
@@ -26,11 +28,12 @@ Event::Event(int server_fd, int client_fd) {
     this->_file_opened = false;
     this->_error_response = false;
     this->_forced_redirect = false;
+    this->_remaining_read_bytes_writed_to_file = false;
 
+    this->_forced_redirect_location = "";
 
     this->_event_status = Reading;
     this->_event_sub_status = ReadingRequest;
-
 }
 
 Event::~Event() {
@@ -227,6 +230,22 @@ const std::string &Event::getRemainingReadBuffer() const {
 
 void Event::setRemainingReadBuffer(const std::string &remainingReadBuffer) {
     _remaining_read_buffer = remainingReadBuffer;
+}
+
+size_t Event::getRemainingFileUploadBytes() const {
+    return _remaining_file_upload_bytes;
+}
+
+void Event::setRemainingFileUploadBytes(size_t remainingFileUploadBytes) {
+    _remaining_file_upload_bytes = remainingFileUploadBytes;
+}
+
+bool Event::isRemainingReadBytesWritedToFile() const {
+    return _remaining_read_bytes_writed_to_file;
+}
+
+void Event::setRemainingReadBytesWritedToFile(bool remainingReadBytesWritedToFile) {
+    _remaining_read_bytes_writed_to_file = remainingReadBytesWritedToFile;
 }
 
 

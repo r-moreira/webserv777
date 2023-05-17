@@ -22,6 +22,8 @@ public:
     void read_request();
 
     void read_file();
+
+    void read_upload_file();
 };
 
 

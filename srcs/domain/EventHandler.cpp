@@ -9,30 +9,21 @@ EventHandler::EventHandler(Event &event, std::vector<Server> &servers) :_servers
 EventHandler::~EventHandler() {}
 
 //TODO Server Features:
-// Implementar cgi (Via location
+// Implementar cgi (Via location)
+// Fazer o parser aceitar POST para CGI
 // Implementar auto_index (Via server e location)
 // Fazer o parser de configuração instânciar os servidores e locations
-// Refatorar o parse da request http
 // Entender o que significa e implementar :
 //      Setup multiple servers with different hostnames (use something like: curl --resolve
 //      example.com:80:127.0.0.1 http://example.com/ (http://example.com/)).
-// Aceitar POST apenas para upload de arquivo e outras coisas necessárias se precisar (Como CGI)
 // Trocar o throw error state por uma exception do C++ (https://www.cplusplus.com/doc/tutorial/exceptions/)
 // Testar com todas configurações possíveis
 //      Checar os uso dos getters e setters do servidores e locations é uma forma de saber se tudo foi testado
 
 //TODO Atuais:
-// Upload de arquivo
-//      Como saber se o HTTP request é um arquivo:
-//          Refs:https://stackoverflow.com/questions/14872460/how-to-detect-a-file-upload-examining-the-http-message:
-//          Refs: https://stackoverflow.com/questions/36184410/how-does-webserver-handle-http-post
-//          Refs: https://stackoverflow.com/questions/11254037/how-to-know-when-the-http-headers-part-is-ended
 //      TODOs:
-//          Fazer o parse do body na classe RequestParser. Verificar se o Content-Type é multipart/form-data para saber se é um arquivo
-//          A ideia é ter o content-length já calculado exatamente com o tamanho do arquivo. (Removendo os boundaries de início, fim e headers)
-//          Também será necessário ter o nome do arquivo e content-type
-//          É possível que seja recebido um _event._remaining_read_buffer, que precisará ser escrito no arquivo antes de solicitar novamente outra leitura no socket
-//          A ideia é que o parser já deixe ramaining_read_buffer apontando exatamente para o início do arquivo, sem os boundaries e headers
+//          Testar o upload de um arquivo de texto grande
+//          Estudar como fazer upload de arquivos binários (imagem, pdf, etc)
 //      Avaliar:
 //          Existe a possibildade de enviar arquivo com Content-Type com direto do arquivo, sem ser multipart/form-data, nesse caso teria que pegar o nome é a extensão via path da url, talvez não seja obrigatório fazer isso
 
@@ -111,11 +102,13 @@ void EventHandler::print_event_status() {
             break;
         case Event::DefiningResponseState: sub_status = "DefiningResponseState";
             break;
+        case Event::SendingResponseFile: sub_status = "SendingResponseFile";
+            break;
+        case Event::SendingUploadResponse: sub_status = "SendingUploadResponse";
+            break;
         case Event::SendingRedirectionResponse: sub_status = "SendingRedirectionResponse";
             break;
         case Event::SendingDirectoryResponse: sub_status = "SendingDirectoryResponse";
-            break;
-        case Event::SendingResponseFile: sub_status = "SendingResponseFile";
             break;
         case Event::SendingErrorResponse: sub_status = "SendingErrorResponse";
             break;

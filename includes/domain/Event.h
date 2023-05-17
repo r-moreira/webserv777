@@ -56,6 +56,8 @@ private:
     std::string _remaining_read_buffer;
     size_t _request_read_bytes;
 
+    size_t _remaining_file_upload_bytes;
+
     FILE *_file;
     std::string _file_path;
     size_t _file_read_bytes;
@@ -71,6 +73,7 @@ private:
     bool _file_opened;
     bool _error_response;
     bool _forced_redirect;
+    bool _remaining_read_bytes_writed_to_file;
 
     std::string _forced_redirect_location;
 
@@ -176,6 +179,14 @@ public:
     const std::string &getRemainingReadBuffer() const;
 
     void setRemainingReadBuffer(const std::string &remainingReadBuffer);
+
+    size_t getRemainingFileUploadBytes() const;
+
+    void setRemainingFileUploadBytes(size_t remainingFileUploadBytes);
+
+    bool isRemainingReadBytesWritedToFile() const;
+
+    void setRemainingReadBytesWritedToFile(bool remainingReadBytesWritedToFile);
 
 };
 #endif //WEBSERV_EVENT_H

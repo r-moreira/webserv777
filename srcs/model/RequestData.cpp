@@ -139,11 +139,11 @@ void RequestData::setIsFileUpload(bool isFileUpload) {
     _is_file_upload = isFileUpload;
 }
 
-size_t RequestData::getRemainingBytes() const {
+size_t RequestData::getFileUploadRemainingBytes() const {
     return _upload_file_size;
 }
 
-void RequestData::setRemainingBytes(size_t remainingBytes) {
+void RequestData::setFileUploadRemainingBytes(size_t remainingBytes) {
     _upload_file_size = remainingBytes;
 }
 

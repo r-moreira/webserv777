@@ -27,24 +27,51 @@ void Write::write_requested_file() {
     }
 }
 
-void Write::write_uploaded_file() {
+void Write::write_upload_file() {
     if (ErrorState::is_error_state(this->_event)) return;
-    char buffer[READ_BUFFER_SIZE] = {};
 
     std::cout << CYAN << "Writing uploaded file to disk" << RESET << std::endl;
 
-    // Write file to disk
-
-    size_t remaining_bytes = this->_event.getRemainingReadBuffer().size();
-    size_t bytes_written = fwrite(this->_event.getRemainingReadBuffer().c_str(), 1, this->_event.getRequest().getRemainingBytes(), this->_event.getFile());
-    if (bytes_written != remaining_bytes) {
+    size_t bytes_written = fwrite(this->_event.getFileReadChunkBuffer(), 1, _event.getFileChunkReadBytes(), this->_event.getFile());
+    if (bytes_written != _event.getFileChunkReadBytes()) {
         std::cerr << RED << "Error while writing file to disk: " << strerror(errno) << RESET << std::endl;
         ErrorState::throw_error_state(this->_event, Event::INTERNAL_SERVER_ERROR);
         return;
     }
 
+    if (_event.getFileReadLeft() <= 0) {
+        _event.setEventStatus(Event::Ended);
+        std::cout << GREEN << "File Transfer Complete." << RESET << std::endl;
+    }
 }
 
+void Write::write_remaining_read_buffer_to_file() {
+    if (ErrorState::is_error_state(this->_event) || this->_event.isRemainingReadBytesWritedToFile()) return;
+
+    std::cout << CYAN << "Writing remaining read buffer to file" << RESET << std::endl;
+
+    size_t remaining_read_request_bytes = this->_event.getRemainingReadBuffer().size();
+    size_t remaining_file_bytes = this->_event.getRemainingFileUploadBytes();
+    size_t read_size = remaining_file_bytes < remaining_read_request_bytes ? remaining_file_bytes : remaining_read_request_bytes;
+
+
+    size_t bytes_written = fwrite(this->_event.getRemainingReadBuffer().c_str(), 1, read_size, this->_event.getFile());
+    if (bytes_written != read_size) {
+        std::cerr << RED << "Error while writing file to disk: " << strerror(errno) << RESET << std::endl;
+        ErrorState::throw_error_state(this->_event, Event::INTERNAL_SERVER_ERROR);
+        return;
+    }
+
+    this->_event.setRemainingFileUploadBytes(remaining_file_bytes - read_size);
+
+    if (this->_event.getRemainingFileUploadBytes() == 0) {
+        std::cout << GREEN << "File Upload Complete" << RESET << std::endl;
+        this->_event.setEventStatus(Event::Ended);
+        return;
+    }
+
+    this->_event.setRemainingReadBytesWritedToFile(true);
+}
 
 void Write::write_default_error_page() {
     std::string default_error_page = Pages::get_default_error_page(this->_event.getHttpStatus());

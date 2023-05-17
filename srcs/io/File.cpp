@@ -26,6 +26,8 @@ void File::create_file() {
         return;
     }
     this->_event.setFile(fptr);
+
+    this->_event.setFileOpened(true);
 }
 
 void File::open_file() {

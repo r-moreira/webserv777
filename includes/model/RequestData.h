@@ -87,9 +87,9 @@ public:
 
     void setIsFileUpload(bool isFileUpload);
 
-    size_t getRemainingBytes() const;
+    size_t getFileUploadRemainingBytes() const;
 
-    void setRemainingBytes(size_t remainingBytes);
+    void setFileUploadRemainingBytes(size_t remainingBytes);
 
     const std::string &getBoundary() const;
 

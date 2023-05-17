@@ -33,6 +33,32 @@ void Read::read_request() {
     std::cout << GREEN << "HTTP Request:\n" << buffer << RESET << std::endl;
 }
 
+void Read::read_upload_file() {
+    if (ErrorState::is_error_state(this->_event)) return;
+
+    char buffer[READ_BUFFER_SIZE] = {};
+
+    long chunk_bytes = read(this->_event.getClientFd(), buffer, READ_BUFFER_SIZE);
+
+    if (chunk_bytes == -1) {
+        std::cerr << RED << "Error while reading from client: " << strerror(errno) << RESET << std::endl;
+        ErrorState::throw_error_state(this->_event, Event::INTERNAL_SERVER_ERROR);
+        return;
+    } else if (chunk_bytes == 0) {
+        std::cout << YELLOW << "Client disconnected" << RESET << std::endl;
+        ErrorState::throw_error_state(this->_event, Event::CLIENT_CLOSED_REQUEST);
+        return;
+    }
+
+    this->_event.setFileReadBytes(this->_event.getFileReadBytes() + chunk_bytes);
+    std::cout << YELLOW << "Readed Data Size: " << chunk_bytes << RESET << std::endl;
+
+    this->_event.setFileReadLeft(this->_event.getRemainingFileUploadBytes() - this->_event.getFileReadBytes());
+    std::cout << YELLOW << "Read Left: " << this->_event.getFileReadLeft() << RESET << std::endl;
+
+    this->_event.setFileChunkReadBytes(chunk_bytes);
+}
+
 void Read::read_file() {
     if (ErrorState::is_error_state(this->_event)) return;
 
@@ -62,4 +88,3 @@ void Read::read_file() {
 
     this->_event.setFileChunkReadBytes(chunk_bytes);
 }
-

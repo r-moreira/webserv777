@@ -33,10 +33,13 @@ public:
 
     void write_created_headers();
 
-    void write_uploaded_file();
+    void write_remaining_read_buffer_to_file();
+
+    void write_upload_file();
 
 private:
     void write_headers(const std::string &headers);
+
 };
 
 
