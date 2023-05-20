@@ -43,7 +43,7 @@ void Response::send_upload_response() {
         upload_path = upload_path[upload_path.length() - 1] == '/' ? upload_path : upload_path + "/";
 
         //temporario, fazer parse do nome depois -> requestData._content_disposition
-        this->_event.setFilePath(upload_path + "test_file.txt");
+        this->_event.setFilePath(upload_path + "test_file.jpg");
         this->_event.setRemainingFileUploadBytes(this->_event.getRequest().getFileUploadRemainingBytes());
         this->_event.setFileReadLeft(this->_event.getRequest().getFileUploadRemainingBytes());
         _file.create_file();

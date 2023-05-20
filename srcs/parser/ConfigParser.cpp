@@ -10,9 +10,9 @@ void FT::ConfigParser::read_file(std::string fileName) {
     int fd;
     fd = open(fileName.data(), O_RDONLY, 0644);
 
-    char buffer[READ_BUFFER_SIZE] = {};
+    char buffer[REQUEST_READ_BUFFER_SIZE] = {};
 
-    long bytes_read = read(fd, buffer, READ_BUFFER_SIZE);
+    long bytes_read = read(fd, buffer, REQUEST_READ_BUFFER_SIZE);
 
     if (bytes_read == -1) {
         std::cerr << RED << "Error while reading server config file " << strerror(errno) << RESET << std::endl;

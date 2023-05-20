@@ -35,8 +35,8 @@ void Request::parse_request() {
             if (_event.getRequest().isIsFileUpload()) {
                 bytes_read++;
                 *buffer++;
-                this->_event.setRequestReadBytes(READ_BUFFER_SIZE - bytes_read);
-                std::string buffer_str(buffer, READ_BUFFER_SIZE - bytes_read);
+                this->_event.setRequestReadBytes(REQUEST_READ_BUFFER_SIZE - bytes_read);
+                std::string buffer_str(buffer, REQUEST_READ_BUFFER_SIZE - bytes_read);
                 this->_event.setRemainingReadBuffer(buffer_str);
                 std::cout << YELLOW << "Remaining Bytes: " << this->_event.getRequestReadBytes() << RESET << std::endl;
                 std::cout << YELLOW << "Remaining Buffer: |" << this->_event.getRemainingReadBuffer() << "|" << RESET<< std::endl;

@@ -11,9 +11,9 @@ Read::~Read() {}
 void Read::read_request() {
     if (ErrorState::is_error_state(this->_event)) return;
 
-    char buffer[READ_BUFFER_SIZE] = {};
+    char buffer[REQUEST_READ_BUFFER_SIZE] = {};
 
-    long bytes_read = read(this->_event.getClientFd(), buffer, READ_BUFFER_SIZE);
+    long bytes_read = read(this->_event.getClientFd(), buffer, REQUEST_READ_BUFFER_SIZE);
 
     if (bytes_read == -1) {
         std::cerr << RED << "Error while reading from client: " << strerror(errno) << RESET << std::endl;
