@@ -27,10 +27,10 @@ void Read::read_request() {
 
     this->_event.setRequestReadBytes(this->_event.getRequestReadBytes() + bytes_read);
     std::string read_buffer = this->_event.getRequestReadBuffer();
-    this->_event.setRequestReadBuffer(read_buffer.append(buffer));
+    this->_event.setRequestReadBuffer(read_buffer.append(buffer, bytes_read));
 
     std::cout << YELLOW << "Read " << this->_event.getRequestReadBytes() << " bytes from client" << RESET << std::endl;
-    std::cout << GREEN << "HTTP Request:\n" << buffer << RESET << std::endl;
+    std::cout << GREEN << "HTTP Request:\n" << this->_event.getRequestReadBuffer() << RESET << std::endl;
 }
 
 void Read::read_upload_file() {
@@ -40,10 +40,10 @@ void Read::read_upload_file() {
     std::memset((void *) this->_event.getUploadFileChunkBuffer(), '\0', UPLOAD_BUFFER_SIZE);
 
     size_t read_size;
-    if (this->_event.getRemainingFileUploadBytes() > UPLOAD_BUFFER_SIZE) {
-        read_size = this->_event.getFileReadLeft() > UPLOAD_BUFFER_SIZE ? UPLOAD_BUFFER_SIZE : _event.getFileReadLeft();
+    if (this->_event.getFileReadLeft() > UPLOAD_BUFFER_SIZE) {
+        read_size =UPLOAD_BUFFER_SIZE;
     } else {
-        read_size = this->_event.getRemainingFileUploadBytes();
+        read_size = this->_event.getFileReadLeft();
     }
 
     long chunk_bytes = read(this->_event.getClientFd(), (void *) this->_event.getUploadFileChunkBuffer(), read_size);

@@ -4,8 +4,6 @@
 #include "../webserv.h"
 #include "LocationParser.hpp"
 
-#define READ_BUFFER_SIZE 8192
-
 namespace FT {
 struct ServerType {
     int port;
