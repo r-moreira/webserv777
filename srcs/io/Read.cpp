@@ -11,9 +11,9 @@ Read::~Read() {}
 void Read::read_request() {
     if (ErrorState::is_error_state(this->_event)) return;
 
-    char buffer[READ_BUFFER_SIZE] = {};
+    char buffer[REQUEST_READ_BUFFER_SIZE] = {};
 
-    long bytes_read = read(this->_event.getClientFd(), buffer, READ_BUFFER_SIZE);
+    long bytes_read = read(this->_event.getClientFd(), buffer, REQUEST_READ_BUFFER_SIZE);
 
     if (bytes_read == -1) {
         std::cerr << RED << "Error while reading from client: " << strerror(errno) << RESET << std::endl;
@@ -27,10 +27,10 @@ void Read::read_request() {
 
     this->_event.setRequestReadBytes(this->_event.getRequestReadBytes() + bytes_read);
     std::string read_buffer = this->_event.getRequestReadBuffer();
-    this->_event.setRequestReadBuffer(read_buffer.append(buffer));
+    this->_event.setRequestReadBuffer(read_buffer.append(buffer, bytes_read));
 
     std::cout << YELLOW << "Read " << this->_event.getRequestReadBytes() << " bytes from client" << RESET << std::endl;
-    std::cout << GREEN << "HTTP Request:\n" << buffer << RESET << std::endl;
+    std::cout << GREEN << "HTTP Request:\n" << this->_event.getRequestReadBuffer() << RESET << std::endl;
 }
 
 void Read::read_upload_file() {
@@ -41,7 +41,7 @@ void Read::read_upload_file() {
 
     size_t read_size;
     if (this->_event.getFileReadLeft() > UPLOAD_BUFFER_SIZE) {
-        read_size = UPLOAD_BUFFER_SIZE;
+        read_size =UPLOAD_BUFFER_SIZE;
     } else {
         read_size = this->_event.getFileReadLeft();
     }
@@ -49,10 +49,6 @@ void Read::read_upload_file() {
     long chunk_bytes = read(this->_event.getClientFd(), (void *) this->_event.getUploadFileChunkBuffer(), read_size);
 
     if (chunk_bytes == -1) {
-        if (errno == EAGAIN || errno == EWOULDBLOCK) {
-            std::cout << YELLOW << "Read would block" << RESET << std::endl;
-            return;
-        }
         std::cerr << RED << "Error while reading from client: " << strerror(errno) << RESET << std::endl;
         ErrorState::throw_error_state(this->_event, Event::INTERNAL_SERVER_ERROR);
         return;
@@ -65,12 +61,6 @@ void Read::read_upload_file() {
     this->_event.setFileReadBytes(this->_event.getFileReadBytes() + chunk_bytes);
     std::cout << YELLOW << "Readed Data Size: " << chunk_bytes << RESET << std::endl;
 
-    if (chunk_bytes < read_size) {
-        std::cout << MAGENTA << "Readed less bytes than expected, setting ReadLeft to 0" << RESET << std::endl;
-        this->_event.setFileReadLeft(0);
-        this->_event.setFileChunkReadBytes(chunk_bytes);
-        return;
-    }
     this->_event.setFileReadLeft(this->_event.getRemainingFileUploadBytes() - this->_event.getFileReadBytes());
     std::cout << YELLOW << "Read Left: " << this->_event.getFileReadLeft() << RESET << std::endl;
 

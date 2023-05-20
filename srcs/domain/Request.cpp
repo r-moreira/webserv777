@@ -17,13 +17,11 @@ void Request::read_request() {
 void Request::parse_request() {
     if (ErrorState::is_error_state(this->_event)) return;
 
-    std::cout << MAGENTA << "Request Data:\n " << this->_event.getRequestReadBuffer() << RESET << std::endl;
-
     const char *buffer = this->_event.getRequestReadBuffer().c_str();
     RequestParser::ParseState parse_state;
     RequestParser parser;
 
-    int count = 0;
+    size_t bytes_read = 0;
     while (buffer && *buffer) {
         char c = *buffer;
 
@@ -35,12 +33,14 @@ void Request::parse_request() {
             this->_event.setEventSubStatus(Event::ChoosingServer);
 
             if (_event.getRequest().isIsFileUpload()) {
+                bytes_read++;
                 *buffer++;
-                long request_remaining_buffer_size = READ_BUFFER_SIZE - count;
-                this->_event.setRemainingReadBuffer(buffer);
-                this->_event.setRequestRemainingReadBufferSize(request_remaining_buffer_size);
-                std::cout << MAGENTA << "Remaining Buffer Size: " << request_remaining_buffer_size << RESET << std::endl;
-                std::cout << YELLOW << "Remaining Buffer Content: |" << this->_event.getRemainingReadBuffer() << "|" << RESET<< std::endl;
+                this->_event.setRequestReadBytes(REQUEST_READ_BUFFER_SIZE - bytes_read);
+                std::string buffer_str(buffer, REQUEST_READ_BUFFER_SIZE - bytes_read);
+                this->_event.setRemainingReadBuffer(buffer_str);
+                std::cout << YELLOW << "Remaining Bytes: " << this->_event.getRequestReadBytes() << RESET << std::endl;
+                std::cout << YELLOW << "Remaining Buffer: |" << this->_event.getRemainingReadBuffer() << "|" << RESET<< std::endl;
+
             }
             return;
         }
@@ -52,7 +52,7 @@ void Request::parse_request() {
         }
 
         *buffer++;
-        count++;
+        bytes_read++;
     }
 
     if (parse_state != RequestParser::ParsingCompleted) {

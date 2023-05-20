@@ -28,6 +28,8 @@ void Write::write_requested_file() {
 }
 
 void Write::write_upload_file() {
+    if (ErrorState::is_error_state(this->_event)) return;
+
     std::cout << CYAN << "Writing uploaded file to disk" << RESET << std::endl;
 
     size_t bytes_written = fwrite(this->_event.getUploadFileChunkBuffer(), 1, _event.getFileChunkReadBytes(), this->_event.getFile());
@@ -49,23 +51,23 @@ void Write::write_upload_file() {
 void Write::write_remaining_read_buffer_to_file() {
     if (ErrorState::is_error_state(this->_event) || this->_event.isRemainingReadBytesWritedToFile()) return;
 
-    size_t remaining_read_request_bytes = this->_event.getRequestRemainingReadBufferSize();
+    std::cout << CYAN << "Writing remaining read buffer to file" << RESET << std::endl;
+
+    size_t remaining_read_request_bytes = this->_event.getRemainingReadBuffer().size();
     size_t remaining_file_bytes = this->_event.getRemainingFileUploadBytes();
-    size_t read_size = remaining_file_bytes < remaining_read_request_bytes ? remaining_file_bytes : remaining_read_request_bytes;
+    size_t write_size = remaining_file_bytes < remaining_read_request_bytes ? remaining_file_bytes : remaining_read_request_bytes;
 
-    std::cout << CYAN << "Writing remaining read buffer to file, with size:" << remaining_read_request_bytes << RESET << std::endl;
 
-    size_t bytes_written = fwrite(this->_event.getRemainingReadBuffer().c_str(), 1, read_size, this->_event.getFile());
-    if (bytes_written != read_size) {
+    size_t bytes_written = fwrite(this->_event.getRemainingReadBuffer().c_str(), 1, write_size, this->_event.getFile());
+    if (bytes_written != write_size) {
         std::cerr << RED << "Error while writing file to disk: " << strerror(errno) << RESET << std::endl;
         ErrorState::throw_error_state(this->_event, Event::INTERNAL_SERVER_ERROR);
         return;
     }
 
-    std::cout << YELLOW << "Written Data Size " << bytes_written << " Bytes." << RESET << std::endl;
-    std::cout << YELLOW << "Remaining File Upload Bytes " << remaining_file_bytes - read_size << " Bytes." << RESET << std::endl;
-
-    this->_event.setRemainingFileUploadBytes(remaining_file_bytes - read_size);
+    size_t file_read_left = remaining_file_bytes - bytes_written;
+    this->_event.setRemainingFileUploadBytes(file_read_left);
+    this->_event.setFileReadLeft(file_read_left);
 
     if (this->_event.getRemainingFileUploadBytes() == 0) {
         std::cout << GREEN << "File Upload Complete" << RESET << std::endl;
