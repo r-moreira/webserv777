@@ -41,8 +41,9 @@ void start_servers(std::vector<Server> &servers) {
 
 std::vector<Server> servers_builder() {
     //Rand apenas para evitar conflito de porta.
-    srand(time(0));
-    int port = 8080 + rand() % 10;
+    //srand(time(0));
+    //int port = 8080 + rand() % 10;
+    int port = 8080;
 
     Server default_server = build_default_server(port);
     Server server = build_server_one(port + 1);

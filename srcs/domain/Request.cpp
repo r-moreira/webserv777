@@ -23,6 +23,7 @@ void Request::parse_request() {
     RequestParser::ParseState parse_state;
     RequestParser parser;
 
+    int count = 0;
     while (buffer && *buffer) {
         char c = *buffer;
 
@@ -34,9 +35,12 @@ void Request::parse_request() {
             this->_event.setEventSubStatus(Event::ChoosingServer);
 
             if (_event.getRequest().isIsFileUpload()) {
-                this->_event.setRemainingReadBuffer(buffer + 1);
-                std::cout << YELLOW << "Remaining Buffer: |" << this->_event.getRemainingReadBuffer() << "|" << RESET<< std::endl;
-
+                *buffer++;
+                long request_remaining_buffer_size = READ_BUFFER_SIZE - count;
+                this->_event.setRemainingReadBuffer(buffer);
+                this->_event.setRequestRemainingReadBufferSize(request_remaining_buffer_size);
+                std::cout << MAGENTA << "Remaining Buffer Size: " << request_remaining_buffer_size << RESET << std::endl;
+                std::cout << YELLOW << "Remaining Buffer Content: |" << this->_event.getRemainingReadBuffer() << "|" << RESET<< std::endl;
             }
             return;
         }
@@ -48,6 +52,7 @@ void Request::parse_request() {
         }
 
         *buffer++;
+        count++;
     }
 
     if (parse_state != RequestParser::ParsingCompleted) {

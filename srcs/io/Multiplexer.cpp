@@ -74,7 +74,7 @@ bool Multiplexer::is_server_fd(int fd) {
 
 int Multiplexer::wait_events(epoll_event *epoll_events) const {
 
-    int nfds = epoll_wait(this->_epoll_fd, epoll_events, MAX_EPOLL_EVENTS, 3000);
+    int nfds = epoll_wait(this->_epoll_fd, epoll_events, MAX_EPOLL_EVENTS, -1);
     if (nfds == -1) {
         std::cerr << RED << "Error while waiting for epoll events: " << strerror(errno) << RESET << std::endl;
         return -1;
