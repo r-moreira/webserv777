@@ -143,6 +143,7 @@ Server build_server_two(int port) {
     upload_location.setUploadLock(true);
     upload_location.setAutoIndex(true);
     upload_location.setPath("/upload");
+    upload_location.setRoot("./public/uploaded-files/alternative");
     upload_location.setUploadPath("./public/uploaded-files/alternative");
     upload_location.setLimitExcept(allowed_method_post_delete);
 

@@ -150,3 +150,13 @@ void Write::write_headers(const std::string &headers) {
     this->_event.setHeaderSent(true);
     std::cout << GREEN << "Successfully sent headers to client" << RESET << std::endl;
 }
+
+void Write::write_no_content_headers() {
+    if (ErrorState::is_error_state(this->_event) || this->_event.isHeaderSent()) return;
+
+    std::cout << CYAN << "Send no content headers:" << RESET << std::endl;
+
+    write_headers(this->_headers.getNoContentHeaders(this->_event.getFilePath()));
+    if (ErrorState::is_error_state(this->_event)) return;
+    this->_event.setHeaderSent(true);
+}

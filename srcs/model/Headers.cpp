@@ -42,3 +42,10 @@ const std::string Headers::getCreatedHeaders(const std::string &location) {
     headers << "HTTP/1.1 " << 201 << " Created\r\nLocation: " << location << "\r\n\r\n";
     return headers.str();
 }
+
+const std::string Headers::getNoContentHeaders(const std::string &basicString) {
+    std::ostringstream headers;
+
+    headers << "HTTP/1.1 " << 204 << " No Content\r\nContent-Type: " << basicString << "\r\n\r\n";
+    return headers.str();
+}

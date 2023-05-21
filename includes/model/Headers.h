@@ -24,6 +24,8 @@ public:
     std::string getRedirectionHeaders(const std::string &location);
 
     const std::string getCreatedHeaders(const std::string &location);
+
+    const std::string getNoContentHeaders(const std::string &basicString);
 };
 
 

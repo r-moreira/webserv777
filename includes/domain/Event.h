@@ -28,6 +28,7 @@ public:
         DefiningResponseState,
         SendingResponseFile,
         SendingUploadResponse,
+        SendingDeleteResponse,
         SendingRedirectionResponse,
         SendingDirectoryResponse,
         SendingErrorResponse

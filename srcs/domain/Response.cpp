@@ -76,6 +76,14 @@ void Response::send_upload_response() {
     }
 }
 
+void Response::send_delete_response() {
+    std::cout << MAGENTA << "Send delete response" << RESET << std::endl;
+
+    _file.delete_file();
+    _write.write_no_content_headers();
+}
+
+
 void Response::send_is_directory_response() {
     std::cout << MAGENTA << "Send directory error response" << RESET << std::endl;
 

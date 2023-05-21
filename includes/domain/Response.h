@@ -33,7 +33,7 @@ public:
 
     void send_upload_response();
 
-private:
+    void send_delete_response();
 };
 
 

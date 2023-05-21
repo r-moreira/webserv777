@@ -81,16 +81,6 @@ void Request::choose_server(std::vector<Server> servers) {
     this->_event.setEventSubStatus(Event::ChoosingLocation);
 }
 
-
-
-//Fix: Não está funcionando para o caso de location sem o path /. No caso de requisitar um o path configurado sem a "/" no final
-
-// Antes do erro Location Not Found
-// Nesse caso, caso o servidor não possua um location raiz /:
-//  e vier uma requisição que bate exatamente com algum location path configurado sem o "/" no final,
-//  Criar uma location com o root do path configurado que veio sem o "/" no final para prosseguir com o evento
-
-// Ou trocar tudo isso por um redict para a location que vem sem o "/" no final, adicionando o "/" no final para o navegador chamar certo
 void Request::choose_location() {
     if (ErrorState::is_error_state(this->_event)) return;
 
@@ -200,7 +190,6 @@ void Request::define_response_state() {
         return;
     }
 
-    std::cout << MAGENTA << "Regular Event" << RESET << std::endl;
     std::string file_path = path_to_root();
 
     if (is_directory(file_path)) {
@@ -212,6 +201,14 @@ void Request::define_response_state() {
     }
 
     this->_event.setFilePath(file_path);
+
+    if (this->_event.getRequest().getMethod() == "DELETE") {
+        std::cout << MAGENTA << "Delete Event" << RESET << std::endl;
+        this->_event.setEventSubStatus(Event::SendingDeleteResponse);
+        this->_event.setEventStatus(Event::Writing);
+        return;
+    }
+
     this->_event.setEventSubStatus(Event::SendingResponseFile);
     this->_event.setEventStatus(Event::Writing);
 

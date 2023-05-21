@@ -8,9 +8,6 @@ File::File(Event &event): _event(event) {}
 
 File::~File() {}
 
-//TODO:: Fazer método para deletar arquivos, retornar erro em caso de diretório
-//TODO:: Criar método para criar arquivo quando for necessário upload de arquivos
-
 void File::create_file() {
     if (ErrorState::is_error_state(this->_event) || this->_event.isFileOpened()) return;
 
@@ -28,6 +25,32 @@ void File::create_file() {
     this->_event.setFile(fptr);
 
     this->_event.setFileOpened(true);
+}
+
+
+//TODO:: Fazer método para deletar arquivos, retornar erro em caso de diretório e not found se não achar o arquivo
+void File::delete_file() {
+    if (ErrorState::is_error_state(this->_event)) return;
+
+    std::cout << "Deleting file: " << this->_event.getFilePath() << std::endl; //TODO: Adicionar o file path
+
+    //check if file exists
+    if (access(this->_event.getFilePath().c_str(), F_OK) == -1) {
+        std::cerr << RED << "Error while deleting file: " << this->_event.getFilePath() << " " << strerror(errno) << RESET << std::endl;
+
+        ErrorState::throw_error_state(this->_event, Event::NOT_FOUND);
+        return;
+    }
+
+    if (remove(this->_event.getFilePath().c_str()) != 0) {
+        std::cerr << RED << "Error while deleting file: " << this->_event.getFilePath() << " " << strerror(errno) << RESET << std::endl;
+
+        ErrorState::throw_error_state(this->_event, Event::INTERNAL_SERVER_ERROR);
+        return;
+    }
+
+    std::cout << "File deleted: " << this->_event.getFilePath() << std::endl;
+    _event.setEventStatus(Event::Ended);
 }
 
 void File::open_file() {

@@ -37,6 +37,8 @@ public:
 
     void write_upload_file();
 
+    void write_no_content_headers();
+
 private:
     void write_headers(const std::string &headers);
 

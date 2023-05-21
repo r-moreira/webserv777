@@ -22,6 +22,8 @@ public:
     void open_file();
 
     void create_file();
+
+    void delete_file();
 };
 
 
