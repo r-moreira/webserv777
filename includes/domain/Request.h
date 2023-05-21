@@ -37,9 +37,9 @@ public:
 private:
     std::string path_to_root();
 
-    bool is_directory_and_not_index(const std::string& path);
+    bool is_directory(const std::string& path);
 
-    bool is_index_exists_in_directory(const std::string& path);
+    bool is_index_exists_in_directory(const std::string& path, const std::string& root, const std::string& index);
 };
 
 

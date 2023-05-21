@@ -194,9 +194,8 @@ void Request::define_response_state() {
 
     std::string file_path = path_to_root();
     bool is_auto_index = this->_event.getLocation().isAutoIndex() || this->_event.getServer().isAutoindex();
-    bool is_dir_and_not_index = is_directory_and_not_index(file_path);
 
-    if (is_dir_and_not_index) {
+    if (is_directory(file_path)) {
         std::cerr << RED << "Redirecionado para página de erro de diretório" << RESET << std::endl;
         this->_event.setEventSubStatus(Event::SendingDirectoryResponse);
         this->_event.setHttpStatus(Event::FORBIDDEN);
@@ -231,37 +230,12 @@ void Request::define_response_state() {
 
 }
 
-bool Request::is_index_exists_in_directory(const std::string& path) {
-
-    std::string index = !this->_event.getLocation().getIndex().empty()
-                        ? this->_event.getLocation().getIndex()
-                        : this->_event.getServer().getIndex();
-
-    std::string index_html = path + "/" + index;
-
-    struct stat s;
-    if (stat(index_html.c_str(), &s) == 0) {
-        if (s.st_mode & S_IFREG) {
-            std::cout << YELLOW << "Index exists in directory: " << index_html << RESET << std::endl;
-            return true;
-        }
-    }
-
-    return false;
-}
-
-bool Request::is_directory_and_not_index(const std::string& path) {
+bool Request::is_directory(const std::string& path) {
     struct stat s;
 
     if (stat(path.c_str(), &s) == 0) {
-
         if (s.st_mode & S_IFDIR) {
             std::cout << YELLOW << "Path is a directory: " << path <<RESET << std::endl;
-
-            //if (!is_index_exists_in_directory(path)) {
-            //    std::cout << YELLOW << "Path is not index: " << path <<RESET << std::endl;
-           //     return true;
-          //  }
             return true;
         }
     }
@@ -290,8 +264,8 @@ std::string Request::path_to_root() {
     std::string request_without_slash = request_uri.length() > 1 && request_uri[request_uri.length() - 1] == '/' ?
                                     request_uri.substr(0, request_uri.length() - 1) : request_uri;
 
-    if (request_without_slash == location_path) {
-       request_uri = request_without_slash + "/" + index;
+    if (request_without_slash == location_path && is_index_exists_in_directory(location_path, location_root, index)) {
+        request_uri = request_uri + index;
     }
 
     if (this->_event.getLocation().getPath() == "/") {
@@ -303,4 +277,20 @@ std::string Request::path_to_root() {
     request_uri.replace(pos, location_path.length(), location_root);
 
     return request_uri;
+}
+
+bool Request::is_index_exists_in_directory(const std::string& path, const std::string& root, const std::string& index) {
+    std::string rooted_location_path = path;
+    rooted_location_path.replace(0, path.length(), root);
+
+    std::string index_html = rooted_location_path + "/" + index;
+
+    struct stat s;
+    if (stat(index_html.c_str(), &s) == 0) {
+        if (s.st_mode & S_IFREG) {
+            std::cout << YELLOW << "Index exists in directory: " << index_html << RESET << std::endl;
+            return true;
+        }
+    }
+    return false;
 }
