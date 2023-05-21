@@ -24,4 +24,4 @@ add_executable(
         srcs/model/Headers.cpp includes/model/Headers.h
         srcs/model/MimeTypes.cpp includes/model/MimeTypes.h
         srcs/model/Pages.cpp includes/model/Pages.h
-        srcs/parser/RequestParser.cpp includes/parser/RequestParser.h srcs/model/RequestData.cpp includes/model/RequestData.h)
+        srcs/parser/RequestParser.cpp includes/parser/RequestParser.h srcs/model/RequestData.cpp includes/model/RequestData.h srcs/parser/Autoindex.cpp)

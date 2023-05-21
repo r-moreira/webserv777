@@ -198,6 +198,7 @@ void Request::define_response_state() {
     }
 
     std::string file_path = path_to_root();
+    this->_event.setFilePath(file_path);
 
      bool is_auto_index = this->_event.getLocation().getAutoIndexOption() != Location::AutoIndexOption::NONE
         ? this->_event.getLocation().getAutoIndexOption() == Location::AutoIndexOption::ON
@@ -219,8 +220,6 @@ void Request::define_response_state() {
          this->_event.setEventStatus(Event::Status::Writing);
          return;
     }
-
-    this->_event.setFilePath(file_path);
 
     if (this->_event.getRequest().getMethod() == "DELETE") {
         std::cout << MAGENTA << "Delete Event" << RESET << std::endl;

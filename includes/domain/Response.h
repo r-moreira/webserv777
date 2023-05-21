@@ -10,6 +10,7 @@
 #include "../io/File.h"
 #include "../io/Read.h"
 #include "../io/Write.h"
+#include "../parser/AutoIndex.hpp"
 
 class Response {
 private:

@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="webserv" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="/home/dev/projects/webserv777/configuration/baseconf.conf" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$PROJECT_DIR$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="webserv" TARGET_NAME="webserv" CONFIG_NAME="Debug-Docker" RUN_TARGET_PROJECT_NAME="webserv" RUN_TARGET_NAME="webserv">
+  <configuration default="false" name="webserv" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="/home/dev/projects/webserv777/configuration/baseconf.conf" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$PROJECT_DIR$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="webserv" TARGET_NAME="webserv" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="webserv" RUN_TARGET_NAME="webserv">
     <method v="2">
       <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
     </method>

@@ -88,7 +88,10 @@ void Response::send_auto_index_response() {
     std::cout << MAGENTA << "Send auto index response" << RESET << std::endl;
 
     _write.write_auto_index_headers();
-    std::string auto_index_page = "<!DOCTYPEhtml><html><head><metacharset=\"UTF-8\"><metahttp-equiv=\"X-UA-Compatible\"content=\"IE=edge\"><metaname=\"viewport\"content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"><title>Server Default Autoindex</title><style>html,body{width:100%;height:100%;margin:0;padding:0;}body{display:flex;align-items:center;justify-content:center;background-color:#424;font-size:14px;}h3{font-size:60px;color:#eee;text-align:center;padding-top:30px;font-weight:normal;}</style></head><body><h3>Auto Index Temp Page</h3></body></html>";
+
+    std::string auto_index_page = AutoIndex::pageGenerator(_event.getFilePath(), _event.getRequest().getUri(), _event.getServer().getPort());
+
+    //std::string auto_index_page = "<!DOCTYPEhtml><html><head><metacharset=\"UTF-8\"><metahttp-equiv=\"X-UA-Compatible\"content=\"IE=edge\"><metaname=\"viewport\"content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"><title>Server Default Autoindex</title><style>html,body{width:100%;height:100%;margin:0;padding:0;}body{display:flex;align-items:center;justify-content:center;background-color:#424;font-size:14px;}h3{font-size:60px;color:#eee;text-align:center;padding-top:30px;font-weight:normal;}</style></head><body><h3>Auto Index Temp Page</h3></body></html>";
     if (send(_event.getClientFd(), auto_index_page.c_str(), auto_index_page.size(), 0) < 0) {
         std::cerr << RED << "Error while writing error page to client: " << strerror(errno) << RESET << std::endl;
     }
