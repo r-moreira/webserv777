@@ -9,28 +9,17 @@ EventHandler::EventHandler(Event &event, std::vector<Server> &servers) :_servers
 EventHandler::~EventHandler() {}
 
 //TODO Server Features:
-// Implementar cgi (Via location)
-// Fazer o parser aceitar POST para CGI
-// Implementar auto_index (Via server e location)
+// Implementar cgi (Via location) - GET e POST
+// Implementar auto_index (Via server e location) GET
 // Fazer o parser de configuração instânciar os servidores e locations
 // Entender o que significa e implementar :
 //      Setup multiple servers with different hostnames (use something like: curl --resolve
 //      example.com:80:127.0.0.1 http://example.com/ (http://example.com/)).
-// Trocar o throw error state por uma exception do C++ (https://www.cplusplus.com/doc/tutorial/exceptions/)
 // Testar com todas configurações possíveis
 //      Checar os uso dos getters e setters do servidores e locations é uma forma de saber se tudo foi testado
 
 //TODO Atuais:
-//      TODOs:
-//          Corrigir provblema ao fazer upload de algo que passa o buffer incial do request
-//                  Provavelmente o read não tá preenchendo todo o buffer. Checar write_upload_file() e read_upload_file()
-//          Testar o upload de um arquivo de texto grande
-//          Estudar como fazer upload de arquivos binários (imagem, pdf, etc)
-//      Avaliar:
-//          Existe a possibildade de enviar arquivo com Content-Type com direto do arquivo, sem ser multipart/form-data, nesse caso teria que pegar o nome é a extensão via path da url, talvez não seja obrigatório fazer isso
-
 // Apagar o arquivo do path quando o método for DELETE
-
 // Test: Criar uma rota GET DELETE com location apontando para o diretório de upload no servidor de upload/cgi
 
 
