@@ -14,7 +14,7 @@ public:
 
     ~Pages();
 
-    static std::string get_default_error_page(Event::event_http_status status);
+    static std::string get_default_error_page(Event::HttpStatus::event_http_status status);
 };
 
 

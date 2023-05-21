@@ -17,7 +17,7 @@ public:
 
     ~Headers();
 
-    std::string getErrorHeaders(Event::event_http_status status);
+    std::string getErrorHeaders(Event::HttpStatus::event_http_status status);
 
     std::string getFileHeaders(const std::string &file_path, size_t file_size);
 

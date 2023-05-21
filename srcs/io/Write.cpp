@@ -35,7 +35,7 @@ void Write::write_upload_file() {
     size_t bytes_written = fwrite(this->_event.getUploadFileChunkBuffer(), 1, _event.getFileChunkReadBytes(), this->_event.getFile());
     if (bytes_written != _event.getFileChunkReadBytes()) {
         std::cerr << RED << "Error while writing file to disk: " << strerror(errno) << RESET << std::endl;
-        ErrorState::throw_error_state(this->_event, Event::INTERNAL_SERVER_ERROR);
+        ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
         return;
     }
 
@@ -61,7 +61,7 @@ void Write::write_remaining_read_buffer_to_file() {
     size_t bytes_written = fwrite(this->_event.getRemainingReadBuffer().c_str(), 1, write_size, this->_event.getFile());
     if (bytes_written != write_size) {
         std::cerr << RED << "Error while writing file to disk: " << strerror(errno) << RESET << std::endl;
-        ErrorState::throw_error_state(this->_event, Event::INTERNAL_SERVER_ERROR);
+        ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
         return;
     }
 
@@ -153,7 +153,7 @@ void Write::write_headers(const std::string &headers) {
 
     if (send(_event.getClientFd(), headers.c_str(), headers.size(), 0) < 0) {
         std::cerr << RED << "Error while writing status header to client: " << strerror(errno) << RESET << std::endl;
-        ErrorState::throw_error_state(this->_event, Event::INTERNAL_SERVER_ERROR);
+        ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
         return;
     }
 

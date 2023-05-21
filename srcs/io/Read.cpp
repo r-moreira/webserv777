@@ -17,11 +17,11 @@ void Read::read_request() {
 
     if (bytes_read == -1) {
         std::cerr << RED << "Error while reading from client: " << strerror(errno) << RESET << std::endl;
-        ErrorState::throw_error_state(this->_event, Event::INTERNAL_SERVER_ERROR);
+        ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
         return;
     } else if (bytes_read == 0) {
         std::cout << YELLOW << "Client disconnected" << RESET << std::endl;
-        ErrorState::throw_error_state(this->_event, Event::CLIENT_CLOSED_REQUEST);
+        ErrorState::throw_error_state(this->_event, Event::HttpStatus::CLIENT_CLOSED_REQUEST);
         return;
     }
 
@@ -50,11 +50,11 @@ void Read::read_upload_file() {
 
     if (chunk_bytes == -1) {
         std::cerr << RED << "Error while reading from client: " << strerror(errno) << RESET << std::endl;
-        ErrorState::throw_error_state(this->_event, Event::INTERNAL_SERVER_ERROR);
+        ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
         return;
     } else if (chunk_bytes == 0) {
         std::cout << YELLOW << "Client disconnected" << RESET << std::endl;
-        ErrorState::throw_error_state(this->_event, Event::CLIENT_CLOSED_REQUEST);
+        ErrorState::throw_error_state(this->_event, Event::HttpStatus::CLIENT_CLOSED_REQUEST);
         return;
     }
 
@@ -85,7 +85,7 @@ void Read::read_file() {
 
     if (ferror(_event.getFile())) {
         std::cerr << RED << "Error while reading file: " << strerror(errno) << RESET << std::endl;
-        ErrorState::throw_error_state(this->_event, Event::INTERNAL_SERVER_ERROR);
+        ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
         return;
     }
 

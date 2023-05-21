@@ -8,7 +8,7 @@ Event::Event(int server_fd, int client_fd) {
     this->_client_fd = client_fd;
     this->_server_fd = server_fd;
 
-    this->_http_status = OK;
+    this->_http_status = HttpStatus::OK;
 
     this->_request = RequestData();
     this->_request_read_buffer = "";
@@ -70,11 +70,11 @@ void Event::setServerFd(int serverFd) {
     _server_fd = serverFd;
 }
 
-Event::event_http_status Event::getHttpStatus() const {
+Event::HttpStatus::event_http_status Event::getHttpStatus() const {
     return _http_status;
 }
 
-void Event::setHttpStatus(Event::event_http_status httpStatus) {
+void Event::setHttpStatus(Event::HttpStatus::event_http_status httpStatus) {
     _http_status = httpStatus;
 }
 

@@ -12,7 +12,7 @@ class ErrorState {
 public:
     ErrorState();
 
-    static void throw_error_state(Event &event, Event::event_http_status status);
+    static void throw_error_state(Event &event, Event::HttpStatus::event_http_status status);
     static bool is_error_state(Event &event);
 };
 

@@ -37,7 +37,7 @@ void Response::send_upload_response() {
 
         if (upload_path.empty()) {
             std::cout << RED << "Upload path not found" << RESET << std::endl;
-            this->_event.setHttpStatus(Event::INTERNAL_SERVER_ERROR);
+            this->_event.setHttpStatus(Event::HttpStatus::INTERNAL_SERVER_ERROR);
             send_error_response();
             return;
         }
@@ -48,7 +48,7 @@ void Response::send_upload_response() {
             this->_event.getRequest().getContentDisposition().find("filename=\"") == std::string::npos) {
             std::cout << RED << "Content-Disposition header not found" << RESET << std::endl;
 
-            this->_event.setHttpStatus(Event::BAD_REQUEST);
+            this->_event.setHttpStatus(Event::HttpStatus::BAD_REQUEST);
             send_error_response();
             return;
         }
@@ -106,7 +106,7 @@ void Response::send_cgi_response() {
 
     if (send(_event.getClientFd(), cgi_tmp_headers.c_str(), cgi_tmp_headers.size(), 0) < 0) {
         std::cerr << RED << "Error while writing status header to client: " << strerror(errno) << RESET << std::endl;
-        ErrorState::throw_error_state(this->_event, Event::INTERNAL_SERVER_ERROR);
+        ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
         return;
     }
     _event.setHeaderSent(true);

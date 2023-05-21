@@ -40,25 +40,27 @@ public:
         };
     };
 
-    enum event_http_status {
-        OK = 200,
-        CREATED = 201,
-        NO_CONTENT = 204,
-        BAD_REQUEST = 400,
-        FORBIDDEN = 403,
-        NOT_FOUND = 404,
-        METHOD_NOT_ALLOWED = 405,
-        PAYLOAD_TOO_LARGE = 413,
-        CLIENT_CLOSED_REQUEST = 499,
-        INTERNAL_SERVER_ERROR = 500,
-        NOT_IMPLEMENTED = 501
+    struct HttpStatus {
+        enum event_http_status {
+            OK = 200,
+            CREATED = 201,
+            NO_CONTENT = 204,
+            BAD_REQUEST = 400,
+            FORBIDDEN = 403,
+            NOT_FOUND = 404,
+            METHOD_NOT_ALLOWED = 405,
+            PAYLOAD_TOO_LARGE = 413,
+            CLIENT_CLOSED_REQUEST = 499,
+            INTERNAL_SERVER_ERROR = 500,
+            NOT_IMPLEMENTED = 501
+        };
     };
 
 private:
     int _client_fd;
     int _server_fd;
 
-    event_http_status _http_status;
+    HttpStatus::event_http_status _http_status;
 
     std::string _request_read_buffer;
     std::string _remaining_read_buffer;
@@ -107,9 +109,9 @@ public:
 
     void setServerFd(int serverFd);
 
-    event_http_status getHttpStatus() const;
+    HttpStatus::event_http_status getHttpStatus() const;
 
-    void setHttpStatus(event_http_status httpStatus);
+    void setHttpStatus(HttpStatus::event_http_status httpStatus);
 
     const std::string &getRequestReadBuffer() const;
 

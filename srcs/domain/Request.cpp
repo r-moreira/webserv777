@@ -46,7 +46,7 @@ void Request::parse_request() {
 
         if (parse_state == RequestParser::ParsingError || parse_state == RequestParser::ParsingIncompleted){
             std::cerr << RED << "Parsing failed:\n" << RESET << _event.getRequest().inspect() << std::endl;
-            ErrorState::throw_error_state(this->_event, Event::BAD_REQUEST);
+            ErrorState::throw_error_state(this->_event, Event::HttpStatus::BAD_REQUEST);
             return;
         }
 
@@ -57,7 +57,7 @@ void Request::parse_request() {
     if (parse_state != RequestParser::ParsingCompleted) {
         std::cout << RED << "Parsing Error" << RESET << std::endl;
         std::cout << RED << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
-        ErrorState::throw_error_state(this->_event, Event::BAD_REQUEST);
+        ErrorState::throw_error_state(this->_event, Event::HttpStatus::BAD_REQUEST);
         return;
     }
 }
@@ -106,7 +106,7 @@ void Request::choose_location() {
 
     if (!found) {
         std::cerr << RED << "Location not found" << RESET << std::endl;
-        ErrorState::throw_error_state(this->_event, Event::NOT_FOUND);
+        ErrorState::throw_error_state(this->_event, Event::HttpStatus::NOT_FOUND);
         return;
     }
 
@@ -124,7 +124,7 @@ void Request::validate_constraints() {
                                                : this->_event.getServer().getLimitExcept();
 
     if (std::find(allowed_methods.begin(), allowed_methods.end(), this->_event.getRequest().getMethod()) == allowed_methods.end()) {
-        ErrorState::throw_error_state(this->_event, Event::METHOD_NOT_ALLOWED);
+        ErrorState::throw_error_state(this->_event, Event::HttpStatus::METHOD_NOT_ALLOWED);
         return;
     }
 
@@ -142,7 +142,7 @@ void Request::validate_constraints() {
                 long content_length = std::strtol(it->value.c_str(), NULL, 10);
 
                 if (content_length > max_body_size) {
-                    ErrorState::throw_error_state(this->_event, Event::PAYLOAD_TOO_LARGE);
+                    ErrorState::throw_error_state(this->_event, Event::HttpStatus::PAYLOAD_TOO_LARGE);
                     return;
                 }
             }
@@ -193,7 +193,7 @@ void Request::define_response_state() {
         return;
     } else if (this->_event.getRequest().getMethod() == "POST"){
         std::cout << RED << "Not Implemented Event: Post Request allowed only for File Upload or CGI" << RESET << std::endl;
-        ErrorState::throw_error_state(this->_event, Event::NOT_IMPLEMENTED);
+        ErrorState::throw_error_state(this->_event, Event::HttpStatus::NOT_IMPLEMENTED);
         return;
     }
 
@@ -208,7 +208,7 @@ void Request::define_response_state() {
     if (is_dir && !is_auto_index) {
          std::cerr << RED << "Redirecting to directory error page" << RESET << std::endl;
          this->_event.setEventSubStatus(Event::SubStatus::SendingDirectoryResponse);
-         this->_event.setHttpStatus(Event::FORBIDDEN);
+         this->_event.setHttpStatus(Event::HttpStatus::FORBIDDEN);
          this->_event.setEventStatus(Event::Status::Writing);
          return;
     }
@@ -243,7 +243,7 @@ void Request::define_response_state() {
     }
 
     std::cout << RED << "Not Implemented Request" << RESET << std::endl;
-    ErrorState::throw_error_state(this->_event, Event::NOT_IMPLEMENTED);
+    ErrorState::throw_error_state(this->_event, Event::HttpStatus::NOT_IMPLEMENTED);
 }
 
 bool Request::is_directory(const std::string& path) {

@@ -19,7 +19,7 @@ void File::create_file() {
         std::cerr << RED << "Error while creating file: " << this->_event.getFilePath() << " " << strerror(errno) << RESET << std::endl;
 
         //Não funciona
-        ErrorState::throw_error_state(this->_event, Event::INTERNAL_SERVER_ERROR);
+        ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
         return;
     }
     this->_event.setFile(fptr);
@@ -36,14 +36,14 @@ void File::delete_file() {
     if (access(this->_event.getFilePath().c_str(), F_OK) == -1) {
         std::cerr << MAGENTA << "Deleting file - NOT FOUND: " << this->_event.getFilePath() << " " << strerror(errno) << RESET << std::endl;
 
-        ErrorState::throw_error_state(this->_event, Event::NOT_FOUND);
+        ErrorState::throw_error_state(this->_event, Event::HttpStatus::NOT_FOUND);
         return;
     }
 
     if (remove(this->_event.getFilePath().c_str()) != 0) {
         std::cerr << RED << "Error while deleting file: " << this->_event.getFilePath() << " " << strerror(errno) << RESET << std::endl;
 
-        ErrorState::throw_error_state(this->_event, Event::INTERNAL_SERVER_ERROR);
+        ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
         return;
     }
 
@@ -63,7 +63,7 @@ void File::open_file() {
         if (fptr == NULL) {
             std::cerr << RED << "Error while opening file: " << this->_event.getFilePath() << " " << strerror(errno) << RESET << std::endl;
 
-            ErrorState::throw_error_state(this->_event, Event::NOT_FOUND);
+            ErrorState::throw_error_state(this->_event, Event::HttpStatus::NOT_FOUND);
             return;
         }
         this->_event.setFile(fptr);
@@ -74,7 +74,7 @@ void File::open_file() {
     int fd = fileno(this->_event.getFile());
     if (fd < 1) {
         std::cerr << RED << "Error while getting file descriptor: " << strerror(errno) << RESET << std::endl;
-        ErrorState::throw_error_state(this->_event, Event::INTERNAL_SERVER_ERROR);
+        ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
         return;
     }
 

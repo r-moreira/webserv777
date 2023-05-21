@@ -26,7 +26,7 @@ std::string Headers::getAutoIndexHeaders() {
     return "HTTP/1.1 200 Ok\r\nContent-Type: text/html\r\n\r\n";
 }
 
-std::string Headers::getErrorHeaders(Event::event_http_status status) {
+std::string Headers::getErrorHeaders(Event::HttpStatus::event_http_status status) {
     std::ostringstream headers;
 
     headers << "HTTP/1.1 " << status << "\r\nContent-Type: text/html\r\n\r\n";
