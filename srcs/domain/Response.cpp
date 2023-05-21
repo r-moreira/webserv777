@@ -21,7 +21,7 @@ void Response::send_redirection_response() {
     std::cout << MAGENTA << "Send redirection response" << RESET << std::endl;
 
     _write.write_redirection_headers();
-    _event.setEventStatus(Event::Ended);
+    _event.setEventStatus(Event::Status::Ended);
 }
 
 void Response::send_upload_response() {
@@ -93,7 +93,7 @@ void Response::send_auto_index_response() {
         std::cerr << RED << "Error while writing error page to client: " << strerror(errno) << RESET << std::endl;
     }
 
-    _event.setEventStatus(Event::Ended);
+    _event.setEventStatus(Event::Status::Ended);
 }
 
 //TODO: Retornar CGI
@@ -120,7 +120,7 @@ void Response::send_cgi_response() {
         std::cerr << RED << "Error while writing error page to client: " << strerror(errno) << RESET << std::endl;
     }
 
-    _event.setEventStatus(Event::Ended);
+    _event.setEventStatus(Event::Status::Ended);
 }
 
 
@@ -146,7 +146,7 @@ void Response::send_is_directory_response() {
         _write.write_default_error_page();
     }
 
-    _event.setEventStatus(Event::Ended);
+    _event.setEventStatus(Event::Status::Ended);
 }
 
 void Response::send_error_response() {
@@ -188,5 +188,5 @@ void Response::send_error_response() {
         _write.write_default_error_page();
     }
 
-    _event.setEventStatus(Event::Ended);
+    _event.setEventStatus(Event::Status::Ended);
 }

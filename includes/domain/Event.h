@@ -13,27 +13,31 @@
 class Event {
 
 public:
-    enum event_status {
-        Reading,
-        Writing,
-        Ended
+    struct Status {
+        enum event_status {
+            Reading,
+            Writing,
+            Ended
+        };
     };
 
-    enum event_sub_status {
-        ReadingRequest,
-        ParsingRequest,
-        ChoosingServer,
-        ChoosingLocation,
-        ValidatingConstraints,
-        DefiningResponseState,
-        SendingResponseFile,
-        SendingUploadResponse,
-        SendingDeleteResponse,
-        SendingRedirectionResponse,
-        SendingAutoIndexResponse,
-        SendingCGIResponse,
-        SendingDirectoryResponse,
-        SendingErrorResponse
+    struct SubStatus {
+        enum event_sub_status {
+            ReadingRequest,
+            ParsingRequest,
+            ChoosingServer,
+            ChoosingLocation,
+            ValidatingConstraints,
+            DefiningResponseState,
+            SendingResponseFile,
+            SendingUploadResponse,
+            SendingDeleteResponse,
+            SendingRedirectionResponse,
+            SendingAutoIndexResponse,
+            SendingCGIResponse,
+            SendingDirectoryResponse,
+            SendingErrorResponse
+        };
     };
 
     enum event_http_status {
@@ -72,8 +76,8 @@ private:
     size_t _file_size;
     char _file_read_chunk_buffer[FILE_READ_CHUNK_SIZE];
 
-    Event::event_status _event_status;
-    Event::event_sub_status _event_sub_status;
+    Event::Status::event_status _event_status;
+    Event::SubStatus::event_sub_status _event_sub_status;
 
     bool _header_sent;
     bool _file_opened;
@@ -141,13 +145,13 @@ public:
 
     const char *getFileReadChunkBuffer() const;
 
-    event_status getEventStatus() const;
+    Status::event_status getEventStatus() const;
 
-    void setEventStatus(event_status eventStatus);
+    void setEventStatus(Status::event_status eventStatus);
 
-    event_sub_status getEventSubStatus() const;
+    SubStatus::event_sub_status getEventSubStatus() const;
 
-    void setEventSubStatus(event_sub_status eventSubStatus);
+    void setEventSubStatus(SubStatus::event_sub_status eventSubStatus);
 
     bool isHeaderSent() const;
 

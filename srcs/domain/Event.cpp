@@ -34,8 +34,8 @@ Event::Event(int server_fd, int client_fd) {
 
     this->_forced_redirect_location = "";
 
-    this->_event_status = Reading;
-    this->_event_sub_status = ReadingRequest;
+    this->_event_status = Status::Reading;
+    this->_event_sub_status = SubStatus::ReadingRequest;
 }
 
 Event::~Event() {
@@ -146,19 +146,19 @@ const char *Event::getFileReadChunkBuffer() const {
     return _file_read_chunk_buffer;
 }
 
-Event::event_status Event::getEventStatus() const {
+Event::Status::event_status Event::getEventStatus() const {
     return _event_status;
 }
 
-void Event::setEventStatus(Event::event_status eventStatus) {
+void Event::setEventStatus(Event::Status::event_status eventStatus) {
     _event_status = eventStatus;
 }
 
-Event::event_sub_status Event::getEventSubStatus() const {
+Event::SubStatus::event_sub_status Event::getEventSubStatus() const {
     return _event_sub_status;
 }
 
-void Event::setEventSubStatus(Event::event_sub_status eventSubStatus) {
+void Event::setEventSubStatus(Event::SubStatus::event_sub_status eventSubStatus) {
     _event_sub_status = eventSubStatus;
 }
 

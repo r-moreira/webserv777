@@ -4,7 +4,12 @@
 
 #include "../../includes/domain/EventHandler.h"
 
-EventHandler::EventHandler(Event &event, std::vector<Server> &servers) :_servers(servers), _event(event), _request(event), _response(event), _file(event) {}
+EventHandler::EventHandler(Event &event, std::vector<Server> &servers) :
+    _servers(servers),
+    _event(event),
+    _request(event),
+    _response(event),
+    _file(event) {}
 
 EventHandler::~EventHandler() {}
 
@@ -18,18 +23,15 @@ EventHandler::~EventHandler() {}
 // Testar com todas configurações possíveis
 //      Checar os uso dos getters e setters do servidores e locations é uma forma de saber se tudo foi testado
 
-//TODO Current
-// Trocar autoindex para ON/OFF/NONE
-
 void EventHandler::process_event() {
-    if (this->_event.getEventStatus() == Event::Reading) {
+    if (this->_event.getEventStatus() == Event::Status::Reading) {
 
         switch (this->_event.getEventSubStatus()) {
-            case Event::ReadingRequest: _request.read_request();
-            case Event::ChoosingServer: _request.choose_server(this->_servers);
-            case Event::ChoosingLocation: _request.choose_location();
-            case Event::ValidatingConstraints: _request.validate_constraints();
-            case Event::DefiningResponseState: _request.define_response_state();
+            case Event::SubStatus::ReadingRequest: _request.read_request();
+            case Event::SubStatus::ChoosingServer: _request.choose_server(this->_servers);
+            case Event::SubStatus::ChoosingLocation: _request.choose_location();
+            case Event::SubStatus::ValidatingConstraints: _request.validate_constraints();
+            case Event::SubStatus::DefiningResponseState: _request.define_response_state();
                 break;
             default:
                 std::cerr << RED << "Invalid Reading Event Status" << RESET << std::endl;
@@ -37,23 +39,23 @@ void EventHandler::process_event() {
         }
     }
 
-    if (this->_event.getEventStatus() == Event::Writing) {
+    if (this->_event.getEventStatus() == Event::Status::Writing) {
         switch (this->_event.getEventSubStatus()) {
-            case Event::SendingResponseFile: _response.send_response_file();
+            case Event::SubStatus::SendingResponseFile: _response.send_response_file();
                 break;
-            case Event::SendingUploadResponse: _response.send_upload_response();
+            case Event::SubStatus::SendingUploadResponse: _response.send_upload_response();
                 break;
-            case Event::SendingDeleteResponse: _response.send_delete_response();
+            case Event::SubStatus::SendingDeleteResponse: _response.send_delete_response();
                 break;
-            case Event::SendingRedirectionResponse: _response.send_redirection_response();
+            case Event::SubStatus::SendingRedirectionResponse: _response.send_redirection_response();
                 break;
-            case Event::SendingAutoIndexResponse: _response.send_auto_index_response();
+            case Event::SubStatus::SendingAutoIndexResponse: _response.send_auto_index_response();
                 break;
-            case Event::SendingCGIResponse: _response.send_cgi_response();
+            case Event::SubStatus::SendingCGIResponse: _response.send_cgi_response();
                 break;
-            case Event::SendingDirectoryResponse: _response.send_is_directory_response();
+            case Event::SubStatus::SendingDirectoryResponse: _response.send_is_directory_response();
                 break;
-            case Event::SendingErrorResponse: _response.send_error_response();
+            case Event::SubStatus::SendingErrorResponse: _response.send_error_response();
                 break;
             default:
                 std::cerr << RED << "Invalid Writing Event Sub Status:" << RESET << std::endl;
@@ -70,42 +72,42 @@ void EventHandler::print_event_status() {
     std::string sub_status;
 
     switch (this->_event.getEventStatus()) {
-        case Event::Reading: status = "Reading";
+        case Event::Status::Reading: status = "Reading";
             break;
-        case Event::Writing: status = "Writing";
+        case Event::Status::Writing: status = "Writing";
             break;
-        case Event::Ended: status = "Ended";
+        case Event::Status::Ended: status = "Ended";
             break;
         default: status = "Invalid";
             break;
     }
 
     switch (this->_event.getEventSubStatus()) {
-        case Event::ReadingRequest: sub_status = "ReadingRequest";
+        case Event::SubStatus::ReadingRequest: sub_status = "ReadingRequest";
             break;
-        case Event::ParsingRequest: sub_status = "ParsingRequest";
+        case Event::SubStatus::ParsingRequest: sub_status = "ParsingRequest";
             break;
-        case Event::ChoosingServer: sub_status = "ChoosingServer";
+        case Event::SubStatus::ChoosingServer: sub_status = "ChoosingServer";
             break;
-        case Event::ChoosingLocation: sub_status = "ChoosingLocation";
+        case Event::SubStatus::ChoosingLocation: sub_status = "ChoosingLocation";
             break;
-        case Event::DefiningResponseState: sub_status = "DefiningResponseState";
+        case Event::SubStatus::DefiningResponseState: sub_status = "DefiningResponseState";
             break;
-        case Event::SendingResponseFile: sub_status = "SendingResponseFile";
+        case Event::SubStatus::SendingResponseFile: sub_status = "SendingResponseFile";
             break;
-        case Event::SendingUploadResponse: sub_status = "SendingUploadResponse";
+        case Event::SubStatus::SendingUploadResponse: sub_status = "SendingUploadResponse";
             break;
-        case Event::SendingDeleteResponse: sub_status = "SendingDeleteResponse";
+        case Event::SubStatus::SendingDeleteResponse: sub_status = "SendingDeleteResponse";
             break;
-        case Event::SendingRedirectionResponse: sub_status = "SendingRedirectionResponse";
+        case Event::SubStatus::SendingRedirectionResponse: sub_status = "SendingRedirectionResponse";
             break;
-        case Event::SendingAutoIndexResponse: sub_status = "SendingAutoIndexResponse";
+        case Event::SubStatus::SendingAutoIndexResponse: sub_status = "SendingAutoIndexResponse";
             break;
-        case Event::SendingCGIResponse: sub_status = "SendingCGIResponse";
+        case Event::SubStatus::SendingCGIResponse: sub_status = "SendingCGIResponse";
             break;
-        case Event::SendingDirectoryResponse: sub_status = "SendingDirectoryResponse";
+        case Event::SubStatus::SendingDirectoryResponse: sub_status = "SendingDirectoryResponse";
             break;
-        case Event::SendingErrorResponse: sub_status = "SendingErrorResponse";
+        case Event::SubStatus::SendingErrorResponse: sub_status = "SendingErrorResponse";
             break;
         default: sub_status = "Invalid";
             break;

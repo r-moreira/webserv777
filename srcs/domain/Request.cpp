@@ -29,7 +29,7 @@ void Request::parse_request() {
 
         if (parse_state == RequestParser::ParsingCompleted) {
             std::cout << WHITE << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
-            this->_event.setEventSubStatus(Event::ChoosingServer);
+            this->_event.setEventSubStatus(Event::SubStatus::ChoosingServer);
 
             if (_event.getRequest().isIsFileUpload()) {
                 bytes_read++;
@@ -77,7 +77,7 @@ void Request::choose_server(std::vector<Server> servers) {
 
     std::cout << BLUE << "Choosed server =\n" << this->_event.getServer() << RESET << std::endl << std::endl;
 
-    this->_event.setEventSubStatus(Event::ChoosingLocation);
+    this->_event.setEventSubStatus(Event::SubStatus::ChoosingLocation);
 }
 
 void Request::choose_location() {
@@ -112,7 +112,7 @@ void Request::choose_location() {
 
     std::cout << YELLOW << "Choosed location <" << std::endl << this->_event.getLocation() << RESET << std::endl;
 
-    this->_event.setEventSubStatus(Event::ValidatingConstraints);
+    this->_event.setEventSubStatus(Event::SubStatus::ValidatingConstraints);
 }
 
 void Request::validate_constraints() {
@@ -149,8 +149,8 @@ void Request::validate_constraints() {
         }
     }
 
-    this->_event.setEventStatus(Event::Writing);
-    this->_event.setEventSubStatus(Event::DefiningResponseState);
+    this->_event.setEventStatus(Event::Status::Writing);
+    this->_event.setEventSubStatus(Event::SubStatus::DefiningResponseState);
 }
 
 void Request::define_response_state() {
@@ -166,16 +166,16 @@ void Request::define_response_state() {
 
         this->_event.setForcedRedirect(true);
         this->_event.setForcedRedirectLocation(redirect_uri);
-        this->_event.setEventSubStatus(Event::SendingRedirectionResponse);
-        this->_event.setEventStatus(Event::Writing);
+        this->_event.setEventSubStatus(Event::SubStatus::SendingRedirectionResponse);
+        this->_event.setEventStatus(Event::Status::Writing);
         return;
     }
 
     if (this->_event.getLocation().isRedirectLock()) {
         std::cout << MAGENTA << "Redirection Event" << RESET << std::endl;
 
-        this->_event.setEventSubStatus(Event::SendingRedirectionResponse);
-        this->_event.setEventStatus(Event::Writing);
+        this->_event.setEventSubStatus(Event::SubStatus::SendingRedirectionResponse);
+        this->_event.setEventStatus(Event::Status::Writing);
         return;
     }
 
@@ -183,13 +183,13 @@ void Request::define_response_state() {
 
     if (this->_event.getRequest().getMethod() == "POST" && file_upload_lock) {
         std::cout << MAGENTA << "Upload Event" << RESET << std::endl;
-        this->_event.setEventSubStatus(Event::SendingUploadResponse);
-        this->_event.setEventStatus(Event::Writing);
+        this->_event.setEventSubStatus(Event::SubStatus::SendingUploadResponse);
+        this->_event.setEventStatus(Event::Status::Writing);
         return;
     } else if (this->_event.getRequest().getMethod() == "POST" && this->_event.getLocation().isCgiLock()) {
         std::cout << MAGENTA << "POST CGI Event" << RESET << std::endl;
-        this->_event.setEventSubStatus(Event::SendingCGIResponse);
-        this->_event.setEventStatus(Event::Writing);
+        this->_event.setEventSubStatus(Event::SubStatus::SendingCGIResponse);
+        this->_event.setEventStatus(Event::Status::Writing);
         return;
     } else if (this->_event.getRequest().getMethod() == "POST"){
         std::cout << RED << "Not Implemented Event: Post Request allowed only for File Upload or CGI" << RESET << std::endl;
@@ -207,16 +207,16 @@ void Request::define_response_state() {
 
     if (is_dir && !is_auto_index) {
          std::cerr << RED << "Redirecting to directory error page" << RESET << std::endl;
-         this->_event.setEventSubStatus(Event::SendingDirectoryResponse);
+         this->_event.setEventSubStatus(Event::SubStatus::SendingDirectoryResponse);
          this->_event.setHttpStatus(Event::FORBIDDEN);
-         this->_event.setEventStatus(Event::Writing);
+         this->_event.setEventStatus(Event::Status::Writing);
          return;
     }
 
     if (is_dir) {
          std::cout << MAGENTA << "Auto Index Event" << RESET << std::endl;
-         this->_event.setEventSubStatus(Event::SendingAutoIndexResponse);
-         this->_event.setEventStatus(Event::Writing);
+         this->_event.setEventSubStatus(Event::SubStatus::SendingAutoIndexResponse);
+         this->_event.setEventStatus(Event::Status::Writing);
          return;
     }
 
@@ -224,21 +224,21 @@ void Request::define_response_state() {
 
     if (this->_event.getRequest().getMethod() == "DELETE") {
         std::cout << MAGENTA << "Delete Event" << RESET << std::endl;
-        this->_event.setEventSubStatus(Event::SendingDeleteResponse);
-        this->_event.setEventStatus(Event::Writing);
+        this->_event.setEventSubStatus(Event::SubStatus::SendingDeleteResponse);
+        this->_event.setEventStatus(Event::Status::Writing);
         return;
     }
 
     if (this->_event.getRequest().getMethod() == "GET" && this->_event.getLocation().isCgiLock()) {
         std::cout << MAGENTA << "GET CGI Event" << RESET << std::endl;
-        this->_event.setEventSubStatus(Event::SendingCGIResponse);
-        this->_event.setEventStatus(Event::Writing);
+        this->_event.setEventSubStatus(Event::SubStatus::SendingCGIResponse);
+        this->_event.setEventStatus(Event::Status::Writing);
         return;
     }
 
     if (this->_event.getRequest().getMethod() == "GET") {
-        this->_event.setEventSubStatus(Event::SendingResponseFile);
-        this->_event.setEventStatus(Event::Writing);
+        this->_event.setEventSubStatus(Event::SubStatus::SendingResponseFile);
+        this->_event.setEventStatus(Event::Status::Writing);
         return;
     }
 

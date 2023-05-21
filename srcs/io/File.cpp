@@ -48,7 +48,7 @@ void File::delete_file() {
     }
 
     std::cout << "File deleted: " << this->_event.getFilePath() << std::endl;
-    _event.setEventStatus(Event::Ended);
+    _event.setEventStatus(Event::Status::Ended);
 }
 
 void File::open_file() {
