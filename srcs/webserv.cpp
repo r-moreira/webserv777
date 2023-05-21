@@ -162,7 +162,7 @@ Server build_server_two(int port) {
     server.setPort(port);
     server.setUploadPath("./public/uploaded-files");
     server.setUploadLock(true);
-    server.setAutoindex(true);
+    server.setAutoindex(false);
     server.setLocations(locations);
     return server;
 }
@@ -193,7 +193,7 @@ Server build_server_one(int port) {
     hello_world_location.setPath("/hello");
     hello_world_location.setRoot("./public/hello-world");
     hello_world_location.setIndex("hello.html");
-    hello_world_location.setAutoIndex(true);
+    hello_world_location.setAutoIndex(false);
     hello_world_location.setDirectoryRequestPage("./public/directory-page/alternative/index.html");
     hello_world_location.setErrorPages(error_page_413);
     hello_world_location.setLimitExcept(allowed_methods_get_post);

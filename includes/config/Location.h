@@ -8,6 +8,14 @@
 #include "../webserv.h"
 
 class Location {
+public:
+    struct AutoIndexOption {
+        enum auto_index_option {
+            OFF,
+            ON,
+            NONE = -1
+        };
+    };
 
 private:
     std::string _path;
@@ -20,7 +28,7 @@ private:
     std::string _directory_request_page;
     std::map<int, std::string> _error_pages;
     long _max_body_size;
-    bool _auto_index;
+    AutoIndexOption::auto_index_option _auto_index;
     bool _cgi_lock;
     bool _upload_lock;
     bool _redirect_lock;
@@ -52,8 +60,6 @@ public:
 
     void setUploadPath(const std::string &uploadPath);
 
-    bool isAutoIndex() const;
-
     void setAutoIndex(bool autoIndex);
 
     bool isCgiLock() const;
@@ -71,6 +77,8 @@ public:
     const std::string &getIndex() const;
 
     void setIndex(const std::string &index);
+
+    AutoIndexOption::auto_index_option getAutoIndexOption() const;
 
     long getMaxBodySize() const;
 

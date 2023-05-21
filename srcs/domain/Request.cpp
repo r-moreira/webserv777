@@ -199,14 +199,9 @@ void Request::define_response_state() {
 
     std::string file_path = path_to_root();
 
-    //TODO: Ajustar, fazer o autoindex não ser mais um booleano, porque não é. Precisa de 3 estados: ON, OFF, NONE
-    // Server == ON? true : false
-    // Location != NONE ? LOCATION == ON ? true : false : Server
-    bool is_auto_index = false;
-    if (this->_event.getServer().isAutoindex() && this->_event.getLocation().isAutoIndex() ||
-       !this->_event.getServer().isAutoindex() && this->_event.getLocation().isAutoIndex()) {
-        is_auto_index = true;
-    }
+     bool is_auto_index = this->_event.getLocation().getAutoIndexOption() != Location::AutoIndexOption::NONE
+        ? this->_event.getLocation().getAutoIndexOption() == Location::AutoIndexOption::ON
+        : this->_event.getServer().getAutoIndexOption() == Server::AutoIndexOption::ON;
 
     bool is_dir = is_directory(file_path);
 

@@ -11,7 +11,7 @@ Location::Location() {
     this->_limit_except.push_back("POST");
     this->_limit_except.push_back("DELETE");
     this->_max_body_size = -1;
-    this->_auto_index = false;
+    this->_auto_index = AutoIndexOption::NONE;
     this->_cgi_lock = false;
     this->_upload_lock = false;
     this->_redirect_lock = false;
@@ -65,12 +65,15 @@ void Location::setUploadPath(const std::string &uploadPath) {
     _upload_path = uploadPath;
 }
 
-bool Location::isAutoIndex() const {
+Location::AutoIndexOption::auto_index_option Location::getAutoIndexOption() const {
     return _auto_index;
 }
 
 void Location::setAutoIndex(bool autoIndex) {
-    _auto_index = autoIndex;
+    if (autoIndex)
+        _auto_index = AutoIndexOption::ON;
+    else
+        _auto_index = AutoIndexOption::OFF;
 }
 
 bool Location::isCgiLock() const {
@@ -138,7 +141,7 @@ std::ostream &operator<<(std::ostream &os, const Location &location) {
         << "\tRedirect Url: " << location.getRedirectLocation() << std::endl
         << "\tCgi Path: " << location.getCgiPath() << std::endl
         << "\tUpload Path: " << location.getUploadPath() << std::endl
-        << "\tAuto Index: " << location.isAutoIndex() << std::endl
+        << "\tAuto Index: " << location.getAutoIndexOption() << std::endl
         << "\tMax Body Size: " << location.getMaxBodySize() << std::endl
         << "\tCgi Lock: " << location.isCgiLock()
         << " | Upload Lock: " << location.isUploadLock()

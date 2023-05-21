@@ -11,6 +11,14 @@
 
 
 class Server {
+public:
+    struct AutoIndexOption {
+        enum auto_index_option {
+            OFF,
+            ON,
+            NONE = -1
+        };
+    };
 
 private:
     std::string _name;
@@ -24,7 +32,7 @@ private:
     std::map<int, std::string> _error_pages;
     std::vector<std::string> _limit_except;
     std::vector<Location> _locations;
-    bool _autoindex;
+    AutoIndexOption::auto_index_option _autoindex;
     bool _upload_lock;
 public:
     Server();
@@ -67,9 +75,9 @@ public:
 
     void setIndex(const std::string &index);
 
-    bool isAutoindex() const;
-
     void setAutoindex(bool autoindex);
+
+    AutoIndexOption::auto_index_option getAutoIndexOption() const;
 
     const std::vector<std::string> &getLimitExcept() const;
 

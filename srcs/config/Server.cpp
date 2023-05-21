@@ -10,7 +10,7 @@ Server::Server() {
     this->_root = "./";
     this->_fd = -1;
     this->_max_body_size = -1;
-    this->_autoindex = false;
+    this->_autoindex = AutoIndexOption::NONE;
     this->_upload_lock = false;
     this->_limit_except = std::vector<std::string>();
     this->_limit_except.push_back("GET");
@@ -93,13 +93,7 @@ void Server::setLocations(const std::vector<Location> &locations) {
     _locations = locations;
 }
 
-bool Server::isAutoindex() const {
-    return _autoindex;
-}
 
-void Server::setAutoindex(bool autoindex) {
-    _autoindex = autoindex;
-}
 
 const std::vector<std::string> &Server::getLimitExcept() const {
     return _limit_except;
@@ -125,13 +119,24 @@ void Server::setUploadLock(bool uploadLock) {
     _upload_lock = uploadLock;
 }
 
+void Server::setAutoindex(bool autoindex) {
+    if (autoindex)
+        this->_autoindex = AutoIndexOption::ON;
+    else
+        this->_autoindex = AutoIndexOption::OFF;
+}
+
+Server::AutoIndexOption::auto_index_option Server::getAutoIndexOption() const {
+    return _autoindex;
+}
+
 std::ostream &operator<<(std::ostream &os, const Server &server) {
     os
        << "Name: " << server.getName() << std::endl
        << "Port: " << server.getPort() << std::endl
        << "Root: " << server.getRoot() << std::endl
        << "Index: " << server.getIndex() << std::endl
-       << "Auto Index: " << server.isAutoindex() << std::endl
+       << "Auto Index: " << server.getAutoIndexOption() << std::endl
        << "Max Body Size: " << server.getMaxBodySize() << std::endl
        << "File Descriptor: " << server.getFd() << std::endl
        << "Upload Path: " << server.getUploadPath() << std::endl
