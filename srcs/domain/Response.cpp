@@ -29,6 +29,8 @@ void Response::send_upload_response() {
 
     if (!this->_event.isFileOpened()) {
         std::string upload_path;
+        std::string file_name;
+
         upload_path = !this->_event.getLocation().getUploadPath().empty()
                       ? this->_event.getLocation().getUploadPath()
                       : this->_event.getServer().getUploadPath();
@@ -42,8 +44,21 @@ void Response::send_upload_response() {
 
         upload_path = upload_path[upload_path.length() - 1] == '/' ? upload_path : upload_path + "/";
 
-        //temporario, fazer parse do nome depois -> requestData._content_disposition
-        this->_event.setFilePath(upload_path + "test_file.jpg");
+        if (this->_event.getRequest().getContentDisposition().empty() ||
+            this->_event.getRequest().getContentDisposition().find("filename=\"") == std::string::npos) {
+            std::cout << RED << "Content-Disposition header not found" << RESET << std::endl;
+
+            this->_event.setHttpStatus(Event::BAD_REQUEST);
+            send_error_response();
+            return;
+        }
+
+        size_t file_name_start = this->_event.getRequest().getContentDisposition().find("filename=\"") + 10;
+        size_t file_name_end = this->_event.getRequest().getContentDisposition().find('\"', file_name_start);
+
+        file_name = this->_event.getRequest().getContentDisposition().substr(file_name_start, file_name_end - file_name_start);
+
+        this->_event.setFilePath(upload_path + file_name);
         this->_event.setRemainingFileUploadBytes(this->_event.getRequest().getFileUploadRemainingBytes());
         this->_event.setFileReadLeft(this->_event.getRequest().getFileUploadRemainingBytes());
         _file.create_file();
@@ -60,7 +75,6 @@ void Response::send_upload_response() {
         _write.write_created_headers();
     }
 }
-
 
 void Response::send_is_directory_response() {
     std::cout << MAGENTA << "Send directory error response" << RESET << std::endl;

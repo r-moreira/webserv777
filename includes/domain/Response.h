@@ -33,6 +33,7 @@ public:
 
     void send_upload_response();
 
+private:
 };
 
 
