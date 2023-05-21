@@ -194,27 +194,20 @@ void Request::define_response_state() {
 
     std::string file_path = path_to_root();
     bool is_auto_index = this->_event.getLocation().isAutoIndex() || this->_event.getServer().isAutoindex();
+    bool is_dir = is_directory(file_path);
 
-    if (is_directory(file_path)) {
-        std::cerr << RED << "Redirecionado para página de erro de diretório" << RESET << std::endl;
-        this->_event.setEventSubStatus(Event::SendingDirectoryResponse);
-        this->_event.setHttpStatus(Event::FORBIDDEN);
-        this->_event.setEventStatus(Event::Writing);
-        return;
+    if (is_dir && !is_auto_index) {
+         std::cerr << RED << "Redirecionado para página de erro de diretório" << RESET << std::endl;
+         this->_event.setEventSubStatus(Event::SendingDirectoryResponse);
+         this->_event.setHttpStatus(Event::FORBIDDEN);
+         this->_event.setEventStatus(Event::Writing);
+         return;
+    } else if (is_dir && is_auto_index) {
+         std::cout << MAGENTA << "Auto Index Event" << RESET << std::endl;
+         this->_event.setEventSubStatus(Event::SendingAutoIndexResponse);
+         this->_event.setEventStatus(Event::Writing);
+         return;
     }
-
- /*if (is_dir_and_not_index && !is_auto_index) {
-     std::cerr << RED << "Redirecionado para página de erro de diretório" << RESET << std::endl;
-     this->_event.setEventSubStatus(Event::SendingDirectoryResponse);
-     this->_event.setHttpStatus(Event::FORBIDDEN);
-     this->_event.setEventStatus(Event::Writing);
-     return;
- } else if (is_dir_and_not_index && is_auto_index) {
-     std::cout << MAGENTA << "Auto Index Event" << RESET << std::endl;
-     this->_event.setEventSubStatus(Event::SendingAutoIndexResponse);
-     this->_event.setEventStatus(Event::Writing);
-     return;
- }*/
 
     this->_event.setFilePath(file_path);
 
