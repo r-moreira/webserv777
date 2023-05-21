@@ -20,7 +20,6 @@ EventHandler::~EventHandler() {}
 
 //TODO Current
 // Trocar autoindex para ON/OFF/NONE
-// Implementar o parse do content do post quando não for multipart (upload de arquivo)
 
 void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Event::Reading) {

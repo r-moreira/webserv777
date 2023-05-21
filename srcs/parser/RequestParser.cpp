@@ -177,11 +177,9 @@ RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
                     RequestData::HeaderItem h = req.getHeaders().back();
 
                     if (strcasecmp(h.name.c_str(), "Content-Length") == 0) {
-                        _content_size = atoi(h.value.c_str());
+                        _content_size = strtol(h.value.c_str(), NULL, 10);
                         req.reserveContent(_content_size);
-                    } else if (strcasecmp(h.name.c_str(), "Transfer-Encoding") == 0) {
-                        if (strcasecmp(h.value.c_str(), "chunked") == 0)
-                            return ParsingError;
+                        state = ExpectingNewline;
                     }
                 }
                 state = ExpectingNewline;
@@ -219,8 +217,6 @@ RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
                 else
                     return ParsingError;
             } else {
-                //TODO: Checar se é um request POST CGI, caso for, fazer o parse do content, caso contrário, prosseguir com o código abaixo
-
                 std::vector<RequestData::HeaderItem> headers_ = req.getHeaders();
                 std::vector<RequestData::HeaderItem>::iterator it_ = std::find_if(headers.begin(),
                                                                                  headers.end(),
