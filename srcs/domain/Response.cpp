@@ -83,7 +83,6 @@ void Response::send_delete_response() {
     _write.write_no_content_headers();
 }
 
-//TODO: Retornar pagina de auto index
 void Response::send_auto_index_response() {
     std::cout << MAGENTA << "Send auto index response" << RESET << std::endl;
 
@@ -113,15 +112,39 @@ void Response::send_cgi_response() {
     }
     _event.setHeaderSent(true);
 
-    std::string get_cgi_page = "<!DOCTYPEhtml><html><head><metacharset=\"UTF-8\"><metahttp-equiv=\"X-UA-Compatible\"content=\"IE=edge\"><metaname=\"viewport\"content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"><title>Server Default GET GGI</title><style>html,body{width:100%;height:100%;margin:0;padding:0;}body{display:flex;align-items:center;justify-content:center;background-color:#424;font-size:14px;}h3{font-size:60px;color:#eee;text-align:center;padding-top:30px;font-weight:normal;}</style></head><body><h3>GET CGI Temp Page</h3></body></html>";
-    std::string post_cgi_page = "<!DOCTYPEhtml><html><head><metacharset=\"UTF-8\"><metahttp-equiv=\"X-UA-Compatible\"content=\"IE=edge\"><metaname=\"viewport\"content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"><title>Server Default POST GGI</title><style>html,body{width:100%;height:100%;margin:0;padding:0;}body{display:flex;align-items:center;justify-content:center;background-color:#424;font-size:14px;}h3{font-size:60px;color:#eee;text-align:center;padding-top:30px;font-weight:normal;}</style></head><body><h3>POST CGI Temp Page</h3></body></html>";
+    char *cgi_path = strdup(_event.getLocation().getCgiPath().c_str());
+    char * const cmd[] = {"python3", cgi_path, NULL};
 
-    std::string cgi_page = _event.getRequest().getMethod() == "GET" ? get_cgi_page : post_cgi_page;
+    Exec *cgi = new ExecPython(cmd, NULL);
+    cgi->start();
+    int status = cgi->getHttpStatusCode();
+    int cgi_fd = cgi->getStdOut();
 
-    if (send(_event.getClientFd(), cgi_page.c_str(), cgi_page.size(), 0) < 0) {
-        std::cerr << RED << "Error while writing error page to client: " << strerror(errno) << RESET << std::endl;
+    std::cout << CYAN << "CGI status: " << status << RESET << std::endl;
+
+    //read cgi fd
+    char buffer[1024];
+    long read_bytes = 0;
+    while ((read_bytes = read(cgi_fd, buffer, 1024)) > 0) {
+        if (read_bytes < 0) {
+            std::cerr << RED << "Error while reading CGI output: " << strerror(errno) << RESET << std::endl;
+            ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
+            return;
+        }
+
+        std::cout << YELLOW << "Read " << read_bytes << " bytes from CGI" << RESET << std::endl;
+        std::cout << MAGENTA << "CGI Buffer: |" << buffer << "|" << RESET << std::endl;
+
+        if (send(_event.getClientFd(), buffer, read_bytes, 0) < 0) {
+            std::cerr << RED << "Error while writing status header to client: " << strerror(errno) << RESET << std::endl;
+            ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
+            return;
+        }
     }
 
+    free(cgi_path);
+    delete cgi;
+    close(cgi_fd);
     _event.setEventStatus(Event::Status::Ended);
 }
 

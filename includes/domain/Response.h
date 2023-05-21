@@ -10,7 +10,9 @@
 #include "../io/File.h"
 #include "../io/Read.h"
 #include "../io/Write.h"
-#include "../parser/AutoIndex.hpp"
+#include "../parser/AutoIndex.hpp"s
+#include "../cgi/Exec.hpp"
+#include "../cgi/ExecPython.hpp"
 
 class Response {
 private:
