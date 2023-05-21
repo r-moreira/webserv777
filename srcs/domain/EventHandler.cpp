@@ -49,9 +49,9 @@ void EventHandler::process_event() {
                 break;
             case Event::SendingRedirectionResponse: _response.send_redirection();
                 break;
-            //case SendingCgiResponse: _response.send_cgi();
-                //break;
-            // case SendingAutoIndexResponse: _response.send_auto_index();
+            case Event::SendingAutoIndexResponse: _response.send_auto_index();
+                break;
+            //case Event::SendingCGIResponse: _response.send_cgi();
                 //break;
             case Event::SendingDirectoryResponse: _response.send_is_directory_response();
                 break;
@@ -97,7 +97,13 @@ void EventHandler::print_event_status() {
             break;
         case Event::SendingUploadResponse: sub_status = "SendingUploadResponse";
             break;
+        case Event::SendingDeleteResponse: sub_status = "SendingDeleteResponse";
+            break;
         case Event::SendingRedirectionResponse: sub_status = "SendingRedirectionResponse";
+            break;
+        case Event::SendingAutoIndexResponse: sub_status = "SendingAutoIndexResponse";
+            break;
+        case Event::SendingCGIResponse: sub_status = "SendingCGIResponse";
             break;
         case Event::SendingDirectoryResponse: sub_status = "SendingDirectoryResponse";
             break;

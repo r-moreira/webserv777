@@ -26,6 +26,8 @@ public:
     const std::string getCreatedHeaders(const std::string &location);
 
     const std::string getNoContentHeaders(const std::string &basicString);
+
+    std::string getAutoIndexHeaders(const std::string &content_type);
 };
 
 

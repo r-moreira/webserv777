@@ -162,7 +162,7 @@ void Request::define_response_state() {
     std::cout << CYAN << "Defining Response State" << RESET << std::endl;
 
     //Se o path da requisição for igual ao path da location e terminar sem a "/" é necessário fazer um redirect para adicionando a "/"
-    //  se não o navegador requisitar o diretório incorreto.
+    //  se não o navegador vai requisitar o diretório incorreto.
     std::string request_uri = this->_event.getRequest().getUri();
     if (request_uri.length() > 1 && request_uri[request_uri.length() - 1] != '/' && request_uri == this->_event.getLocation().getPath()) {
         std::cout << MAGENTA << "Forcing redirect to location with /" << RESET << std::endl;
@@ -190,15 +190,32 @@ void Request::define_response_state() {
         return;
     }
 
-    std::string file_path = path_to_root();
 
-    if (is_directory(file_path)) {
+
+    std::string file_path = path_to_root();
+    bool is_auto_index = this->_event.getLocation().isAutoIndex() || this->_event.getServer().isAutoindex();
+    bool is_dir_and_not_index = is_directory_and_not_index(file_path);
+
+    if (is_dir_and_not_index) {
         std::cerr << RED << "Redirecionado para página de erro de diretório" << RESET << std::endl;
         this->_event.setEventSubStatus(Event::SendingDirectoryResponse);
         this->_event.setHttpStatus(Event::FORBIDDEN);
         this->_event.setEventStatus(Event::Writing);
         return;
     }
+
+ /*if (is_dir_and_not_index && !is_auto_index) {
+     std::cerr << RED << "Redirecionado para página de erro de diretório" << RESET << std::endl;
+     this->_event.setEventSubStatus(Event::SendingDirectoryResponse);
+     this->_event.setHttpStatus(Event::FORBIDDEN);
+     this->_event.setEventStatus(Event::Writing);
+     return;
+ } else if (is_dir_and_not_index && is_auto_index) {
+     std::cout << MAGENTA << "Auto Index Event" << RESET << std::endl;
+     this->_event.setEventSubStatus(Event::SendingAutoIndexResponse);
+     this->_event.setEventStatus(Event::Writing);
+     return;
+ }*/
 
     this->_event.setFilePath(file_path);
 
@@ -214,11 +231,37 @@ void Request::define_response_state() {
 
 }
 
-bool Request::is_directory(const std::string& path) {
+bool Request::is_index_exists_in_directory(const std::string& path) {
+
+    std::string index = !this->_event.getLocation().getIndex().empty()
+                        ? this->_event.getLocation().getIndex()
+                        : this->_event.getServer().getIndex();
+
+    std::string index_html = path + "/" + index;
+
     struct stat s;
+    if (stat(index_html.c_str(), &s) == 0) {
+        if (s.st_mode & S_IFREG) {
+            std::cout << YELLOW << "Index exists in directory: " << index_html << RESET << std::endl;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool Request::is_directory_and_not_index(const std::string& path) {
+    struct stat s;
+
     if (stat(path.c_str(), &s) == 0) {
+
         if (s.st_mode & S_IFDIR) {
             std::cout << YELLOW << "Path is a directory: " << path <<RESET << std::endl;
+
+            //if (!is_index_exists_in_directory(path)) {
+            //    std::cout << YELLOW << "Path is not index: " << path <<RESET << std::endl;
+           //     return true;
+          //  }
             return true;
         }
     }

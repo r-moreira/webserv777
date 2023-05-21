@@ -83,6 +83,13 @@ void Response::send_delete_response() {
     _write.write_no_content_headers();
 }
 
+void Response::send_auto_index() {
+    std::string auto_index_page = "<!DOCTYPEhtml><html><head><metacharset=\"UTF-8\"><metahttp-equiv=\"X-UA-Compatible\"content=\"IE=edge\"><metaname=\"viewport\"content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"><title>Server Default Autoindex</title><style>html,body{width:100%;height:100%;margin:0;padding:0;}body{display:flex;align-items:center;justify-content:center;background-color:#424;font-size:14px;}h3{font-size:60px;color:#eee;text-align:center;padding-top:30px;font-weight:normal;}</style></head><body><h3>Auto Index Temp Page</h3></body></html>";
+
+    _write.write_auto_index_headers();
+    _event.setEventStatus(Event::Ended);
+}
+
 
 void Response::send_is_directory_response() {
     std::cout << MAGENTA << "Send directory error response" << RESET << std::endl;

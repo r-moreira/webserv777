@@ -141,7 +141,6 @@ Server build_server_two(int port) {
 
     Location upload_location = Location();
     upload_location.setUploadLock(true);
-    upload_location.setAutoIndex(true);
     upload_location.setPath("/upload");
     upload_location.setRoot("./public/uploaded-files/alternative");
     upload_location.setUploadPath("./public/uploaded-files/alternative");
@@ -163,6 +162,7 @@ Server build_server_two(int port) {
     server.setPort(port);
     server.setUploadPath("./public/uploaded-files");
     server.setUploadLock(true);
+    server.setAutoindex(true);
     server.setLocations(locations);
     return server;
 }

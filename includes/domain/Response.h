@@ -34,6 +34,8 @@ public:
     void send_upload_response();
 
     void send_delete_response();
+
+    void send_auto_index();
 };
 
 

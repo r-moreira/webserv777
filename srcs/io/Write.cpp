@@ -109,6 +109,7 @@ void Write::write_error_headers() {
 
     this->_event.setHeaderSent(true);
 }
+
 void Write::write_redirection_headers() {
     if (this->_event.isForcedRedirect()) {
         std::cout << CYAN << "Send forced redirection headers:" << RESET << std::endl;
@@ -126,6 +127,15 @@ void Write::write_redirection_headers() {
     this->_event.setHeaderSent(true);
 }
 
+void Write::write_auto_index_headers() {
+    if (ErrorState::is_error_state(this->_event) || this->_event.isHeaderSent()) return;
+
+    std::cout << CYAN << "Send auto index headers:" << RESET << std::endl;
+
+    write_headers(this->_headers.getAutoIndexHeaders(this->_event.getFilePath()));
+    if (ErrorState::is_error_state(this->_event)) return;
+    this->_event.setHeaderSent(true);
+}
 
 void Write::write_created_headers() {
     if (ErrorState::is_error_state(this->_event) || this->_event.isHeaderSent()) return;

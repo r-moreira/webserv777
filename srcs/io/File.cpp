@@ -27,8 +27,6 @@ void File::create_file() {
     this->_event.setFileOpened(true);
 }
 
-
-//TODO:: Fazer método para deletar arquivos, retornar erro em caso de diretório e not found se não achar o arquivo
 void File::delete_file() {
     if (ErrorState::is_error_state(this->_event)) return;
 
@@ -36,7 +34,7 @@ void File::delete_file() {
 
     //check if file exists
     if (access(this->_event.getFilePath().c_str(), F_OK) == -1) {
-        std::cerr << RED << "Error while deleting file: " << this->_event.getFilePath() << " " << strerror(errno) << RESET << std::endl;
+        std::cerr << MAGENTA << "Deleting file - NOT FOUND: " << this->_event.getFilePath() << " " << strerror(errno) << RESET << std::endl;
 
         ErrorState::throw_error_state(this->_event, Event::NOT_FOUND);
         return;

@@ -30,6 +30,8 @@ public:
         SendingUploadResponse,
         SendingDeleteResponse,
         SendingRedirectionResponse,
+        SendingAutoIndexResponse,
+        SendingCGIResponse,
         SendingDirectoryResponse,
         SendingErrorResponse
     };

@@ -27,6 +27,8 @@ public:
 
     void write_redirection_headers();
 
+    void write_auto_index_headers();
+
     void write_requested_file();
 
     void write_default_error_page();
