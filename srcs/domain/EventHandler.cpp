@@ -14,8 +14,8 @@ EventHandler::EventHandler(Event &event, std::vector<Server> &servers) :
 EventHandler::~EventHandler() {}
 
 //TODO Server Features:
-// Implementar cgi (Via location) - GET e POST
-// Implementar auto_index (Via server e location) GET
+// Refatorar cgi
+// Refatorar auto_index
 // Fazer o parser de configuração instânciar os servidores e locations
 // Entender o que significa e implementar :
 //      Setup multiple servers with different hostnames (use something like: curl --resolve
