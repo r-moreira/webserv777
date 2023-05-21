@@ -140,7 +140,7 @@ Server build_server_two(int port) {
     allowed_method_post_delete.push_back("DELETE");
 
     Location upload_location = Location();
-    upload_location.setUploadLock(true);
+    upload_location.setUploadLock(false);
     upload_location.setPath("/upload");
     upload_location.setRoot("./public/uploaded-files/alternative");
     upload_location.setUploadPath("./public/uploaded-files/alternative");
@@ -150,7 +150,7 @@ Server build_server_two(int port) {
     allowed_method_get.push_back("GET");
 
     Location static_location = Location();
-    upload_location.setAutoIndex(true);
+    static_location.setAutoIndex(true);
     static_location.setPath("/images");
     static_location.setRoot("./public/images");
     static_location.setLimitExcept(allowed_method_get);

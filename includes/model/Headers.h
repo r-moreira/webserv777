@@ -27,7 +27,7 @@ public:
 
     const std::string getNoContentHeaders(const std::string &basicString);
 
-    std::string getAutoIndexHeaders(const std::string &content_type);
+    std::string getAutoIndexHeaders();
 };
 
 

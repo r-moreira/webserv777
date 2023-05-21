@@ -18,10 +18,9 @@ EventHandler::~EventHandler() {}
 // Testar com todas configurações possíveis
 //      Checar os uso dos getters e setters do servidores e locations é uma forma de saber se tudo foi testado
 
-//TODO Atuais:
-// Apagar o arquivo do path quando o método for DELETE
-// Test: Criar uma rota GET DELETE com location apontando para o diretório de upload no servidor de upload/cgi
-
+//TODO Current
+// Trocar autoindex para ON/OFF/NONE
+// Implementar o parse do content do post quando não for multipart (upload de arquivo)
 
 void EventHandler::process_event() {
     if (this->_event.getEventStatus() == Event::Reading) {
@@ -47,12 +46,12 @@ void EventHandler::process_event() {
                 break;
             case Event::SendingDeleteResponse: _response.send_delete_response();
                 break;
-            case Event::SendingRedirectionResponse: _response.send_redirection();
+            case Event::SendingRedirectionResponse: _response.send_redirection_response();
                 break;
-            case Event::SendingAutoIndexResponse: _response.send_auto_index();
+            case Event::SendingAutoIndexResponse: _response.send_auto_index_response();
                 break;
-            //case Event::SendingCGIResponse: _response.send_cgi();
-                //break;
+            case Event::SendingCGIResponse: _response.send_cgi_response();
+                break;
             case Event::SendingDirectoryResponse: _response.send_is_directory_response();
                 break;
             case Event::SendingErrorResponse: _response.send_error_response();

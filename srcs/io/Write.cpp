@@ -132,7 +132,7 @@ void Write::write_auto_index_headers() {
 
     std::cout << CYAN << "Send auto index headers:" << RESET << std::endl;
 
-    write_headers(this->_headers.getAutoIndexHeaders(this->_event.getFilePath()));
+    write_headers(this->_headers.getAutoIndexHeaders());
     if (ErrorState::is_error_state(this->_event)) return;
     this->_event.setHeaderSent(true);
 }

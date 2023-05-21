@@ -219,7 +219,8 @@ RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
                 else
                     return ParsingError;
             } else {
-                state = PostBoundary;
+                //TODO: Checar se é um request POST CGI, caso for, fazer o parse do content, caso contrário, prosseguir com o código abaixo
+
                 std::vector<RequestData::HeaderItem> headers_ = req.getHeaders();
                 std::vector<RequestData::HeaderItem>::iterator it_ = std::find_if(headers.begin(),
                                                                                  headers.end(),
@@ -236,10 +237,12 @@ RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
                 } else {
                     return ParsingError;
                 }
+
+                state = PostFileUploadBoundary;
             }
             break;
         }
-        case PostBoundary:
+        case PostFileUploadBoundary:
             if (input == '\r') {
                 state = ExpectingNewline_3;
             }

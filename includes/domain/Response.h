@@ -29,13 +29,15 @@ public:
 
     void send_is_directory_response();
 
-    void send_redirection();
+    void send_redirection_response();
 
     void send_upload_response();
 
     void send_delete_response();
 
-    void send_auto_index();
+    void send_auto_index_response();
+
+    void send_cgi_response();
 };
 
 

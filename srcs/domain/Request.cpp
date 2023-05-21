@@ -154,16 +154,13 @@ void Request::validate_constraints() {
     this->_event.setEventSubStatus(Event::DefiningResponseState);
 }
 
-//TODO:: Adicionar o estados restantes
-// if request method = POST -> upload file
 void Request::define_response_state() {
     if (ErrorState::is_error_state(this->_event)) return;
 
     std::cout << CYAN << "Defining Response State" << RESET << std::endl;
 
-    //Se o path da requisição for igual ao path da location e terminar sem a "/" é necessário fazer um redirect para adicionando a "/"
-    //  se não o navegador vai requisitar o diretório incorreto.
     std::string request_uri = this->_event.getRequest().getUri();
+
     if (request_uri.length() > 1 && request_uri[request_uri.length() - 1] != '/' && request_uri == this->_event.getLocation().getPath()) {
         std::cout << MAGENTA << "Forcing redirect to location with /" << RESET << std::endl;
         std::string redirect_uri = request_uri + "/";
@@ -183,26 +180,46 @@ void Request::define_response_state() {
         return;
     }
 
-    if (this->_event.getRequest().getMethod() == "POST") {
+    bool file_upload_lock = this->_event.getLocation().isUploadLock() || this->_event.getServer().isUploadLock();
+
+    if (this->_event.getRequest().getMethod() == "POST" && file_upload_lock) {
         std::cout << MAGENTA << "Upload Event" << RESET << std::endl;
         this->_event.setEventSubStatus(Event::SendingUploadResponse);
         this->_event.setEventStatus(Event::Writing);
         return;
+    } else if (this->_event.getRequest().getMethod() == "POST" && this->_event.getLocation().isCgiLock()) {
+        std::cout << MAGENTA << "POST CGI Event" << RESET << std::endl;
+        this->_event.setEventSubStatus(Event::SendingCGIResponse);
+        this->_event.setEventStatus(Event::Writing);
+        return;
+    } else if (this->_event.getRequest().getMethod() == "POST"){
+        std::cout << RED << "Not Implemented Event: Post Request allowed only for File Upload or CGI" << RESET << std::endl;
+        ErrorState::throw_error_state(this->_event, Event::NOT_IMPLEMENTED);
+        return;
     }
 
-
-
     std::string file_path = path_to_root();
-    bool is_auto_index = this->_event.getLocation().isAutoIndex() || this->_event.getServer().isAutoindex();
+
+    //TODO: Ajustar, fazer o autoindex não ser mais um booleano, porque não é. Precisa de 3 estados: ON, OFF, NONE
+    // Server == ON? true : false
+    // Location != NONE ? LOCATION == ON ? true : false : Server
+    bool is_auto_index = false;
+    if (this->_event.getServer().isAutoindex() && this->_event.getLocation().isAutoIndex() ||
+       !this->_event.getServer().isAutoindex() && this->_event.getLocation().isAutoIndex()) {
+        is_auto_index = true;
+    }
+
     bool is_dir = is_directory(file_path);
 
     if (is_dir && !is_auto_index) {
-         std::cerr << RED << "Redirecionado para página de erro de diretório" << RESET << std::endl;
+         std::cerr << RED << "Redirecting to directory error page" << RESET << std::endl;
          this->_event.setEventSubStatus(Event::SendingDirectoryResponse);
          this->_event.setHttpStatus(Event::FORBIDDEN);
          this->_event.setEventStatus(Event::Writing);
          return;
-    } else if (is_dir && is_auto_index) {
+    }
+
+    if (is_dir) {
          std::cout << MAGENTA << "Auto Index Event" << RESET << std::endl;
          this->_event.setEventSubStatus(Event::SendingAutoIndexResponse);
          this->_event.setEventStatus(Event::Writing);
@@ -218,9 +235,21 @@ void Request::define_response_state() {
         return;
     }
 
-    this->_event.setEventSubStatus(Event::SendingResponseFile);
-    this->_event.setEventStatus(Event::Writing);
+    if (this->_event.getRequest().getMethod() == "GET" && this->_event.getLocation().isCgiLock()) {
+        std::cout << MAGENTA << "GET CGI Event" << RESET << std::endl;
+        this->_event.setEventSubStatus(Event::SendingCGIResponse);
+        this->_event.setEventStatus(Event::Writing);
+        return;
+    }
 
+    if (this->_event.getRequest().getMethod() == "GET") {
+        this->_event.setEventSubStatus(Event::SendingResponseFile);
+        this->_event.setEventStatus(Event::Writing);
+        return;
+    }
+
+    std::cout << RED << "Not Implemented Request" << RESET << std::endl;
+    ErrorState::throw_error_state(this->_event, Event::NOT_IMPLEMENTED);
 }
 
 bool Request::is_directory(const std::string& path) {

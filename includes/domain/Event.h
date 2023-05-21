@@ -38,8 +38,8 @@ public:
 
     enum event_http_status {
         OK = 200,
-        CREATED = 201, //Upload
-        NO_CONTENT = 204, //Delete
+        CREATED = 201,
+        NO_CONTENT = 204,
         BAD_REQUEST = 400,
         FORBIDDEN = 403,
         NOT_FOUND = 404,
@@ -47,6 +47,7 @@ public:
         PAYLOAD_TOO_LARGE = 413,
         CLIENT_CLOSED_REQUEST = 499,
         INTERNAL_SERVER_ERROR = 500,
+        NOT_IMPLEMENTED = 501
     };
 
 private:
