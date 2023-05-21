@@ -21,11 +21,11 @@ EventHandler::~EventHandler() {}
 //      Setup multiple servers with different hostnames (use something like: curl --resolve
 //      example.com:80:127.0.0.1 http://example.com/ (http://example.com/)).
 // Testar com todas configurações possíveis
-//      Checar os uso dos getters e setters do servidores e locations é uma forma de saber se tudo foi testado
+// Remover logs desnecessários, criar um padrão de log para o restante
 
 void EventHandler::process_event() {
-    if (this->_event.getEventStatus() == Event::Status::Reading) {
 
+    if (this->_event.getEventStatus() == Event::Status::Reading) {
         switch (this->_event.getEventSubStatus()) {
             case Event::SubStatus::ReadingRequest: _request.read_request();
             case Event::SubStatus::ChoosingServer: _request.choose_server(this->_servers);

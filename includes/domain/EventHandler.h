@@ -11,10 +11,6 @@
 #include "Response.h"
 #include "../io/File.h"
 
-/*
- * TODO: Encapsular métodos dentro de classes membros do EventHandler
- */
-
 class EventHandler {
 
 private:
@@ -30,7 +26,6 @@ public:
     ~EventHandler();
 
     void process_event();
-
 
     const Event &getEvent() const;
 
