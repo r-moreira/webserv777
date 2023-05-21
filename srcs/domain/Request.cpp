@@ -27,7 +27,6 @@ void Request::parse_request() {
 
         parse_state = parser.parse(_event._request, c);
 
-
         if (parse_state == RequestParser::ParsingCompleted) {
             std::cout << WHITE << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
             this->_event.setEventSubStatus(Event::ChoosingServer);

@@ -39,6 +39,8 @@ public:
         ExpectingNewline,
         ExpectingNewline_2,
 
+        PostContent,
+
         PostFileUploadBoundary,
         ExpectingNewline_3,
         ContentDisposition,

@@ -230,18 +230,21 @@ RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
                         req.setIsFileUpload(true);
                         req.setBoundary(it_->value.substr(it_->value.find("boundary=") + 9));
 
-                    } else {
-                        return ParsingError;
+                        state = PostFileUploadBoundary;
+                        break;
                     }
-
-                } else {
-                    return ParsingError;
                 }
-
-                state = PostFileUploadBoundary;
+                state = PostContent;
             }
             break;
         }
+        case PostContent:
+            --_content_size;
+            req.contentPushBack(input);
+            if (_content_size == 0) {
+                return ParsingCompleted;
+            }
+            break;
         case PostFileUploadBoundary:
             if (input == '\r') {
                 state = ExpectingNewline_3;

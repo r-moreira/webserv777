@@ -16,21 +16,21 @@ RequestData::~RequestData() {}
 std::string RequestData::inspect() const {
     std::stringstream stream;
     stream << _method << " " << _uri << " HTTP/"
-           << _version_major << "." << _version_minor << "\n";
+           << _version_major << "." << _version_minor << std::endl;
 
     for (std::vector<RequestData::HeaderItem>::const_iterator it = _headers.begin();
          it != _headers.end(); ++it) {
-        stream << it->name << ": " << it->value << "\n";
+        stream << it->name << ": " << it->value << std::endl;;
     }
 
     std::string data(_content.begin(), _content.end());
-    stream << data << "\n";
-    stream << "+ keep-alive: " << _keep_alive << "\n";
-    stream << "+ is_file_upload: " << _is_file_upload << "\n";
-    stream << "+ remaining_bytes: " << _upload_file_size << "\n";
-    stream << "+ boundary: " << _boundary << "\n";
-    stream << "+ content_disposition: " << _content_disposition << "\n";
-    stream << "+ upload_file_type: " << _upload_file_type << "\n";
+    stream << std::endl << data << std::endl << std::endl;
+    stream << "+ keep-alive: " << _keep_alive << std::endl;
+    stream << "+ is_file_upload: " << _is_file_upload << std::endl;
+    stream << "+ remaining_bytes: " << _upload_file_size << std::endl;
+    stream << "+ boundary: " << _boundary << std::endl;
+    stream << "+ content_disposition: " << _content_disposition << std::endl;
+    stream << "+ upload_file_type: " << _upload_file_type << std::endl;
     return stream.str();
 }
 
