@@ -1,7 +1,7 @@
-#ifndef ExecPython_hpp
-#define ExecPython_hpp
+#ifndef ExecPython_h
+#define ExecPython_h
 
-#include "Exec.hpp"
+#include "Exec.h"
 
 class ExecPython : public Exec
 {

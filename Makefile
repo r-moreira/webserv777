@@ -10,6 +10,7 @@ IO_DIR				= ${SRCS_DIR}/io
 MODEL_DIR			= ${SRCS_DIR}/model
 NETWORK_DIR			= ${SRCS_DIR}/network
 PARSER_DIR			= ${SRCS_DIR}/parser
+CGI_DIR				= ${SRCS_DIR}/cgi
 
 SRCS				= ${SRCS_DIR}/webserv.cpp\
 					  ${CONFIG_DIR}/Location.cpp\
@@ -27,10 +28,13 @@ SRCS				= ${SRCS_DIR}/webserv.cpp\
 					  ${MODEL_DIR}/MimeTypes.cpp\
 					  ${MODEL_DIR}/Pages.cpp\
 					  ${MODEL_DIR}/RequestData.cpp\
+					  ${MODEL_DIR}/AutoIndex.cpp\
 					  ${NETWORK_DIR}/Socket.cpp\
 					  ${PARSER_DIR}/RequestParser.cpp\
 					  ${PARSER_DIR}/ConfigParser.cpp\
-					  ${PARSER_DIR}/LocationParser.cpp
+					  ${PARSER_DIR}/LocationParser.cpp\
+					  ${CGI_DIR}/Exec.cpp\
+					  ${CGI_DIR}/ExecPython.cpp
 
 all:				$(NAME)
 

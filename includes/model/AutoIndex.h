@@ -1,5 +1,5 @@
-#ifndef Autoindex_hpp
-#define Autoindex_hpp
+#ifndef Autoindex_h
+#define Autoindex_h
 
 #include <iostream>
 #include <dirent.h>

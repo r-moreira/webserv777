@@ -1,5 +1,5 @@
-#ifndef exec_hpp
-#define exec_hpp
+#ifndef exec_h
+#define exec_h
 #include <iostream>
 #include <unistd.h>
 #include <sys/wait.h>

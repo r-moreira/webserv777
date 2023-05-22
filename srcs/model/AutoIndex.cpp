@@ -1,4 +1,4 @@
-#include "../../includes/parser/AutoIndex.hpp"
+#include "../../includes/model/AutoIndex.h"
 
 AutoIndex::AutoIndex() {};
 
