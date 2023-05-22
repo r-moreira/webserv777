@@ -10,65 +10,67 @@
 
 class RequestParser {
 
-private:
-    size_t _content_size;
-
 public:
-    enum ParseState {
-        RequestMethodStart,
-        RequestMethod,
-        RequestUriStart,
-        RequestUri,
-        RequestHttpVersion_h,
-        RequestHttpVersion_ht,
-        RequestHttpVersion_htt,
-        RequestHttpVersion_http,
-        RequestHttpVersion_slash,
-        RequestHttpVersion_majorStart,
-        RequestHttpVersion_major,
-        RequestHttpVersion_minorStart,
-        RequestHttpVersion_minor,
-        ResponseHttpVersion_newLine,
+    struct ParseState {
+        enum State {
+            RequestMethodStart,
+            RequestMethod,
+            RequestUriStart,
+            RequestUri,
+            RequestHttpVersion_h,
+            RequestHttpVersion_ht,
+            RequestHttpVersion_htt,
+            RequestHttpVersion_http,
+            RequestHttpVersion_slash,
+            RequestHttpVersion_majorStart,
+            RequestHttpVersion_major,
+            RequestHttpVersion_minorStart,
+            RequestHttpVersion_minor,
+            ResponseHttpVersion_newLine,
 
-        HeaderLineStart,
-        HeaderLws,
-        HeaderName,
-        SpaceBeforeHeaderValue,
-        HeaderValue,
+            HeaderLineStart,
+            HeaderLws,
+            HeaderName,
+            SpaceBeforeHeaderValue,
+            HeaderValue,
 
-        ExpectingNewline,
-        ExpectingNewline_2,
+            ExpectingNewline,
+            ExpectingNewline_2,
 
-        PostContent,
+            PostContent,
 
-        PostFileUploadBoundary,
-        ExpectingNewline_3,
-        ContentDisposition,
-        ExpectingNewline_4,
-        FileContentType,
-        SpaceBeforeFileContentTypeValue,
-        FileContentTypeValue,
-        ExpectingNewline_5,
+            PostFileUploadBoundary,
+            ExpectingNewline_3,
+            ContentDisposition,
+            ExpectingNewline_4,
+            FileContentType,
+            SpaceBeforeFileContentTypeValue,
+            FileContentTypeValue,
+            ExpectingNewline_5,
 
-        ExpectingLineEnd,
-        ExpectingNewline_6,
+            ExpectingLineEnd,
+            ExpectingNewline_6,
 
-        ParsingCompleted,
-        ParsingError,
-        ParsingIncompleted,
-    } state;
+            ParsingCompleted,
+            ParsingError,
+            ParsingIncompleted,
+        };
+    };
 
     RequestParser();
     ~RequestParser();
 
-    ParseState parse(RequestData &req, char c);
+    ParseState::State parse(RequestData &req, char c);
 
 private:
+    size_t _content_size;
+    ParseState::State _state;
+
     static bool checkIfConnection(const RequestData::HeaderItem &item);;
 
     static bool checkIfContentType(const RequestData::HeaderItem &item);
 
-    ParseState consume(RequestData &req, char c);
+    ParseState::State consume(RequestData &req, char c);
 
     static inline bool isChar(int c);
 

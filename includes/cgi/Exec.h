@@ -24,7 +24,7 @@ private:
     virtual void script_exec(int stdOut);
 public:
     Exec(char * path_bin, char* const* command, char* const* env);
-    ~Exec();
+    virtual ~Exec();
     void start();
     int getStdOut();
     int getHttpStatusCode();

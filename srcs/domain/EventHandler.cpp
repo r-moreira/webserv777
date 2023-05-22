@@ -27,11 +27,11 @@ void EventHandler::process_event() {
 
     if (this->_event.getEventStatus() == Event::Status::Reading) {
         switch (this->_event.getEventSubStatus()) {
-            case Event::SubStatus::ReadingRequest: _request.read_request();
-            case Event::SubStatus::ChoosingServer: _request.choose_server(this->_servers);
-            case Event::SubStatus::ChoosingLocation: _request.choose_location();
-            case Event::SubStatus::ValidatingConstraints: _request.validate_constraints();
-            case Event::SubStatus::DefiningResponseState: _request.define_response_state();
+            case Event::SubStatus::ReadingRequest: _request.read_request(); /* falls through */
+            case Event::SubStatus::ChoosingServer: _request.choose_server(this->_servers); /* falls through */
+            case Event::SubStatus::ChoosingLocation: _request.choose_location(); /* falls through */
+            case Event::SubStatus::ValidatingConstraints: _request.validate_constraints(); /* falls through */
+            case Event::SubStatus::DefiningResponseState: _request.define_response_state(); /* falls through */
                 break;
             default:
                 std::cerr << RED << "Invalid Reading Event Status" << RESET << std::endl;

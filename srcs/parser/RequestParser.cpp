@@ -4,174 +4,174 @@
 
 #include "../../includes/parser/RequestParser.h"
 
-RequestParser::RequestParser() : state(RequestMethodStart), _content_size(0){}
+RequestParser::RequestParser() : _content_size(0), _state(ParseState::RequestMethodStart) {}
 
 RequestParser::~RequestParser() {}
 
-RequestParser::ParseState RequestParser::parse(RequestData &req, char c) {
+RequestParser::ParseState::State RequestParser::parse(RequestData &req, char c) {
     return consume(req, c);
 }
 
-RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
+RequestParser::ParseState::State RequestParser::consume(RequestData &req, char input) {
 
-    switch (state) {
-        case RequestMethodStart:
+    switch (_state) {
+        case ParseState::RequestMethodStart:
             if (!isChar(input) || isControl(input) || isSpecial(input)) {
-                return ParsingError;
+                return ParseState::ParsingError;
             } else {
-                state = RequestMethod;
+                _state = ParseState::RequestMethod;
                 req.methodPushBack(input);
             }
             break;
-        case RequestMethod:
+        case ParseState::RequestMethod:
             if (input == ' ') {
-                state = RequestUriStart;
+                _state = ParseState::RequestUriStart;
             } else if (!isChar(input) || isControl(input) || isSpecial(input)) {
-                return ParsingError;
+                return ParseState::ParsingError;
             } else {
                 req.methodPushBack(input);
             }
             break;
-        case RequestUriStart:
+        case ParseState::RequestUriStart:
             if (isControl(input)) {
-                return ParsingError;
+                return ParseState::ParsingError;
             } else {
-                state = RequestUri;
+                _state = ParseState::RequestUri;
                 req.uriPushBack(input);
             }
             break;
-        case RequestUri:
+        case ParseState::RequestUri:
             if (input == ' ') {
-                state = RequestHttpVersion_h;
+                _state = ParseState::RequestHttpVersion_h;
             } else if (input == '\r') {
                 req.setVersionMajor(0);
                 req.setVersionMinor(9);
 
-                return ParsingCompleted;
+                return ParseState::ParsingCompleted;
             } else if (isControl(input)) {
-                return ParsingError;
+                return ParseState::ParsingError;
             } else {
                 req.uriPushBack(input);
             }
             break;
-        case RequestHttpVersion_h:
+        case ParseState::RequestHttpVersion_h:
             if (input == 'H') {
-                state = RequestHttpVersion_ht;
+                _state = ParseState::RequestHttpVersion_ht;
             } else {
-                return ParsingError;
+                return ParseState::ParsingError;
             }
             break;
-        case RequestHttpVersion_ht:
+        case ParseState::RequestHttpVersion_ht:
             if (input == 'T') {
-                state = RequestHttpVersion_htt;
+                _state = ParseState::RequestHttpVersion_htt;
             } else {
-                return ParsingError;
+                return ParseState::ParsingError;
             }
             break;
-        case RequestHttpVersion_htt:
+        case ParseState::RequestHttpVersion_htt:
             if (input == 'T') {
-                state = RequestHttpVersion_http;
+                _state = ParseState::RequestHttpVersion_http;
             } else {
-                return ParsingError;
+                return ParseState::ParsingError;
             }
             break;
-        case RequestHttpVersion_http:
+        case ParseState::RequestHttpVersion_http:
             if (input == 'P') {
-                state = RequestHttpVersion_slash;
+                _state = ParseState::RequestHttpVersion_slash;
             } else {
-                return ParsingError;
+                return ParseState::ParsingError;
             }
             break;
-        case RequestHttpVersion_slash:
+        case ParseState::RequestHttpVersion_slash:
             if (input == '/') {
                 req.setVersionMajor(0);
                 req.setVersionMinor(0);
-                state = RequestHttpVersion_majorStart;
+                _state = ParseState::RequestHttpVersion_majorStart;
             } else {
-                return ParsingError;
+                return ParseState::ParsingError;
             }
             break;
-        case RequestHttpVersion_majorStart:
+        case ParseState::RequestHttpVersion_majorStart:
             if (isDigit(input)) {
                 req.setVersionMajor(input - '0');
-                state = RequestHttpVersion_major;
+                _state = ParseState::RequestHttpVersion_major;
             } else {
-                return ParsingError;
+                return ParseState::ParsingError;
             }
             break;
-        case RequestHttpVersion_major:
+        case ParseState::RequestHttpVersion_major:
             if (input == '.') {
-                state = RequestHttpVersion_minorStart;
+                _state = ParseState::RequestHttpVersion_minorStart;
             } else if (isDigit(input)) {
                 req.setVersionMajor(req.getVersionMajor() * 10 + input - '0');
             } else {
-                return ParsingError;
+                return ParseState::ParsingError;
             }
             break;
-        case RequestHttpVersion_minorStart:
+        case ParseState::RequestHttpVersion_minorStart:
             if (isDigit(input)) {
                 req.setVersionMinor(input - '0');
-                state = RequestHttpVersion_minor;
+                _state = ParseState::RequestHttpVersion_minor;
             } else {
-                return ParsingError;
+                return ParseState::ParsingError;
             }
             break;
-        case RequestHttpVersion_minor:
+        case ParseState::RequestHttpVersion_minor:
             if (input == '\r') {
-                state = ResponseHttpVersion_newLine;
+                _state = ParseState::ResponseHttpVersion_newLine;
             } else if (isDigit(input)) {
                 req.setVersionMinor(req.getVersionMinor() * 10 + input - '0');
             } else {
-                return ParsingError;
+                return ParseState::ParsingError;
             }
             break;
-        case ResponseHttpVersion_newLine:
+        case ParseState::ResponseHttpVersion_newLine:
             if (input == '\n') {
-                state = HeaderLineStart;
+                _state = ParseState::HeaderLineStart;
             } else {
-                return ParsingError;
+                return ParseState::ParsingError;
             }
             break;
-        case HeaderLineStart:
+        case ParseState::HeaderLineStart:
             if (input == '\r') {
-                state = ExpectingNewline_2;
+                _state = ParseState::ExpectingNewline_2;
             } else if (!req.getHeaders().empty() && (input == ' ' || input == '\t')) {
-                state = HeaderLws;
+                _state = ParseState::HeaderLws;
             } else if (!isChar(input) || isControl(input) || isSpecial(input)) {
-                return ParsingError;
+                return ParseState::ParsingError;
             } else {
                req.headerItemPushBackNameReserve(input);
-               state = HeaderName;
+                _state = ParseState::HeaderName;
             }
             break;
-        case HeaderLws:
+        case ParseState::HeaderLws:
             if (input == '\r') {
-                state = ExpectingNewline;
+                _state = ParseState::ExpectingNewline;
             } else if (input == ' ' || input == '\t') {
             } else if (isControl(input)) {
-                return ParsingError;
+                return ParseState::ParsingError;
             } else {
-                state = HeaderValue;
+                _state = ParseState::HeaderValue;
                 req.headerItemPushBackValue(input);
             }
             break;
-        case HeaderName:
+        case ParseState::HeaderName:
             if (input == ':') {
-                state = SpaceBeforeHeaderValue;
+                _state = ParseState::SpaceBeforeHeaderValue;
             } else if (!isChar(input) || isControl(input) || isSpecial(input)) {
-                return ParsingError;
+                return ParseState::ParsingError;
             } else {
                 req.headerItemPushBackName(input);
             }
             break;
-        case SpaceBeforeHeaderValue:
+        case ParseState::SpaceBeforeHeaderValue:
             if (input == ' ') {
-                state = HeaderValue;
+                _state = ParseState::HeaderValue;
             } else {
-                return ParsingError;
+                return ParseState::ParsingError;
             }
             break;
-        case HeaderValue:
+        case ParseState::HeaderValue:
             if (input == '\r') {
                 if (req.getMethod() == "POST" || req.getMethod() == "PUT") {
                     RequestData::HeaderItem h = req.getHeaders().back();
@@ -179,24 +179,24 @@ RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
                     if (strcasecmp(h.name.c_str(), "Content-Length") == 0) {
                         _content_size = strtol(h.value.c_str(), NULL, 10);
                         req.reserveContent(_content_size);
-                        state = ExpectingNewline;
+                        _state = ParseState::ExpectingNewline;
                     }
                 }
-                state = ExpectingNewline;
+                _state = ParseState::ExpectingNewline;
             } else if (isControl(input)) {
-                return ParsingError;
+                return ParseState::ParsingError;
             } else {
                 req.headerItemPushBackValue(input);
             }
             break;
-        case ExpectingNewline:
+        case ParseState::ExpectingNewline:
             if (input == '\n') {
-                state = HeaderLineStart;
+                _state = ParseState::HeaderLineStart;
             } else {
-                return ParsingError;
+                return ParseState::ParsingError;
             }
             break;
-        case ExpectingNewline_2: {
+        case ParseState::ExpectingNewline_2: {
             std::vector<RequestData::HeaderItem> headers = req.getHeaders();
             std::vector<RequestData::HeaderItem>::iterator it = std::find_if(headers.begin(),
                                                                              headers.end(),
@@ -213,9 +213,9 @@ RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
             }
             if (_content_size == 0) {
                 if (input == '\n')
-                    return ParsingCompleted;
+                    return ParseState::ParsingCompleted;
                 else
-                    return ParsingError;
+                    return ParseState::ParsingError;
             } else {
                 std::vector<RequestData::HeaderItem> headers_ = req.getHeaders();
                 std::vector<RequestData::HeaderItem>::iterator it_ = std::find_if(headers.begin(),
@@ -226,108 +226,108 @@ RequestParser::ParseState RequestParser::consume(RequestData &req, char input) {
                         req.setIsFileUpload(true);
                         req.setBoundary(it_->value.substr(it_->value.find("boundary=") + 9));
 
-                        state = PostFileUploadBoundary;
+                        _state = ParseState::PostFileUploadBoundary;
                         break;
                     }
                 }
-                state = PostContent;
+                _state = ParseState::PostContent;
             }
             break;
         }
-        case PostContent:
+        case ParseState::PostContent:
             --_content_size;
             req.contentPushBack(input);
             if (_content_size == 0) {
-                return ParsingCompleted;
+                return ParseState::ParsingCompleted;
             }
             break;
-        case PostFileUploadBoundary:
+        case ParseState::PostFileUploadBoundary:
             if (input == '\r') {
-                state = ExpectingNewline_3;
+                _state = ParseState::ExpectingNewline_3;
             }
             _content_size--;
             break;
-        case ExpectingNewline_3:
+        case ParseState::ExpectingNewline_3:
             if (input == '\n') {
-                state = ContentDisposition;
+                _state = ParseState::ContentDisposition;
                 _content_size--;
             } else {
-                return ParsingError;
+                return ParseState::ParsingError;
             }
             break;
-        case ContentDisposition:
+        case ParseState::ContentDisposition:
             if (input == '\r') {
-                state = ExpectingNewline_4;
+                _state = ParseState::ExpectingNewline_4;
             } else {
                 req.contentDispositionPushBack(input);
             }
             _content_size--;
             break;
-        case ExpectingNewline_4:
+        case ParseState::ExpectingNewline_4:
             if (input == '\n') {
-                state = FileContentType;
+                _state = ParseState::FileContentType;
                 _content_size--;
             } else {
-                return ParsingError;
+                return ParseState::ParsingError;
             }
             break;
-        case FileContentType:
+        case ParseState::FileContentType:
             if (input == '\r') {
-                return ParsingError;
+                return ParseState::ParsingError;
             }
             if (input == ':') {
-                state = SpaceBeforeFileContentTypeValue;
+                _state = ParseState::SpaceBeforeFileContentTypeValue;
             }
             _content_size--;
             break;
-        case SpaceBeforeFileContentTypeValue:
+        case ParseState::SpaceBeforeFileContentTypeValue:
             if (input == ' ') {
-                state = FileContentTypeValue;
+                _state = ParseState::FileContentTypeValue;
                 _content_size--;
             } else {
-                return ParsingError;
+                return ParseState::ParsingError;
             }
             break;
-        case FileContentTypeValue:
+        case ParseState::FileContentTypeValue:
             if (input == '\r') {
-                state = ExpectingNewline_5;
+                _state = ParseState::ExpectingNewline_5;
             } else {
                 req.uploadFileTypePushBack(input);
             }
             _content_size--;
             break;
-        case ExpectingNewline_5:
+        case ParseState::ExpectingNewline_5:
             if (input == '\n') {
-                state = ExpectingLineEnd;
+                _state = ParseState::ExpectingLineEnd;
                 _content_size--;
              } else {
-                return ParsingError;
+                return ParseState::ParsingError;
             }
             break;
-        case ExpectingLineEnd:
+        case ParseState::ExpectingLineEnd:
             if (input == '\r') {
-                state = ExpectingNewline_6;
+                _state = ParseState::ExpectingNewline_6;
                 _content_size--;
             } else {
-                return ParsingError;
+                return ParseState::ParsingError;
             }
             break;
-        case ExpectingNewline_6:
+        case ParseState::ExpectingNewline_6:
             if (input == '\n') {
-                state = ParsingCompleted;
+                _state = ParseState::ParsingCompleted;
                 _content_size--;
                 //Calculating file size without extra body info
                 size_t endBoundary =  req.getBoundary().size() + 2; //+2 = "--" at end of boundary
                 req.setFileUploadRemainingBytes(_content_size - endBoundary - 6); //-6 = after headers "\r\n\r\n" and after body "\r\n", before end boundary
            } else {
-                return ParsingError;
+                return ParseState::ParsingError;
             }
             break;
         default:
-            return ParsingIncompleted;
+            return ParseState::ParsingIncompleted;
     }
 
-    return state;
+    return _state;
 }
 
 bool RequestParser::checkIfConnection(const RequestData::HeaderItem &item) {

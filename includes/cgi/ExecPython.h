@@ -11,5 +11,6 @@ private:
     virtual void script_exec(int stdOut);
 public:
     ExecPython(char* const* command, char* const* env);
+    ~ExecPython();
 };
 #endif

@@ -52,11 +52,14 @@ void Multiplexer::event_loop() {
 
                 switch (event->getEventStatus()) {
                     case Event::Status::Reading:
-                        if (client_read_event_callback(event) == -1) continue; break;
+                        if (client_read_event_callback(event) == -1) continue;
+                        break;
                     case Event::Status::Writing:
-                        if (client_write_event_callback(event) == -1) continue; break;
+                        if (client_write_event_callback(event) == -1) continue;
+                        break;
                     case Event::Status::Ended:
-                        delete event; break;
+                        delete event;
+                        break;
                     default:
                         std::cerr << RED << "Error: Invalid event_status on event_loop" << RESET << std::endl;
                 }

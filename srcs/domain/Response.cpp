@@ -106,7 +106,7 @@ void Response::send_cgi_response() {
     _event.setHeaderSent(true);
 
     char *cgi_path = strdup(_event.getLocation().getCgiPath().c_str());
-    char * const cmd[] = {"python3", cgi_path, NULL};
+    char * const cmd[] = {(char *)"python3", cgi_path, NULL};
 
     Exec *cgi = new ExecPython(cmd, NULL);
     cgi->start();

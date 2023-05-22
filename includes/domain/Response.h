@@ -10,7 +10,7 @@
 #include "../io/File.h"
 #include "../io/Read.h"
 #include "../io/Write.h"
-#include "../model/AutoIndex.h"s
+#include "../model/AutoIndex.h"
 #include "../cgi/Exec.h"
 #include "../cgi/ExecPython.h"
 

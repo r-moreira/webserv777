@@ -1,6 +1,6 @@
 NAME	 			= webserv
 CC 					= c++
-CFLAGS 				=  -g -std=c++98 #-Wall -Wextra -Werror
+CFLAGS 				=  -g -std=c++98 -Wall -Wextra -Werror
 OBJS_DIR			= objs
 OBJS				= $(patsubst $(SRCS_DIR)/%.cpp, $(OBJS_DIR)/%.o, $(SRCS))
 SRCS_DIR			= srcs

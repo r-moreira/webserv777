@@ -66,8 +66,8 @@ int Exec::getHttpStatusCode() {
 void Exec::script_exec(int stdOut) {
     dup2(stdOut, STDOUT_FILENO);
 
-    char* errorMessage = "Content-Type: text/html\r\n\r Status: 500 Internal Server Error\r\n\r\n";
-    char * const cmd[] = {"python3", "tt.py", NULL};
+    char* errorMessage = (char *)"Content-Type: text/html\r\n\r Status: 500 Internal Server Error\r\n\r\n";
+    char * const cmd[] = {(char *)"python3", (char *)"tt.py", NULL};
 
     execve("/usr/bin/python3", cmd, NULL);
     write(STDOUT_FILENO, errorMessage, 64);

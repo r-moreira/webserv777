@@ -14,8 +14,10 @@ std::vector<Server> servers_builder();
 
 void start_servers(std::vector<Server> &servers);
 
-int main(int argc, char **argv, char **env) {
+int main(int argc, char **argv) {
     signal(SIGPIPE, SIG_IGN);
+
+    (void)argv;
 
     if (argc != 2) {
         std::cout << CYAN << "Usage :  ./webserv {PATH TO CONFIGURATION FILE}" << RESET << std::endl;
@@ -40,9 +42,6 @@ void start_servers(std::vector<Server> &servers) {
 }
 
 std::vector<Server> servers_builder() {
-    //Rand apenas para evitar conflito de porta.
-    //srand(time(0));
-    //int port = 8080 + rand() % 10;
     int port = 8080;
 
     Server default_server = build_default_server(port);

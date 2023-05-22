@@ -18,7 +18,7 @@ void Request::parse_request() {
     if (ErrorState::is_error_state(this->_event)) return;
 
     const char *buffer = this->_event.getRequestReadBuffer().c_str();
-    RequestParser::ParseState parse_state;
+    RequestParser::ParseState::State parse_state;
     RequestParser parser;
 
     size_t bytes_read = 0;
@@ -27,13 +27,13 @@ void Request::parse_request() {
 
         parse_state = parser.parse(_event._request, c);
 
-        if (parse_state == RequestParser::ParsingCompleted) {
+        if (parse_state == RequestParser::ParseState::ParsingCompleted) {
             std::cout << WHITE << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
             this->_event.setEventSubStatus(Event::SubStatus::ChoosingServer);
 
             if (_event.getRequest().isIsFileUpload()) {
                 bytes_read++;
-                *buffer++;
+                (void)*buffer++;
                 this->_event.setRequestReadBytes(REQUEST_READ_BUFFER_SIZE - bytes_read);
                 std::string buffer_str(buffer, REQUEST_READ_BUFFER_SIZE - bytes_read);
                 this->_event.setRemainingReadBuffer(buffer_str);
@@ -44,17 +44,17 @@ void Request::parse_request() {
             return;
         }
 
-        if (parse_state == RequestParser::ParsingError || parse_state == RequestParser::ParsingIncompleted){
+        if (parse_state == RequestParser::ParseState::ParsingError || parse_state == RequestParser::ParseState::ParsingIncompleted){
             std::cerr << RED << "Parsing failed:\n" << RESET << _event.getRequest().inspect() << std::endl;
             ErrorState::throw_error_state(this->_event, Event::HttpStatus::BAD_REQUEST);
             return;
         }
 
-        *buffer++;
+        (void)*buffer++;
         bytes_read++;
     }
 
-    if (parse_state != RequestParser::ParsingCompleted) {
+    if (parse_state != RequestParser::ParseState::ParsingCompleted) {
         std::cout << RED << "Parsing Error" << RESET << std::endl;
         std::cout << RED << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
         ErrorState::throw_error_state(this->_event, Event::HttpStatus::BAD_REQUEST);

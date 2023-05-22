@@ -63,7 +63,7 @@ int FT::ConfigParser::is_valide() {
     if(fileContent.find(delimiter) == fileContent.size()){
         return 0;
     }
-    for (int i = 0; i < fileContent.size(); i++) {
+    for (size_t i = 0; i < fileContent.size(); i++) {
         if (fileContent[i] == '{') {
             openQuotes++;
         }
