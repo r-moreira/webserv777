@@ -41,9 +41,10 @@ public:
 
     void write_no_content_headers();
 
+    void write_auto_index_page(std::string auto_index_page);
+
 private:
     void write_headers(const std::string &headers);
-
 };
 
 

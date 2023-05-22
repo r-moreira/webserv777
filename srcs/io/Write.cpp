@@ -78,6 +78,18 @@ void Write::write_remaining_read_buffer_to_file() {
     this->_event.setRemainingReadBytesWritedToFile(true);
 }
 
+void Write::write_auto_index_page(std::string auto_index_page) {
+    if (ErrorState::is_error_state(this->_event)) return;
+
+    std::cout << CYAN << "Writing auto index page" << RESET << std::endl;
+
+    if (send(_event.getClientFd(), auto_index_page.c_str(), auto_index_page.size(), 0) < 0) {
+        std::cerr << RED << "Error while writing auto index page to client: " << strerror(errno) << RESET << std::endl;
+    }
+
+    _event.setEventStatus(Event::Status::Ended);
+}
+
 void Write::write_default_error_page() {
     std::string default_error_page = Pages::get_default_error_page(this->_event.getHttpStatus());
 

@@ -86,18 +86,11 @@ void Response::send_delete_response() {
 void Response::send_auto_index_response() {
     std::cout << MAGENTA << "Send auto index response" << RESET << std::endl;
 
-    _write.write_auto_index_headers();
-
     std::string auto_index_page = AutoIndex::pageGenerator(_event.getFilePath(), _event.getRequest().getUri(), _event.getServer().getPort());
-
-    if (send(_event.getClientFd(), auto_index_page.c_str(), auto_index_page.size(), 0) < 0) {
-        std::cerr << RED << "Error while writing error page to client: " << strerror(errno) << RESET << std::endl;
-    }
-
-    _event.setEventStatus(Event::Status::Ended);
+    _write.write_auto_index_headers();
+    _write.write_auto_index_page(auto_index_page);
 }
 
-//TODO: Retornar CGI
 void Response::send_cgi_response() {
     std::cout << MAGENTA << "Send CGI response" << RESET << std::endl;
 
@@ -142,8 +135,8 @@ void Response::send_cgi_response() {
         }
     }
 
-    free(cgi_path);
     delete cgi;
+    free(cgi_path);
     close(cgi_fd);
     _event.setEventStatus(Event::Status::Ended);
 }
