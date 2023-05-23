@@ -94,49 +94,22 @@ void Response::send_auto_index_response() {
 void Response::send_cgi_response() {
     std::cout << MAGENTA << "Send CGI response" << RESET << std::endl;
 
-    std::string cgi_tmp_headers = "HTTP/1.1 200 Ok\r\n";
-    std::cout << CYAN << "Send auto tmp CGI headers:" << RESET << std::endl;
-    if (send(_event.getClientFd(), cgi_tmp_headers.c_str(), cgi_tmp_headers.size(), 0) < 0) {
-        std::cerr << RED << "Error while writing status header to client: " << strerror(errno) << RESET << std::endl;
-        ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
-        return;
-    }
-    _event.setHeaderSent(true);
-
     char *cgi_path = strdup(_event.getLocation().getCgiPath().c_str());
     char * const cmd[] = {(char *)"python3", cgi_path, NULL};
-
     Exec *cgi = new ExecPython(cmd, NULL);
+
     cgi->start();
-    int status = cgi->getHttpStatusCode();
-    int cgi_fd = cgi->getStdOut();
+    this->_event.setHttpStatus(_event.convert_int_to_http_status(cgi->getHttpStatusCode()));
+    std::cout << CYAN << "CGI status: " << this->_event.getHttpStatus() << RESET << std::endl;
 
-    std::cout << CYAN << "CGI status: " << status << RESET << std::endl;
+    this->_event.setCgiFd(cgi->getStdOut());
 
-    //read cgi fd
-    char buffer[1024];
-    long read_bytes = 0;
-    while ((read_bytes = read(cgi_fd, buffer, 1024)) > 0) {
-        if (read_bytes < 0) {
-            std::cerr << RED << "Error while reading CGI output: " << strerror(errno) << RESET << std::endl;
-            ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
-            return;
-        }
-
-        std::cout << YELLOW << "Read " << read_bytes << " bytes from CGI" << RESET << std::endl;
-        std::cout << MAGENTA << "CGI Buffer: |" << buffer << "|" << RESET << std::endl;
-
-        if (send(_event.getClientFd(), buffer, read_bytes, 0) < 0) {
-            std::cerr << RED << "Error while writing status header to client: " << strerror(errno) << RESET << std::endl;
-            ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
-            return;
-        }
-    }
+    _write.write_cgi_headers();
+    _write.write_cgi_content();
 
     delete cgi;
     free(cgi_path);
-    close(cgi_fd);
-    _event.setEventStatus(Event::Status::Ended);
+    close(this->_event.getCgiFd());
 }
 
 

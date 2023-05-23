@@ -52,13 +52,15 @@ public:
             PAYLOAD_TOO_LARGE = 413,
             CLIENT_CLOSED_REQUEST = 499,
             INTERNAL_SERVER_ERROR = 500,
-            NOT_IMPLEMENTED = 501
+            NOT_IMPLEMENTED = 501,
+            LOOP_DETECTED = 508
         };
     };
 
 private:
     int _client_fd;
     int _server_fd;
+    int _cgi_fd;
 
     HttpStatus::event_http_status _http_status;
 
@@ -100,6 +102,8 @@ public:
     ~Event();
 
     void clear_file_info();
+
+    Event::HttpStatus::event_http_status convert_int_to_http_status(int status);
 
     int getClientFd() const;
 
@@ -204,5 +208,9 @@ public:
     size_t getRemainingReadBufferSize() const;
 
     void setRemainingReadBufferSize(size_t remainingReadBufferSize);
+
+    int getCgiFd() const;
+
+    void setCgiFd(int cgiFd);
 };
 #endif //WEBSERV_EVENT_H

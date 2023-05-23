@@ -43,8 +43,12 @@ public:
 
     void write_auto_index_page(std::string auto_index_page);
 
+    void write_cgi_headers();
+
+    void write_cgi_content();
+
 private:
-    void write_headers(const std::string &headers);
+    void _write_headers(const std::string &headers);
 };
 
 

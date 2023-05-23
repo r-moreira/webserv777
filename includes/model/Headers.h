@@ -28,6 +28,8 @@ public:
     const std::string getNoContentHeaders(const std::string &basicString);
 
     std::string getAutoIndexHeaders();
+
+    const std::string getCGIHeaders(Event::HttpStatus::event_http_status status);
 };
 
 

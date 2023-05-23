@@ -7,6 +7,7 @@
 Event::Event(int server_fd, int client_fd) {
     this->_client_fd = client_fd;
     this->_server_fd = server_fd;
+    this->_cgi_fd = -1;
 
     this->_http_status = HttpStatus::OK;
 
@@ -230,6 +231,14 @@ const std::string &Event::getRemainingReadBuffer() const {
     return _remaining_read_buffer;
 }
 
+int Event::getCgiFd() const {
+    return _cgi_fd;
+}
+
+void Event::setCgiFd(int cgiFd) {
+    _cgi_fd = cgiFd;
+}
+
 void Event::setRemainingReadBuffer(const std::string &remainingReadBuffer) {
     _remaining_read_buffer = remainingReadBuffer;
 }
@@ -262,6 +271,36 @@ void Event::setRemainingReadBufferSize(size_t remainingReadBufferSize) {
     _remaining_read_buffer_size = remainingReadBufferSize;
 }
 
+Event::HttpStatus::event_http_status Event::convert_int_to_http_status(int status) {
+    switch (status) {
+        case 200:
+            return Event::HttpStatus::OK;
+        case 201:
+            return Event::HttpStatus::CREATED;
+        case 204:
+            return Event::HttpStatus::NO_CONTENT;
+        case 400:
+            return Event::HttpStatus::BAD_REQUEST;
+        case 403:
+            return Event::HttpStatus::FORBIDDEN;
+        case 404:
+            return Event::HttpStatus::NOT_FOUND;
+        case 405:
+            return Event::HttpStatus::METHOD_NOT_ALLOWED;
+        case 413:
+            return Event::HttpStatus::PAYLOAD_TOO_LARGE;
+        case 499:
+            return Event::HttpStatus::CLIENT_CLOSED_REQUEST;
+        case 500:
+            return Event::HttpStatus::INTERNAL_SERVER_ERROR;
+        case 501:
+            return Event::HttpStatus::NOT_IMPLEMENTED;
+        case 508:
+            return Event::HttpStatus::LOOP_DETECTED;
+        default:
+            return Event::HttpStatus::INTERNAL_SERVER_ERROR;
 
+    }
 
+}
 

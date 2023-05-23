@@ -102,12 +102,37 @@ void Write::write_default_error_page() {
     std::cout << GREEN << "Successfully sent error page to client" << RESET << std::endl;
 }
 
+void Write::write_cgi_content() {
+    if (ErrorState::is_error_state(this->_event)) return;
+
+    char buffer[CGI_BUFFER_SIZE] = {};
+
+    long read_bytes = 0;
+    while ((read_bytes = read(this->_event.getCgiFd(), buffer, CGI_BUFFER_SIZE)) > 0) {
+        if (read_bytes < 0) {
+            std::cerr << RED << "Error while reading CGI output: " << strerror(errno) << RESET << std::endl;
+            _event.setEventStatus(Event::Status::Ended);
+            return;
+        }
+
+        std::cout << YELLOW << "Read " << read_bytes << " bytes from CGI" << RESET << std::endl;
+        std::cout << MAGENTA << "CGI Buffer: |" << buffer << "|" << RESET << std::endl;
+
+        if (send(_event.getClientFd(), buffer, read_bytes, 0) < 0) {
+            std::cerr << RED << "Error while writing status header to client: " << strerror(errno) << RESET << std::endl;
+            _event.setEventStatus(Event::Status::Ended);
+            return;
+        }
+    }
+    _event.setEventStatus(Event::Status::Ended);
+}
+
 void Write::write_file_response_headers() {
     if (ErrorState::is_error_state(this->_event) || this->_event.isHeaderSent()) return;
 
     std::cout << MAGENTA << "Writing file response headers" << RESET << std::endl;
 
-    write_headers(this->_headers.getFileHeaders(_event.getFilePath(), _event.getFileSize()));
+    _write_headers(this->_headers.getFileHeaders(_event.getFilePath(), _event.getFileSize()));
     if (ErrorState::is_error_state(this->_event)) return;
 }
 
@@ -116,7 +141,7 @@ void Write::write_error_headers() {
 
     std::cout << CYAN << "Send error headers for status: " << this->_event.getHttpStatus() << RESET << std::endl;
 
-    write_headers(this->_headers.getErrorHeaders(this->_event.getHttpStatus()));
+    _write_headers(this->_headers.getErrorHeaders(this->_event.getHttpStatus()));
     if (ErrorState::is_error_state(this->_event)) return;
 
     this->_event.setHeaderSent(true);
@@ -126,14 +151,14 @@ void Write::write_redirection_headers() {
     if (this->_event.isForcedRedirect()) {
         std::cout << CYAN << "Send forced redirection headers:" << RESET << std::endl;
 
-        write_headers(this->_headers.getRedirectionHeaders(this->_event.getForcedRedirectLocation()));
+        _write_headers(this->_headers.getRedirectionHeaders(this->_event.getForcedRedirectLocation()));
         if (ErrorState::is_error_state(this->_event)) return;
         this->_event.setHeaderSent(true);
         return;
     }
 
     std::cout << CYAN << "Send redirection headers:" << RESET << std::endl;
-    write_headers(this->_headers.getRedirectionHeaders(this->_event.getLocation().getRedirectLocation()));
+    _write_headers(this->_headers.getRedirectionHeaders(this->_event.getLocation().getRedirectLocation()));
 
     if (ErrorState::is_error_state(this->_event)) return;
     this->_event.setHeaderSent(true);
@@ -144,7 +169,7 @@ void Write::write_auto_index_headers() {
 
     std::cout << CYAN << "Send auto index headers:" << RESET << std::endl;
 
-    write_headers(this->_headers.getAutoIndexHeaders());
+    _write_headers(this->_headers.getAutoIndexHeaders());
     if (ErrorState::is_error_state(this->_event)) return;
     this->_event.setHeaderSent(true);
 }
@@ -154,13 +179,34 @@ void Write::write_created_headers() {
 
     std::cout << CYAN << "Send created headers:" << RESET << std::endl;
 
-    write_headers(this->_headers.getCreatedHeaders(this->_event.getFilePath()));
+    _write_headers(this->_headers.getCreatedHeaders(this->_event.getFilePath()));
     if (ErrorState::is_error_state(this->_event)) return;
     this->_event.setHeaderSent(true);
 }
 
 
-void Write::write_headers(const std::string &headers) {
+void Write::write_no_content_headers() {
+    if (ErrorState::is_error_state(this->_event) || this->_event.isHeaderSent()) return;
+
+    std::cout << CYAN << "Send no content headers:" << RESET << std::endl;
+
+    _write_headers(this->_headers.getNoContentHeaders(this->_event.getFilePath()));
+    if (ErrorState::is_error_state(this->_event)) return;
+    this->_event.setHeaderSent(true);
+}
+
+void Write::write_cgi_headers() {
+    if (ErrorState::is_error_state(this->_event) || this->_event.isHeaderSent()) return;
+
+    std::string cgi_tmp_headers = "HTTP/1.1 200 Ok\r\n";
+    std::cout << CYAN << "Send auto tmp CGI headers:" << RESET << std::endl;
+    _write_headers(this->_headers.getCGIHeaders(this->_event.getHttpStatus()));
+    if (ErrorState::is_error_state(this->_event)) return;
+    _event.setHeaderSent(true);
+}
+
+
+void Write::_write_headers(const std::string &headers) {
     std::cout << CYAN << "Response Headers:\n" << headers << RESET << std::endl;
 
     if (send(_event.getClientFd(), headers.c_str(), headers.size(), 0) < 0) {
@@ -173,12 +219,3 @@ void Write::write_headers(const std::string &headers) {
     std::cout << GREEN << "Successfully sent headers to client" << RESET << std::endl;
 }
 
-void Write::write_no_content_headers() {
-    if (ErrorState::is_error_state(this->_event) || this->_event.isHeaderSent()) return;
-
-    std::cout << CYAN << "Send no content headers:" << RESET << std::endl;
-
-    write_headers(this->_headers.getNoContentHeaders(this->_event.getFilePath()));
-    if (ErrorState::is_error_state(this->_event)) return;
-    this->_event.setHeaderSent(true);
-}
