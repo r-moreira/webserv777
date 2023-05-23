@@ -94,10 +94,8 @@ void Response::send_auto_index_response() {
 void Response::send_cgi_response() {
     std::cout << MAGENTA << "Send CGI response" << RESET << std::endl;
 
-    std::string cgi_tmp_headers = "HTTP/1.1 200 Ok\r\nContent-Type: text/html\r\n\r\n";
-
+    std::string cgi_tmp_headers = "HTTP/1.1 200 Ok\r\n";
     std::cout << CYAN << "Send auto tmp CGI headers:" << RESET << std::endl;
-
     if (send(_event.getClientFd(), cgi_tmp_headers.c_str(), cgi_tmp_headers.size(), 0) < 0) {
         std::cerr << RED << "Error while writing status header to client: " << strerror(errno) << RESET << std::endl;
         ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
