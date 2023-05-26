@@ -7,9 +7,9 @@ print("Content-Type: text/html\n\n")
 
 current_date_time = time.strftime("%c")
 
-browser = os.environ['HTTP_USER_AGENT']
+browser = "firefox" #os.environ['HTTP_USER_AGENT']
 
-query_string = os.environ['QUERY_STRING']
+query_string = "name=rodrigo"#os.environ['QUERY_STRING']
 
 name = 'World'
 if query_string.startswith('name='):

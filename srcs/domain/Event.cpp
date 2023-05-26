@@ -34,6 +34,7 @@ Event::Event(int server_fd, int client_fd) {
     this->_forced_redirect = false;
     this->_remaining_read_bytes_writed = false;
     this->_is_cgi_set = false;
+    this->_is_cgi_exec = false;
 
     this->_forced_redirect_location = "";
 
@@ -313,6 +314,15 @@ char **Event::getEnvp() const {
 
 void Event::setEnvp(char **envp) {
     Event::_envp = envp;
+}
+
+
+bool Event::isCgiExec() const {
+    return _is_cgi_exec;
+}
+
+void Event::setIsCgiExec(bool isCgiExec) {
+    _is_cgi_exec = isCgiExec;
 }
 
 Event::HttpStatus::event_http_status Event::convert_int_to_http_status(int status) {

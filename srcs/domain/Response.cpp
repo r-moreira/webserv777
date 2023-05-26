@@ -110,7 +110,7 @@ void Response::send_cgi_response() {
 
         this->_event.setCgiPath(strdup(_event.getLocation().getCgiPath().c_str()));
         char *const cmd[] = {(char *) "python3",  this->_event.getCgiPath(), NULL};
-        this->_event.setCgi(new ExecPython(cmd,  this->_event.getEnvp()));
+        this->_event.setCgi(new ExecPython(cmd,  /*this->_event.getEnvp()*/NULL));
 
         this->_event.setRemainingFileBytes(this->_event.getRequest().getBodyRemainingBytes());
         this->_event.setFileReadLeft(this->_event.getRequest().getBodyRemainingBytes());
@@ -137,16 +137,21 @@ void Response::send_cgi_response() {
         //this->_event_cgi.setCgiFdIn(cgi->getStdIn());
         _write.write_remaining_read_buffer_to_cgi(); //Trocar STDOUT de dentro do método para o FD do STDIN do CGI
 
-        if (this->_event.getRemainingFileBytes() != 0) {
-            _read.read_body_content();
-            _write.write_body_to_cgi(); //Trocar STDOUT de dentro do método para o FD do STDIN do CGI
+        //Tem algum bug aqui
+        if (this->_event.getRemainingFileBytes() != 0 && !this->_event.isCgiExec()) {
+            //_read.read_body_content();
+            //_write.write_body_to_cgi(); //Trocar STDOUT de dentro do método para o FD do STDIN do CGI
         }
 
         //----------- Chamar CGI aqui --------------//
-        if (this->_event.getRemainingFileBytes() == 0 || this->_event.getFileReadLeft() == 0) {
+        //if ((this->_event.getRemainingFileBytes() == 0 || this->_event.getFileReadLeft() == 0) && !this->_event.isCgiExec()) {
+            std::cout << MAGENTA << "Starting CGI" << RESET << std::endl;
             this->_event.getCgi()->start();
+            this->_event.setIsCgiExec(true);
 
             this->_event.setHttpStatus(_event.convert_int_to_http_status(this->_event.getCgi()->getHttpStatusCode()));
+
+            std::cout << YELLOW << "CGI status: " << this->_event.getHttpStatus() << RESET << std::endl;
 
             if (this->_event.getHttpStatus() != Event::HttpStatus::OK) {
                 send_error_response();
@@ -156,7 +161,9 @@ void Response::send_cgi_response() {
             _write.write_cgi_headers();
             this->_event.setCgiFdOut(this->_event.getCgi()->getStdOut());
             _write.write_cgi_content();
-        }
+
+            this->_event.setIsCgiExec(false);
+        //}
 
     } else {
         this->_event.setHttpStatus(Event::HttpStatus::FORBIDDEN);
@@ -167,7 +174,7 @@ void Response::send_cgi_response() {
 }
 
 void Response::clear_cgi_exec() {
-    if (_event.isCgiSet() && _event.getEventStatus() == Event::Status::Ended) {
+    if (_event.isCgiSet() && _event.getEventStatus() == Event::Status::Ended && !this->_event.isCgiExec()) {
         for (int i = 0; i < Environment::ENV_VARIABLES_SIZE; i++)
             free(this->_event.getEnvp()[i]);
         free(this->_event.getEnvp());
