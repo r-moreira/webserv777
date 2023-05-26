@@ -8,6 +8,7 @@
 #include "../webserv.h"
 #include "../config/Server.h"
 #include "../model/RequestData.h"
+#include "../cgi/Exec.h"
 
 
 class Event {
@@ -71,7 +72,7 @@ private:
     size_t _request_read_bytes;
 
     size_t _remaining_file_bytes;
-    char _upload_file_chunk_buffer[UPLOAD_BUFFER_SIZE];
+    char _content_chunk_buffer[UPLOAD_BUFFER_SIZE];
 
     FILE *_file;
     std::string _file_path;
@@ -92,6 +93,10 @@ private:
     bool _is_cgi_set;
 
     std::string _forced_redirect_location;
+
+    Exec *_cgi;
+    char *_cgi_path;
+    char **_envp;
 
     Server _server;
     Location _location;
@@ -205,7 +210,7 @@ public:
 
     void setRemainingReadBytesWrited(bool remainingReadBytesWrited);
 
-    const char *getUploadFileChunkBuffer() const;
+    const char *getContentChunkBuffer() const;
 
     size_t getRemainingReadBufferSize() const;
 
@@ -222,5 +227,17 @@ public:
     bool isCgiSet() const;
 
     void setIsCgiSet(bool isCgiSet);
+
+    Exec *getCgi() const;
+
+    void setCgi(Exec *cgi);
+
+    char *getCgiPath() const;
+
+    void setCgiPath(char *cgiPath);
+
+    char **getEnvp() const;
+
+    void setEnvp(char **envp);
 };
 #endif //WEBSERV_EVENT_H

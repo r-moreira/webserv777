@@ -33,20 +33,20 @@ void Read::read_request() {
     std::cout << GREEN << "HTTP Request:\n" << this->_event.getRequestReadBuffer() << RESET << std::endl;
 }
 
-void Read::read_upload_file() {
+void Read::read_body_content() {
     if (ErrorState::is_error_state(this->_event)) return;
 
-    std::cout << MAGENTA << "Reading uploaded file from client" << RESET << std::endl;
-    std::memset((void *) this->_event.getUploadFileChunkBuffer(), '\0', UPLOAD_BUFFER_SIZE);
+    std::cout << MAGENTA << "Reading body content from client" << RESET << std::endl;
+    std::memset((void *) this->_event.getContentChunkBuffer(), '\0', UPLOAD_BUFFER_SIZE);
 
     size_t read_size;
     if (this->_event.getFileReadLeft() > UPLOAD_BUFFER_SIZE) {
-        read_size =UPLOAD_BUFFER_SIZE;
+        read_size = UPLOAD_BUFFER_SIZE;
     } else {
         read_size = this->_event.getFileReadLeft();
     }
 
-    long chunk_bytes = read(this->_event.getClientFd(), (void *) this->_event.getUploadFileChunkBuffer(), read_size);
+    long chunk_bytes = read(this->_event.getClientFd(), (void *) this->_event.getContentChunkBuffer(), read_size);
 
     if (chunk_bytes == -1) {
         std::cerr << RED << "Error while reading from client: " << strerror(errno) << RESET << std::endl;

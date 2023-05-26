@@ -43,6 +43,8 @@ public:
     void send_auto_index_response();
 
     void send_cgi_response();
+
+    void clear_cgi_exec();
 };
 
 

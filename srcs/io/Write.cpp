@@ -32,7 +32,7 @@ void Write::write_upload_file() {
 
     std::cout << CYAN << "Writing uploaded file to disk" << RESET << std::endl;
 
-    size_t bytes_written = fwrite(this->_event.getUploadFileChunkBuffer(), 1, _event.getFileChunkReadBytes(), this->_event.getFile());
+    size_t bytes_written = fwrite(this->_event.getContentChunkBuffer(), 1, _event.getFileChunkReadBytes(), this->_event.getFile());
     if (bytes_written != _event.getFileChunkReadBytes()) {
         std::cerr << RED << "Error while writing file to disk: " << strerror(errno) << RESET << std::endl;
         ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
@@ -45,6 +45,26 @@ void Write::write_upload_file() {
     if (_event.getFileReadLeft() <= 0) {
         _event.setEventStatus(Event::Status::Ended);
         std::cout << GREEN << "File Transfer Complete." << RESET << std::endl;
+    }
+}
+
+void Write::write_body_to_cgi() {
+    if (ErrorState::is_error_state(this->_event)) return;
+
+    std::cout << CYAN << "Writing body content to CGI STDIN" << RESET << std::endl;
+
+    size_t bytes_written = write(STDOUT_FILENO/*this->_event.getCgiFdIn()*/, this->_event.getContentChunkBuffer(),_event.getFileChunkReadBytes());
+    if (bytes_written != _event.getFileChunkReadBytes()) {
+        std::cerr << RED << "Error while writing file to disk: " << strerror(errno) << RESET << std::endl;
+        ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
+        return;
+    }
+
+    std::cout << YELLOW << "Written Data Size " << bytes_written << " Bytes." << RESET << std::endl;
+
+    if (_event.getFileReadLeft() <= 0) {
+        _event.setEventStatus(Event::Status::Ended);
+        std::cout << GREEN << "\nCGI STDIN Write Complete" << RESET << std::endl;
     }
 }
 

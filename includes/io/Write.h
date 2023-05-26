@@ -49,8 +49,11 @@ public:
 
     void write_remaining_read_buffer_to_cgi();
 
+    void write_body_to_cgi();
+
 private:
     void _write_headers(const std::string &headers);
+
 };
 
 

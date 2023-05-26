@@ -23,7 +23,7 @@ public:
 
     void read_file();
 
-    void read_upload_file();
+    void read_body_content();
 };
 
 

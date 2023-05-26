@@ -18,7 +18,7 @@ Event::Event(int server_fd, int client_fd) {
 
     this->_remaining_file_bytes = 0;
     this->_remaining_read_buffer_size = 0;
-    this->_upload_file_chunk_buffer[0] = '\0';
+    this->_content_chunk_buffer[0] = '\0';
 
     this->_file = NULL;
     this->_file_path = "";
@@ -261,8 +261,8 @@ void Event::setRemainingReadBytesWrited(bool remainingReadBytesWrited) {
     _remaining_read_bytes_writed = remainingReadBytesWrited;
 }
 
-const char *Event::getUploadFileChunkBuffer() const {
-    return _upload_file_chunk_buffer;
+const char *Event::getContentChunkBuffer() const {
+    return _content_chunk_buffer;
 }
 
 size_t Event::getRemainingReadBufferSize() const {
@@ -288,6 +288,31 @@ bool Event::isCgiSet() const {
 
 void Event::setIsCgiSet(bool isCgiSet) {
     _is_cgi_set = isCgiSet;
+}
+
+
+Exec *Event::getCgi() const {
+    return _cgi;
+}
+
+void Event::setCgi(Exec *cgi) {
+    _cgi = cgi;
+}
+
+char *Event::getCgiPath() const {
+    return _cgi_path;
+}
+
+void Event::setCgiPath(char *cgiPath) {
+    _cgi_path = cgiPath;
+}
+
+char **Event::getEnvp() const {
+    return _envp;
+}
+
+void Event::setEnvp(char **envp) {
+    Event::_envp = envp;
 }
 
 Event::HttpStatus::event_http_status Event::convert_int_to_http_status(int status) {

@@ -4,7 +4,7 @@
 
 #include "../../includes/domain/Response.h"
 
-Response::Response(Event &event): _event(event), _file(event), _read(event), _write(event) {}
+Response::Response(Event &event) : _event(event), _file(event), _read(event), _write(event) {}
 
 Response::~Response() {}
 
@@ -56,7 +56,8 @@ void Response::send_upload_response() {
         size_t file_name_start = this->_event.getRequest().getContentDisposition().find("filename=\"") + 10;
         size_t file_name_end = this->_event.getRequest().getContentDisposition().find('\"', file_name_start);
 
-        file_name = this->_event.getRequest().getContentDisposition().substr(file_name_start, file_name_end - file_name_start);
+        file_name = this->_event.getRequest().getContentDisposition().substr(file_name_start,
+                                                                             file_name_end - file_name_start);
 
         this->_event.setFilePath(upload_path + file_name);
         this->_event.setRemainingFileBytes(this->_event.getRequest().getBodyRemainingBytes());
@@ -67,7 +68,7 @@ void Response::send_upload_response() {
     _write.write_remaining_read_buffer_to_file();
 
     if (this->_event.getRemainingFileBytes() != 0) {
-        _read.read_upload_file();
+        _read.read_body_content();
         _write.write_upload_file();
     }
 
@@ -86,7 +87,8 @@ void Response::send_delete_response() {
 void Response::send_auto_index_response() {
     std::cout << MAGENTA << "Send auto index response" << RESET << std::endl;
 
-    std::string auto_index_page = AutoIndex::pageGenerator(_event.getFilePath(), _event.getRequest().getUri(), _event.getServer().getPort());
+    std::string auto_index_page = AutoIndex::pageGenerator(_event.getFilePath(), _event.getRequest().getUri(),
+                                                           _event.getServer().getPort());
     _write.write_auto_index_headers();
     _write.write_auto_index_page(auto_index_page);
 }
@@ -95,53 +97,65 @@ void Response::send_auto_index_response() {
 
 void Response::send_cgi_response() {
     std::cout << MAGENTA << "Send CGI response" << RESET << std::endl;
-    Exec *cgi;
-    char *cgi_path;
-    char **envp;
 
     if (!this->_event.isCgiSet()) {
         Environment env = Environment();
         env.setupCGIEnvironment(_event);
         std::cout << CYAN << "CGI envp:" << RESET << std::endl;
 
-        envp = env.getCgiEnvp();
+        this->_event.setEnvp(env.getCgiEnvp());
         for (int i = 0; i < Environment::ENV_VARIABLES_SIZE; i++) {
-            std::cout << CYAN << envp[i] << RESET << std::endl;
+            std::cout << CYAN <<  this->_event.getEnvp()[i] << RESET << std::endl;
         }
 
-        cgi_path = strdup(_event.getLocation().getCgiPath().c_str());
-        char * const cmd[] = {(char *)"python3", cgi_path, NULL};
-        cgi = new ExecPython(cmd,  envp);
+        this->_event.setCgiPath(strdup(_event.getLocation().getCgiPath().c_str()));
+        char *const cmd[] = {(char *) "python3",  this->_event.getCgiPath(), NULL};
+        this->_event.setCgi(new ExecPython(cmd,  this->_event.getEnvp()));
+
+        this->_event.setRemainingFileBytes(this->_event.getRequest().getBodyRemainingBytes());
+        this->_event.setFileReadLeft(this->_event.getRequest().getBodyRemainingBytes());
         this->_event.setIsCgiSet(true);
     }
 
     if (this->_event.getRequest().getMethod() == "GET") {
+        this->_event.getCgi()->start();
+        this->_event.setHttpStatus(_event.convert_int_to_http_status(this->_event.getCgi()->getHttpStatusCode()));
 
-        cgi->start();
-        this->_event.setHttpStatus(_event.convert_int_to_http_status(cgi->getHttpStatusCode()));
+        if (this->_event.getHttpStatus() != Event::HttpStatus::OK) {
+            send_error_response();
+            return;
+        }
+
         std::cout << CYAN << "CGI status: " << this->_event.getHttpStatus() << RESET << std::endl;
 
         _write.write_cgi_headers();
-        this->_event.setCgiFdOut(cgi->getStdOut());
+        this->_event.setCgiFdOut(this->_event.getCgi()->getStdOut());
         _write.write_cgi_content();
 
     } else if (this->_event.getRequest().getMethod() == "POST") {
-        this->_event.setRemainingFileBytes(this->_event.getRequest().getBodyRemainingBytes());
-        this->_event.setFileReadLeft(this->_event.getRequest().getBodyRemainingBytes());
 
         //this->_event_cgi.setCgiFdIn(cgi->getStdIn());
         _write.write_remaining_read_buffer_to_cgi(); //Trocar STDOUT de dentro do método para o FD do STDIN do CGI
 
-       // if (this->_event.getRemainingFileBytes() != 0) {
-       //     _write.write_body_to_cgi();
-       // }
-
+        if (this->_event.getRemainingFileBytes() != 0) {
+            _read.read_body_content();
+            _write.write_body_to_cgi(); //Trocar STDOUT de dentro do método para o FD do STDIN do CGI
+        }
 
         //----------- Chamar CGI aqui --------------//
         if (this->_event.getRemainingFileBytes() == 0 || this->_event.getFileReadLeft() == 0) {
-            _write.write_created_headers(); // _write.write_cgi_headers();  <--- Trocar para esse depois de implementar a GGI
-            //this->_event.setCgiFdOut(cgi->getStdOut());
-            //_write.write_cgi_content();
+            this->_event.getCgi()->start();
+
+            this->_event.setHttpStatus(_event.convert_int_to_http_status(this->_event.getCgi()->getHttpStatusCode()));
+
+            if (this->_event.getHttpStatus() != Event::HttpStatus::OK) {
+                send_error_response();
+                return;
+            }
+
+            _write.write_cgi_headers();
+            this->_event.setCgiFdOut(this->_event.getCgi()->getStdOut());
+            _write.write_cgi_content();
         }
 
     } else {
@@ -149,12 +163,17 @@ void Response::send_cgi_response() {
         send_error_response();
     }
 
-    if (this->_event.isCgiSet() && this->_event.getEventStatus() == Event::Status::Ended) {
-        for (int i = 0; i < Environment::ENV_VARIABLES_SIZE; i++) free(envp[i]);
-        free(envp);
-        delete cgi;
-        free(cgi_path);
-        close(this->_event.getCgiFdOut());
+    clear_cgi_exec();
+}
+
+void Response::clear_cgi_exec() {
+    if (_event.isCgiSet() && _event.getEventStatus() == Event::Status::Ended) {
+        for (int i = 0; i < Environment::ENV_VARIABLES_SIZE; i++)
+            free(this->_event.getEnvp()[i]);
+        free(this->_event.getEnvp());
+        delete this->_event.getCgi();
+        free(this->_event.getCgiPath());
+        close(_event.getCgiFdOut());
     }
 }
 
@@ -162,21 +181,21 @@ void Response::send_cgi_response() {
 void Response::send_is_directory_response() {
     std::cout << MAGENTA << "Send directory error response" << RESET << std::endl;
 
-    if (!_event.getServer().getDirectoryRequestPage().empty() || !_event.getLocation().getDirectoryRequestPage().empty()) {
+    if (!_event.getServer().getDirectoryRequestPage().empty() ||
+        !_event.getLocation().getDirectoryRequestPage().empty()) {
         this->_event.setErrorResponse(true);
         this->_event.clear_file_info();
 
         std::string directory_page_path = !_event.getLocation().getDirectoryRequestPage().empty()
-                                                ? _event.getLocation().getDirectoryRequestPage()
-                                                : _event.getServer().getDirectoryRequestPage();
+                                          ? _event.getLocation().getDirectoryRequestPage()
+                                          : _event.getServer().getDirectoryRequestPage();
 
         this->_event.setFilePath(directory_page_path);
         _file.open_file();
         _read.read_file();
         _write.write_error_headers();
         _write.write_requested_file();
-    }
-    else {
+    } else {
         _write.write_error_headers();
         _write.write_default_error_page();
     }
@@ -209,16 +228,15 @@ void Response::send_error_response() {
         this->_event.clear_file_info();
 
         std::string error_page_path = location_has_error_page
-                                                ? _event.getLocation().getErrorPages().at(_event.getHttpStatus())
-                                                : _event.getServer().getErrorPages().at(_event.getHttpStatus());
+                                      ? _event.getLocation().getErrorPages().at(_event.getHttpStatus())
+                                      : _event.getServer().getErrorPages().at(_event.getHttpStatus());
 
         this->_event.setFilePath(error_page_path);
         _file.open_file();
         _read.read_file();
         _write.write_error_headers();
         _write.write_requested_file();
-    }
-    else {
+    } else {
         _write.write_error_headers();
         _write.write_default_error_page();
     }
