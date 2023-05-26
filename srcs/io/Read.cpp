@@ -61,7 +61,7 @@ void Read::read_upload_file() {
     this->_event.setFileReadBytes(this->_event.getFileReadBytes() + chunk_bytes);
     std::cout << YELLOW << "Readed Data Size: " << chunk_bytes << RESET << std::endl;
 
-    this->_event.setFileReadLeft(this->_event.getRemainingFileUploadBytes() - this->_event.getFileReadBytes());
+    this->_event.setFileReadLeft(this->_event.getRemainingFileBytes() - this->_event.getFileReadBytes());
     std::cout << YELLOW << "Read Left: " << this->_event.getFileReadLeft() << RESET << std::endl;
 
     this->_event.setFileChunkReadBytes(chunk_bytes);

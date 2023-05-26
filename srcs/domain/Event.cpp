@@ -16,7 +16,7 @@ Event::Event(int server_fd, int client_fd) {
     this->_request_read_buffer = "";
     this->_request_read_bytes = 0;
 
-    this->_remaining_file_upload_bytes = 0;
+    this->_remaining_file_bytes = 0;
     this->_remaining_read_buffer_size = 0;
     this->_upload_file_chunk_buffer[0] = '\0';
 
@@ -32,7 +32,8 @@ Event::Event(int server_fd, int client_fd) {
     this->_file_opened = false;
     this->_error_response = false;
     this->_forced_redirect = false;
-    this->_remaining_read_bytes_writed_to_file = false;
+    this->_remaining_read_bytes_writed = false;
+    this->_is_cgi_set = false;
 
     this->_forced_redirect_location = "";
 
@@ -244,20 +245,20 @@ void Event::setRemainingReadBuffer(const std::string &remainingReadBuffer) {
     _remaining_read_buffer = remainingReadBuffer;
 }
 
-size_t Event::getRemainingFileUploadBytes() const {
-    return _remaining_file_upload_bytes;
+size_t Event::getRemainingFileBytes() const {
+    return _remaining_file_bytes;
 }
 
-void Event::setRemainingFileUploadBytes(size_t remainingFileUploadBytes) {
-    _remaining_file_upload_bytes = remainingFileUploadBytes;
+void Event::setRemainingFileBytes(size_t remainingFileBytes) {
+    _remaining_file_bytes = remainingFileBytes;
 }
 
-bool Event::isRemainingReadBytesWritedToFile() const {
-    return _remaining_read_bytes_writed_to_file;
+bool Event::isRemainingReadBytesWrited() const {
+    return _remaining_read_bytes_writed;
 }
 
-void Event::setRemainingReadBytesWritedToFile(bool remainingReadBytesWritedToFile) {
-    _remaining_read_bytes_writed_to_file = remainingReadBytesWritedToFile;
+void Event::setRemainingReadBytesWrited(bool remainingReadBytesWrited) {
+    _remaining_read_bytes_writed = remainingReadBytesWrited;
 }
 
 const char *Event::getUploadFileChunkBuffer() const {
@@ -279,6 +280,14 @@ int Event::getCgiFdIn() const {
 
 void Event::setCgiFdIn(int cgiFdIn) {
     _cgi_fd_in = cgiFdIn;
+}
+
+bool Event::isCgiSet() const {
+    return _is_cgi_set;
+}
+
+void Event::setIsCgiSet(bool isCgiSet) {
+    _is_cgi_set = isCgiSet;
 }
 
 Event::HttpStatus::event_http_status Event::convert_int_to_http_status(int status) {

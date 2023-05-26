@@ -43,6 +43,31 @@ void Environment::setupCGIEnvironment(Event &event) {
 
 }
 
+char **Environment::getCgiEnvp() {
+    std::vector<std::string> vstring;
+    vstring.push_back(this->_server_name);
+    vstring.push_back(this->_server_protocol);
+    vstring.push_back(this->_server_port);
+    vstring.push_back(this->_request_method);
+    vstring.push_back(this->_path_info);
+    vstring.push_back(this->_path_translated);
+    vstring.push_back(this->_query_string);
+    vstring.push_back(this->_remote_host);
+    vstring.push_back(this->_content_type);
+    vstring.push_back(this->_content_length);
+    vstring.push_back(this->_http_user_agent);
+
+    std::vector<char *> vchar;
+    std::transform(vstring.begin(), vstring.end(), std::back_inserter(vchar), _convert);
+
+    char **envs = new char *[vchar.size() + 1];
+    std::copy(vchar.begin(), vchar.end(), envs);
+
+    return envs;
+}
+
+
+
 void Environment::setServerNameValue(const std::string& value) {
     this->_server_name.append(value);
 }
@@ -94,27 +119,3 @@ char *Environment::_convert(const std::string & s)
     std::strcpy(pc, s.c_str());
     return pc;
 }
-
-char **Environment::getCgiEnvp() {
-    std::vector<std::string> vstring;
-    vstring.push_back(this->_server_name);
-    vstring.push_back(this->_server_protocol);
-    vstring.push_back(this->_server_port);
-    vstring.push_back(this->_request_method);
-    vstring.push_back(this->_path_info);
-    vstring.push_back(this->_path_translated);
-    vstring.push_back(this->_query_string);
-    vstring.push_back(this->_remote_host);
-    vstring.push_back(this->_content_type);
-    vstring.push_back(this->_content_length);
-    vstring.push_back(this->_http_user_agent);
-
-    std::vector<char *> vchar;
-    std::transform(vstring.begin(), vstring.end(), std::back_inserter(vchar), _convert);
-
-    char **envs = new char *[vchar.size() + 1];
-    std::copy(vchar.begin(), vchar.end(), envs);
-
-    return envs;
-}
-

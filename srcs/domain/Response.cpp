@@ -59,19 +59,19 @@ void Response::send_upload_response() {
         file_name = this->_event.getRequest().getContentDisposition().substr(file_name_start, file_name_end - file_name_start);
 
         this->_event.setFilePath(upload_path + file_name);
-        this->_event.setRemainingFileUploadBytes(this->_event.getRequest().getFileUploadRemainingBytes());
-        this->_event.setFileReadLeft(this->_event.getRequest().getFileUploadRemainingBytes());
+        this->_event.setRemainingFileBytes(this->_event.getRequest().getBodyRemainingBytes());
+        this->_event.setFileReadLeft(this->_event.getRequest().getBodyRemainingBytes());
         _file.create_file();
     }
 
     _write.write_remaining_read_buffer_to_file();
 
-    if (this->_event.getRemainingFileUploadBytes() != 0) {
+    if (this->_event.getRemainingFileBytes() != 0) {
         _read.read_upload_file();
         _write.write_upload_file();
     }
 
-    if (this->_event.getRemainingFileUploadBytes() == 0 || this->_event.getFileReadLeft() == 0) {
+    if (this->_event.getRemainingFileBytes() == 0 || this->_event.getFileReadLeft() == 0) {
         _write.write_created_headers();
     }
 }
@@ -91,49 +91,71 @@ void Response::send_auto_index_response() {
     _write.write_auto_index_page(auto_index_page);
 }
 
+//TODO::
+
 void Response::send_cgi_response() {
     std::cout << MAGENTA << "Send CGI response" << RESET << std::endl;
+    Exec *cgi;
+    char *cgi_path;
+    char **envp;
 
-    Environment env = Environment();
-    env.setupCGIEnvironment(_event);
-    std::cout << CYAN << "CGI envp:" << RESET << std::endl;
+    if (!this->_event.isCgiSet()) {
+        Environment env = Environment();
+        env.setupCGIEnvironment(_event);
+        std::cout << CYAN << "CGI envp:" << RESET << std::endl;
 
-    char **envp = env.getCgiEnvp();
-    for (int i = 0; envp[i]; i++) {
-        std::cout << CYAN << envp[i] << RESET << std::endl;
+        envp = env.getCgiEnvp();
+        for (int i = 0; i < Environment::ENV_VARIABLES_SIZE; i++) {
+            std::cout << CYAN << envp[i] << RESET << std::endl;
+        }
+
+        cgi_path = strdup(_event.getLocation().getCgiPath().c_str());
+        char * const cmd[] = {(char *)"python3", cgi_path, NULL};
+        cgi = new ExecPython(cmd,  envp);
+        this->_event.setIsCgiSet(true);
     }
 
     if (this->_event.getRequest().getMethod() == "GET") {
-
-        char *cgi_path = strdup(_event.getLocation().getCgiPath().c_str());
-        char * const cmd[] = {(char *)"python3", cgi_path, NULL};
-        Exec *cgi = new ExecPython(cmd,  envp);
 
         cgi->start();
         this->_event.setHttpStatus(_event.convert_int_to_http_status(cgi->getHttpStatusCode()));
         std::cout << CYAN << "CGI status: " << this->_event.getHttpStatus() << RESET << std::endl;
 
-        this->_event.setCgiFdOut(cgi->getStdOut());
-
         _write.write_cgi_headers();
+        this->_event.setCgiFdOut(cgi->getStdOut());
         _write.write_cgi_content();
 
-        delete cgi;
-        free(cgi_path);
-        close(this->_event.getCgiFdOut());
     } else if (this->_event.getRequest().getMethod() == "POST") {
+        this->_event.setRemainingFileBytes(this->_event.getRequest().getBodyRemainingBytes());
+        this->_event.setFileReadLeft(this->_event.getRequest().getBodyRemainingBytes());
 
-        this->_event.setRemainingFileUploadBytes(this->_event.getRequest().getFileUploadRemainingBytes());
-        this->_event.setFileReadLeft(this->_event.getRequest().getFileUploadRemainingBytes());
-        _write.write_remaining_read_buffer_to_cgi();
-        _event.setEventStatus(Event::Status::Ended);
+        //this->_event_cgi.setCgiFdIn(cgi->getStdIn());
+        _write.write_remaining_read_buffer_to_cgi(); //Trocar STDOUT de dentro do método para o FD do STDIN do CGI
 
+       // if (this->_event.getRemainingFileBytes() != 0) {
+       //     _write.write_body_to_cgi();
+       // }
+
+
+        //----------- Chamar CGI aqui --------------//
+        if (this->_event.getRemainingFileBytes() == 0 || this->_event.getFileReadLeft() == 0) {
+            _write.write_created_headers(); // _write.write_cgi_headers();  <--- Trocar para esse depois de implementar a GGI
+            //this->_event.setCgiFdOut(cgi->getStdOut());
+            //_write.write_cgi_content();
+        }
 
     } else {
         this->_event.setHttpStatus(Event::HttpStatus::FORBIDDEN);
         send_error_response();
     }
 
+    if (this->_event.isCgiSet() && this->_event.getEventStatus() == Event::Status::Ended) {
+        for (int i = 0; i < Environment::ENV_VARIABLES_SIZE; i++) free(envp[i]);
+        free(envp);
+        delete cgi;
+        free(cgi_path);
+        close(this->_event.getCgiFdOut());
+    }
 }
 
 

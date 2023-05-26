@@ -11,6 +11,8 @@
 
 
 class Environment {
+public:
+    static int const ENV_VARIABLES_SIZE = 11;
 
 private:
     std::string _server_name;

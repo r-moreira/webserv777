@@ -70,7 +70,7 @@ private:
     size_t _remaining_read_buffer_size;
     size_t _request_read_bytes;
 
-    size_t _remaining_file_upload_bytes;
+    size_t _remaining_file_bytes;
     char _upload_file_chunk_buffer[UPLOAD_BUFFER_SIZE];
 
     FILE *_file;
@@ -88,7 +88,8 @@ private:
     bool _file_opened;
     bool _error_response;
     bool _forced_redirect;
-    bool _remaining_read_bytes_writed_to_file;
+    bool _remaining_read_bytes_writed;
+    bool _is_cgi_set;
 
     std::string _forced_redirect_location;
 
@@ -196,13 +197,13 @@ public:
 
     void setRemainingReadBuffer(const std::string &remainingReadBuffer);
 
-    size_t getRemainingFileUploadBytes() const;
+    size_t getRemainingFileBytes() const;
 
-    void setRemainingFileUploadBytes(size_t remainingFileUploadBytes);
+    void setRemainingFileBytes(size_t remainingFileBytes);
 
-    bool isRemainingReadBytesWritedToFile() const;
+    bool isRemainingReadBytesWrited() const;
 
-    void setRemainingReadBytesWritedToFile(bool remainingReadBytesWritedToFile);
+    void setRemainingReadBytesWrited(bool remainingReadBytesWrited);
 
     const char *getUploadFileChunkBuffer() const;
 
@@ -217,5 +218,9 @@ public:
     int getCgiFdIn() const;
 
     void setCgiFdIn(int cgiFdIn);
+
+    bool isCgiSet() const;
+
+    void setIsCgiSet(bool isCgiSet);
 };
 #endif //WEBSERV_EVENT_H

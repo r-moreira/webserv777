@@ -49,12 +49,12 @@ void Write::write_upload_file() {
 }
 
 void Write::write_remaining_read_buffer_to_file() {
-    if (ErrorState::is_error_state(this->_event) || this->_event.isRemainingReadBytesWritedToFile()) return;
+    if (ErrorState::is_error_state(this->_event) || this->_event.isRemainingReadBytesWrited()) return;
 
     std::cout << CYAN << "Writing remaining read buffer to file" << RESET << std::endl;
 
     size_t remaining_read_request_bytes = this->_event.getRemainingReadBuffer().size();
-    size_t remaining_file_bytes = this->_event.getRemainingFileUploadBytes();
+    size_t remaining_file_bytes = this->_event.getRemainingFileBytes();
     size_t write_size = remaining_file_bytes < remaining_read_request_bytes ? remaining_file_bytes : remaining_read_request_bytes;
 
 
@@ -66,25 +66,25 @@ void Write::write_remaining_read_buffer_to_file() {
     }
 
     size_t file_read_left = remaining_file_bytes - bytes_written;
-    this->_event.setRemainingFileUploadBytes(file_read_left);
+    this->_event.setRemainingFileBytes(file_read_left);
     this->_event.setFileReadLeft(file_read_left);
 
-    if (this->_event.getRemainingFileUploadBytes() == 0) {
+    if (this->_event.getRemainingFileBytes() == 0) {
         std::cout << GREEN << "File Upload Complete" << RESET << std::endl;
         this->_event.setEventStatus(Event::Status::Ended);
         return;
     }
 
-    this->_event.setRemainingReadBytesWritedToFile(true);
+    this->_event.setRemainingReadBytesWrited(true);
 }
 
 void Write::write_remaining_read_buffer_to_cgi() {
-    if (ErrorState::is_error_state(this->_event) || this->_event.isRemainingReadBytesWritedToFile()) return;
+    if (ErrorState::is_error_state(this->_event) || this->_event.isRemainingReadBytesWrited()) return;
 
     std::cout << CYAN << "Writing remaining read buffer to cgi" << RESET << std::endl;
 
     size_t remaining_read_request_bytes = this->_event.getRemainingReadBuffer().size();
-    size_t remaining_cgi_bytes = this->_event.getRemainingFileUploadBytes();
+    size_t remaining_cgi_bytes = this->_event.getRemainingFileBytes();
     size_t write_size = remaining_cgi_bytes < remaining_read_request_bytes ? remaining_cgi_bytes : remaining_read_request_bytes;
 
 
@@ -96,16 +96,16 @@ void Write::write_remaining_read_buffer_to_cgi() {
     }
 
     size_t file_read_left = remaining_cgi_bytes - bytes_written;
-    this->_event.setRemainingFileUploadBytes(file_read_left);
+    this->_event.setRemainingFileBytes(file_read_left);
     this->_event.setFileReadLeft(file_read_left);
 
-    if (this->_event.getRemainingFileUploadBytes() == 0) {
+    if (this->_event.getRemainingFileBytes() == 0) {
         std::cout << GREEN << "\nCGI STDIN Write Complete" << RESET << std::endl;
         this->_event.setEventStatus(Event::Status::Ended);
         return;
     }
 
-    this->_event.setRemainingReadBytesWritedToFile(true);
+    this->_event.setRemainingReadBytesWrited(true);
 }
 
 void Write::write_auto_index_page(const std::string& auto_index_page) {
@@ -228,7 +228,6 @@ void Write::write_no_content_headers() {
 void Write::write_cgi_headers() {
     if (ErrorState::is_error_state(this->_event) || this->_event.isHeaderSent()) return;
 
-    std::string cgi_tmp_headers = "HTTP/1.1 200 Ok\r\n";
     std::cout << CYAN << "Send CGI headers:" << RESET << std::endl;
     _write_headers(this->_headers.getCGIHeaders(this->_event.getHttpStatus()));
     if (ErrorState::is_error_state(this->_event)) return;

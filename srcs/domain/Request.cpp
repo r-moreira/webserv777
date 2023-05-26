@@ -8,7 +8,6 @@ Request::Request(Event &event): _event(event), _read(event) {}
 
 Request::~Request() {}
 
-
 void Request::read_request() {
     _read.read_request();
     this->parse_request();
@@ -31,20 +30,19 @@ void Request::parse_request() {
             std::cout << WHITE << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
             this->_event.setEventSubStatus(Event::SubStatus::ChoosingServer);
 
-                bytes_read++;
-                (void)*buffer++;
+            bytes_read++;
+            (void)*buffer++;
 
             size_t request_read_remaining = REQUEST_READ_BUFFER_SIZE - bytes_read;
-            size_t body_remaining_bytes = this->_event.getRequest().getFileUploadRemainingBytes() < request_read_remaining ?
-                                        this->_event.getRequest().getFileUploadRemainingBytes() : request_read_remaining;
+            size_t body_remaining_bytes = this->_event.getRequest().getBodyRemainingBytes() < request_read_remaining ?
+                                          this->_event.getRequest().getBodyRemainingBytes() : request_read_remaining;
+            std::string buffer_str(buffer, body_remaining_bytes);
 
             this->_event.setRequestReadBytes(body_remaining_bytes);
-            std::string buffer_str(buffer, body_remaining_bytes);
             this->_event.setRemainingReadBuffer(buffer_str);
+
             std::cout << YELLOW << "Remaining Bytes: " << this->_event.getRequestReadBytes() << RESET << std::endl;
             std::cout << YELLOW << "Remaining Buffer: |" << this->_event.getRemainingReadBuffer() << "|" << RESET<< std::endl;
-
-            //}
             return;
         }
 

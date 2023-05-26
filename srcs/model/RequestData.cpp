@@ -8,7 +8,7 @@ RequestData::RequestData() :
         _version_major(0),
         _version_minor(0),
         _keep_alive(false),
-        _upload_file_size(0){}
+        _remaining_body_bytes(0){}
 
 RequestData::~RequestData() {}
 
@@ -25,7 +25,7 @@ std::string RequestData::inspect() const {
     std::string data(_content.begin(), _content.end());
     stream << std::endl << data << std::endl << std::endl;
     stream << "+ keep-alive: " << _keep_alive << std::endl;
-    stream << "+ remaining_bytes: " << _upload_file_size << std::endl;
+    stream << "+ remaining_bytes: " << _remaining_body_bytes << std::endl;
     stream << "+ boundary: " << _boundary << std::endl;
     stream << "+ content_disposition: " << _content_disposition << std::endl;
     stream << "+ upload_file_type: " << _upload_file_type << std::endl;
@@ -129,12 +129,12 @@ void RequestData::setKeepAlive(bool keepAlive) {
     _keep_alive = keepAlive;
 }
 
-size_t RequestData::getFileUploadRemainingBytes() const {
-    return _upload_file_size;
+size_t RequestData::getBodyRemainingBytes() const {
+    return _remaining_body_bytes;
 }
 
-void RequestData::setFileUploadRemainingBytes(size_t remainingBytes) {
-    _upload_file_size = remainingBytes;
+void RequestData::setBodyRemainingBytes(size_t remaining_body_bytes) {
+    _remaining_body_bytes = remaining_body_bytes;
 }
 
 const std::string &RequestData::getBoundary() const {

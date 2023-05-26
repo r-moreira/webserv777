@@ -22,7 +22,7 @@ private:
     std::vector<RequestData::HeaderItem> _headers;
     std::vector<char> _content;
     bool _keep_alive;
-    size_t _upload_file_size;
+    size_t _remaining_body_bytes;
     std::string _boundary;
     std::string _content_disposition;
     std::string _upload_file_type;
@@ -82,9 +82,9 @@ public:
 
     void setKeepAlive(bool keepAlive);
 
-    size_t getFileUploadRemainingBytes() const;
+    size_t getBodyRemainingBytes() const;
 
-    void setFileUploadRemainingBytes(size_t remainingBytes);
+    void setBodyRemainingBytes(size_t remaining_body_bytes);
 
     const std::string &getBoundary() const;
 
