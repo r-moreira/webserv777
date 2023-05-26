@@ -199,7 +199,7 @@ void Write::write_cgi_headers() {
     if (ErrorState::is_error_state(this->_event) || this->_event.isHeaderSent()) return;
 
     std::string cgi_tmp_headers = "HTTP/1.1 200 Ok\r\n";
-    std::cout << CYAN << "Send auto tmp CGI headers:" << RESET << std::endl;
+    std::cout << CYAN << "Send CGI headers:" << RESET << std::endl;
     _write_headers(this->_headers.getCGIHeaders(this->_event.getHttpStatus()));
     if (ErrorState::is_error_state(this->_event)) return;
     _event.setHeaderSent(true);

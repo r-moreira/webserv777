@@ -13,6 +13,7 @@
 #include "../model/AutoIndex.h"
 #include "../cgi/Exec.h"
 #include "../cgi/ExecPython.h"
+#include "../cgi/Environment.h"
 
 class Response {
 private:
@@ -20,6 +21,7 @@ private:
     File _file;
     Read _read;
     Write _write;
+    Environment _environment;
 
 public:
     Response(Event &event);

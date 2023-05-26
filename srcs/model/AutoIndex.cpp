@@ -5,8 +5,7 @@ AutoIndex::AutoIndex() {};
 std::string AutoIndex::pageGenerator(const std::string& request_root, const std::string& request_uri, int port) {
     std::string page;
 
-    //request_uri -> pegar só o target
-    std::string path = request_uri;
+    const std::string& path = request_uri;
     DIR *dir = opendir(request_root.c_str());
     if (dir == NULL) {
         std::cout << "Error: could not open this folder!\n";

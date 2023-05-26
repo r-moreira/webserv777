@@ -33,6 +33,7 @@ SRCS				= ${SRCS_DIR}/webserv.cpp\
 					  ${PARSER_DIR}/RequestParser.cpp\
 					  ${PARSER_DIR}/ConfigParser.cpp\
 					  ${PARSER_DIR}/LocationParser.cpp\
+					  ${CGI_DIR}/Environment.cpp\
 					  ${CGI_DIR}/Exec.cpp\
 					  ${CGI_DIR}/ExecPython.cpp
 

@@ -46,4 +46,6 @@
 #define UPLOAD_BUFFER_SIZE 1024
 #define CGI_BUFFER_SIZE 1024
 
+#define ITOSTR( x ) dynamic_cast< std::ostringstream & >(( std::ostringstream() << std::dec << x )).str()
+
 #endif //WEBSERV_WEBSERV_H

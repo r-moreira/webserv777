@@ -23,6 +23,10 @@ EventHandler::~EventHandler() {}
 // Testar com todas configurações possíveis
 // Remover logs desnecessários, criar um padrão de log para o restante
 
+//TODO Atuais:
+// Refatorar o script CGI, ex: Colocar página de erro do servidor
+// Refatorar o script AutoIndex, ex: Colocar página de erro do servidor
+
 void EventHandler::process_event() {
 
     if (this->_event.getEventStatus() == Event::Status::Reading) {
