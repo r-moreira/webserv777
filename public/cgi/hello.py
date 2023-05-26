@@ -1,17 +1,29 @@
 #!/usr/bin/env python3
 
 import time
-print("Content-Type: text/html\n\n")  # html markup follows
+import os
 
-timeStr = time.strftime("%c") # obtains current time
+print("Content-Type: text/html\n\n")
 
-htmlFormat = """
+current_date_time = time.strftime("%c")
+
+browser = os.environ['HTTP_USER_AGENT']
+
+query_string = os.environ['QUERY_STRING']
+
+name = 'World'
+if query_string.startswith('name='):
+    name = query_string[5:]
+
+html_format = """
 <html>
-  <Title>The Time Now</Title>
+  <Title>Python CGI!</Title>
 <body>
-  <h1>Hello from Python CGI!</h1>
-  <h3>Current date and time is: {timeStr}</h3>
+  <h1>Hello, {name}!</h1>
+  <h3>Current date and time is: {current_date_time}</h3>
+  <h3>Your browser is: {browser}</h3>
 </body>
-</html> """
+</html> 
+"""
 
-print(htmlFormat.format(**locals()))  # see {timeStr} embedded above
+print(html_format.format(**locals()))
