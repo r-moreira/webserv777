@@ -8,7 +8,6 @@ RequestData::RequestData() :
         _version_major(0),
         _version_minor(0),
         _keep_alive(false),
-        _is_file_upload(false),
         _upload_file_size(0){}
 
 RequestData::~RequestData() {}
@@ -26,7 +25,6 @@ std::string RequestData::inspect() const {
     std::string data(_content.begin(), _content.end());
     stream << std::endl << data << std::endl << std::endl;
     stream << "+ keep-alive: " << _keep_alive << std::endl;
-    stream << "+ is_file_upload: " << _is_file_upload << std::endl;
     stream << "+ remaining_bytes: " << _upload_file_size << std::endl;
     stream << "+ boundary: " << _boundary << std::endl;
     stream << "+ content_disposition: " << _content_disposition << std::endl;
@@ -129,14 +127,6 @@ bool RequestData::isKeepAlive() const {
 
 void RequestData::setKeepAlive(bool keepAlive) {
     _keep_alive = keepAlive;
-}
-
-bool RequestData::isIsFileUpload() const {
-    return _is_file_upload;
-}
-
-void RequestData::setIsFileUpload(bool isFileUpload) {
-    _is_file_upload = isFileUpload;
 }
 
 size_t RequestData::getFileUploadRemainingBytes() const {

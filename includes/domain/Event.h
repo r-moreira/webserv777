@@ -60,7 +60,8 @@ public:
 private:
     int _client_fd;
     int _server_fd;
-    int _cgi_fd;
+    int _cgi_fd_out;
+    int _cgi_fd_in;
 
     HttpStatus::event_http_status _http_status;
 
@@ -209,8 +210,12 @@ public:
 
     void setRemainingReadBufferSize(size_t remainingReadBufferSize);
 
-    int getCgiFd() const;
+    int getCgiFdOut() const;
 
-    void setCgiFd(int cgiFd);
+    void setCgiFdOut(int cgiFdOut);
+
+    int getCgiFdIn() const;
+
+    void setCgiFdIn(int cgiFdIn);
 };
 #endif //WEBSERV_EVENT_H

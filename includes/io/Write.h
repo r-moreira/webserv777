@@ -41,11 +41,13 @@ public:
 
     void write_no_content_headers();
 
-    void write_auto_index_page(std::string auto_index_page);
+    void write_auto_index_page(const std::string& auto_index_page);
 
     void write_cgi_headers();
 
     void write_cgi_content();
+
+    void write_remaining_read_buffer_to_cgi();
 
 private:
     void _write_headers(const std::string &headers);

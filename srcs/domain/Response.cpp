@@ -96,7 +96,6 @@ void Response::send_cgi_response() {
 
     Environment env = Environment();
     env.setupCGIEnvironment(_event);
-
     std::cout << CYAN << "CGI envp:" << RESET << std::endl;
 
     char **envp = env.getCgiEnvp();
@@ -104,22 +103,37 @@ void Response::send_cgi_response() {
         std::cout << CYAN << envp[i] << RESET << std::endl;
     }
 
-    char *cgi_path = strdup(_event.getLocation().getCgiPath().c_str());
-    char * const cmd[] = {(char *)"python3", cgi_path, NULL};
-    Exec *cgi = new ExecPython(cmd,  envp);
+    if (this->_event.getRequest().getMethod() == "GET") {
 
-    cgi->start();
-    this->_event.setHttpStatus(_event.convert_int_to_http_status(cgi->getHttpStatusCode()));
-    std::cout << CYAN << "CGI status: " << this->_event.getHttpStatus() << RESET << std::endl;
+        char *cgi_path = strdup(_event.getLocation().getCgiPath().c_str());
+        char * const cmd[] = {(char *)"python3", cgi_path, NULL};
+        Exec *cgi = new ExecPython(cmd,  envp);
 
-    this->_event.setCgiFd(cgi->getStdOut());
+        cgi->start();
+        this->_event.setHttpStatus(_event.convert_int_to_http_status(cgi->getHttpStatusCode()));
+        std::cout << CYAN << "CGI status: " << this->_event.getHttpStatus() << RESET << std::endl;
 
-    _write.write_cgi_headers();
-    _write.write_cgi_content();
+        this->_event.setCgiFdOut(cgi->getStdOut());
 
-    delete cgi;
-    free(cgi_path);
-    close(this->_event.getCgiFd());
+        _write.write_cgi_headers();
+        _write.write_cgi_content();
+
+        delete cgi;
+        free(cgi_path);
+        close(this->_event.getCgiFdOut());
+    } else if (this->_event.getRequest().getMethod() == "POST") {
+
+        this->_event.setRemainingFileUploadBytes(this->_event.getRequest().getFileUploadRemainingBytes());
+        this->_event.setFileReadLeft(this->_event.getRequest().getFileUploadRemainingBytes());
+        _write.write_remaining_read_buffer_to_cgi();
+        _event.setEventStatus(Event::Status::Ended);
+
+
+    } else {
+        this->_event.setHttpStatus(Event::HttpStatus::FORBIDDEN);
+        send_error_response();
+    }
+
 }
 
 

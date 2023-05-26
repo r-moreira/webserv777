@@ -179,7 +179,6 @@ RequestParser::ParseState::State RequestParser::consume(RequestData &req, char i
                     if (strcasecmp(h.name.c_str(), "Content-Length") == 0) {
                         _content_size = strtol(h.value.c_str(), NULL, 10);
                         req.reserveContent(_content_size);
-                        _state = ParseState::ExpectingNewline;
                     }
                 }
                 _state = ParseState::ExpectingNewline;
@@ -223,24 +222,17 @@ RequestParser::ParseState::State RequestParser::consume(RequestData &req, char i
                                                                                  checkIfContentType);
                 if (it_ != headers_.end()) {
                     if (it_->value.rfind("multipart/form-data;", 0) == 0) {
-                        req.setIsFileUpload(true);
                         req.setBoundary(it_->value.substr(it_->value.find("boundary=") + 9));
 
                         _state = ParseState::PostFileUploadBoundary;
                         break;
                     }
                 }
-                _state = ParseState::PostContent;
-            }
-            break;
-        }
-        case ParseState::PostContent:
-            --_content_size;
-            req.contentPushBack(input);
-            if (_content_size == 0) {
+
+                req.setFileUploadRemainingBytes(_content_size);
                 return ParseState::ParsingCompleted;
             }
-            break;
+        }
         case ParseState::PostFileUploadBoundary:
             if (input == '\r') {
                 _state = ParseState::ExpectingNewline_3;

@@ -31,16 +31,20 @@ void Request::parse_request() {
             std::cout << WHITE << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
             this->_event.setEventSubStatus(Event::SubStatus::ChoosingServer);
 
-            if (_event.getRequest().isIsFileUpload()) {
                 bytes_read++;
                 (void)*buffer++;
-                this->_event.setRequestReadBytes(REQUEST_READ_BUFFER_SIZE - bytes_read);
-                std::string buffer_str(buffer, REQUEST_READ_BUFFER_SIZE - bytes_read);
-                this->_event.setRemainingReadBuffer(buffer_str);
-                std::cout << YELLOW << "Remaining Bytes: " << this->_event.getRequestReadBytes() << RESET << std::endl;
-                std::cout << YELLOW << "Remaining Buffer: |" << this->_event.getRemainingReadBuffer() << "|" << RESET<< std::endl;
 
-            }
+            size_t request_read_remaining = REQUEST_READ_BUFFER_SIZE - bytes_read;
+            size_t body_remaining_bytes = this->_event.getRequest().getFileUploadRemainingBytes() < request_read_remaining ?
+                                        this->_event.getRequest().getFileUploadRemainingBytes() : request_read_remaining;
+
+            this->_event.setRequestReadBytes(body_remaining_bytes);
+            std::string buffer_str(buffer, body_remaining_bytes);
+            this->_event.setRemainingReadBuffer(buffer_str);
+            std::cout << YELLOW << "Remaining Bytes: " << this->_event.getRequestReadBytes() << RESET << std::endl;
+            std::cout << YELLOW << "Remaining Buffer: |" << this->_event.getRemainingReadBuffer() << "|" << RESET<< std::endl;
+
+            //}
             return;
         }
 
@@ -181,7 +185,7 @@ void Request::define_response_state() {
 
     bool file_upload_lock = this->_event.getLocation().isUploadLock() || this->_event.getServer().isUploadLock();
 
-    if (this->_event.getRequest().getMethod() == "POST" && file_upload_lock) {
+    if (this->_event.getRequest().getMethod() == "POST" && file_upload_lock && !this->_event.getLocation().isCgiLock()) {
         std::cout << MAGENTA << "Upload Event" << RESET << std::endl;
         this->_event.setEventSubStatus(Event::SubStatus::SendingUploadResponse);
         this->_event.setEventStatus(Event::Status::Writing);

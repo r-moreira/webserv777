@@ -7,7 +7,8 @@
 Event::Event(int server_fd, int client_fd) {
     this->_client_fd = client_fd;
     this->_server_fd = server_fd;
-    this->_cgi_fd = -1;
+    this->_cgi_fd_out = -1;
+    this->_cgi_fd_in = -1;
 
     this->_http_status = HttpStatus::OK;
 
@@ -231,12 +232,12 @@ const std::string &Event::getRemainingReadBuffer() const {
     return _remaining_read_buffer;
 }
 
-int Event::getCgiFd() const {
-    return _cgi_fd;
+int Event::getCgiFdOut() const {
+    return _cgi_fd_out;
 }
 
-void Event::setCgiFd(int cgiFd) {
-    _cgi_fd = cgiFd;
+void Event::setCgiFdOut(int cgiFdOut) {
+    _cgi_fd_out = cgiFdOut;
 }
 
 void Event::setRemainingReadBuffer(const std::string &remainingReadBuffer) {
@@ -271,6 +272,15 @@ void Event::setRemainingReadBufferSize(size_t remainingReadBufferSize) {
     _remaining_read_buffer_size = remainingReadBufferSize;
 }
 
+
+int Event::getCgiFdIn() const {
+    return _cgi_fd_in;
+}
+
+void Event::setCgiFdIn(int cgiFdIn) {
+    _cgi_fd_in = cgiFdIn;
+}
+
 Event::HttpStatus::event_http_status Event::convert_int_to_http_status(int status) {
     switch (status) {
         case 200:
@@ -303,4 +313,3 @@ Event::HttpStatus::event_http_status Event::convert_int_to_http_status(int statu
     }
 
 }
-
