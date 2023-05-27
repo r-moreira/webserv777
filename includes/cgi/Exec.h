@@ -18,15 +18,17 @@ private:
     char* const* _cmd;
     char* const* _env;
 
+
     int pipe_init();
-    void _handleScript();
+    void _handleScript(int std_out_from_server);
     void is_infity_loop();
-    virtual void script_exec(int stdOut);
+    virtual void script_exec(int stdOut, int stdIn);
 public:
     Exec(char * path_bin, char* const* command, char* const* env);
     virtual ~Exec();
-    void start();
+    void start(int std_out_from_server);
     int getStdOut();
+    int getStdIn();
     int getHttpStatusCode();
 };
 #endif

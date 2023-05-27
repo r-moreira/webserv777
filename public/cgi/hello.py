@@ -2,18 +2,28 @@
 
 import time
 import os
+import sys
 
-print("Content-Type: text/html\n\n")
 
+def get_name():
+    _name = 'World'
+    if os.environ.get('REQUEST_METHOD') == 'POST':
+        content_length = int(os.environ.get('CONTENT_LENGTH'))
+        body = sys.stdin.read(content_length)
+        _name = body[5:]
+
+    if os.environ.get('REQUEST_METHOD') == 'GET':
+        query_string = os.environ.get('QUERY_STRING')
+        if query_string is not None and query_string.startswith('name='):
+            _name = query_string[5:]
+    return _name
+
+
+name = get_name()
 current_date_time = time.strftime("%c")
-
-browser = "firefox" #os.environ['HTTP_USER_AGENT']
-
-query_string = "name=rodrigo"#os.environ['QUERY_STRING']
-
-name = 'World'
-if query_string.startswith('name='):
-    name = query_string[5:]
+browser = os.environ.get('HTTP_USER_AGENT')
+if browser is None:
+    browser = 'Unknown'
 
 html_format = """
 <html>
@@ -26,4 +36,5 @@ html_format = """
 </html> 
 """
 
+print("Content-Type: text/html\n\n")
 print(html_format.format(**locals()))

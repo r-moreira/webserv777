@@ -91,7 +91,6 @@ private:
     bool _forced_redirect;
     bool _remaining_read_bytes_writed;
     bool _is_cgi_set;
-    bool _is_cgi_exec;
 
     std::string _forced_redirect_location;
 
@@ -240,9 +239,5 @@ public:
     char **getEnvp() const;
 
     void setEnvp(char **envp);
-
-    bool isCgiExec() const;
-
-    void setIsCgiExec(bool isCgiExec);
 };
 #endif //WEBSERV_EVENT_H

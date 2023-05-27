@@ -15,6 +15,8 @@ int Exec::pipe_init() {
     return 0;
 }
 
+
+
 void Exec::is_infity_loop() {
     clock_t start = clock();
 
@@ -35,13 +37,13 @@ void Exec::is_infity_loop() {
     }
 }
 
-void Exec::_handleScript() {
+void Exec::_handleScript(int std_out_from_server) {
     _pid = fork();
     if (_pid == -1) {
         std::cout << RED << "Error: unable to fork" << RESET << '\n';
         return ;
     } else if (!_pid) {
-        script_exec(_pipeFd[1]);
+        script_exec(std_out_from_server, _pipeFd[1]);
     } else {
         is_infity_loop();
         if (WEXITSTATUS(_status) != 0) {
@@ -59,11 +61,15 @@ int Exec::getStdOut() {
     return _pipeFd[0];
 }
 
+int Exec::getStdIn() {
+    return _pipeFd[1];
+}
+
 int Exec::getHttpStatusCode() {
     return _httpStatusCode; 
 }
 
-void Exec::script_exec(int stdOut) {
+void Exec::script_exec(int stdIn, int stdOut) {
     dup2(stdOut, STDOUT_FILENO);
 
     char* errorMessage = (char *)"Content-Type: text/html\r\n\r Status: 500 Internal Server Error\r\n\r\n";
@@ -73,8 +79,8 @@ void Exec::script_exec(int stdOut) {
     write(STDOUT_FILENO, errorMessage, 64);
 }
 
-void Exec::start() {
+void Exec::start(int std_out_from_server) {
     if (pipe_init() < 0)
         return ;
-    _handleScript();
+    _handleScript(std_out_from_server);
 }

@@ -66,7 +66,11 @@ char **Environment::getCgiEnvp() {
     return envs;
 }
 
-
+char *Environment::_convert(const std::string & s) {
+    char *pc = new char[s.size()+1];
+    std::strcpy(pc, s.c_str());
+    return pc;
+}
 
 void Environment::setServerNameValue(const std::string& value) {
     this->_server_name.append(value);
@@ -112,10 +116,3 @@ void Environment::setHttpUserAgentValue(const std::string& value) {
     this->_http_user_agent.append(value);
 }
 
-
-char *Environment::_convert(const std::string & s)
-{
-    char *pc = new char[s.size()+1];
-    std::strcpy(pc, s.c_str());
-    return pc;
-}
