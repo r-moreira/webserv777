@@ -139,7 +139,7 @@ Server build_server_two(int port) {
     allowed_method_post_delete.push_back("DELETE");
 
     Location upload_location = Location();
-    upload_location.setUploadLock(false);
+    upload_location.setUploadLock(true);
     upload_location.setPath("/upload");
     upload_location.setRoot("./public/uploaded-files/alternative");
     upload_location.setUploadPath("./public/uploaded-files/alternative");
@@ -154,9 +154,25 @@ Server build_server_two(int port) {
     static_location.setRoot("./public/images");
     static_location.setLimitExcept(allowed_method_get);
 
+    Location upload_page_location = Location();
+    upload_page_location.setAutoIndex(true);
+    upload_page_location.setPath("/test/upload");
+    upload_page_location.setRoot("./public/test-pages");
+    upload_page_location.setIndex("upload-page.html");
+    upload_page_location.setLimitExcept(allowed_methods_get_post);
+
+    Location cgi_page_location = Location();
+    cgi_page_location.setAutoIndex(true);
+    cgi_page_location.setPath("/test/cgi");
+    cgi_page_location.setRoot("./public/test-pages");
+    cgi_page_location.setIndex("cgi-page.html");
+    cgi_page_location.setLimitExcept(allowed_methods_get_post);
+
     locations.push_back(cgi_location);
     locations.push_back(upload_location);
     locations.push_back(static_location);
+    locations.push_back(upload_page_location);
+    locations.push_back(cgi_page_location);
 
     server.setPort(port);
     server.setUploadPath("./public/uploaded-files");

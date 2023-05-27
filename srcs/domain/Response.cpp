@@ -93,8 +93,6 @@ void Response::send_auto_index_response() {
     _write.write_auto_index_page(auto_index_page);
 }
 
-//TODO::
-
 void Response::send_cgi_response() {
     std::cout << MAGENTA << "Send CGI response" << RESET << std::endl;
 
@@ -112,10 +110,12 @@ void Response::send_cgi_response() {
 
         this->_event.setCgi(new ExecPython(cmd, this->_event.getEnvp()));
 
-        this->_event.setRemainingFileBytes(this->_event.getRequest().getBodyRemainingBytes());
-        this->_event.setFileReadLeft(this->_event.getRequest().getBodyRemainingBytes());
-        this->_event.setRemainingFileBytes(this->_event.getRequest().getBodyRemainingBytes());
-        this->_event.setIsCgiSet(true);
+        if (this->_event.getRequest().getMethod() == "POST") {
+            this->_event.setRemainingFileBytes(this->_event.getRequest().getBodyRemainingBytes());
+            this->_event.setFileReadLeft(this->_event.getRequest().getBodyRemainingBytes());
+            this->_event.setRemainingFileBytes(this->_event.getRequest().getBodyRemainingBytes());
+            this->_event.setIsCgiSet(true);
+        }
     }
 
     if (this->_event.getRequest().getMethod() == "GET") {
@@ -129,7 +129,6 @@ void Response::send_cgi_response() {
             send_error_response();
             return;
         }
-
 
         _write.write_cgi_headers();
         this->_event.setCgiFdOut(this->_event.getCgi()->getStdOut());
