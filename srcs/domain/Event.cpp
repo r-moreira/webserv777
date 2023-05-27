@@ -10,6 +10,7 @@ Event::Event(int server_fd, int client_fd) {
     this->_cgi_fd_out = -1;
     this->_cgi_fd_in = -1;
     this->_server_cgi_fd_out = -1;
+    this->_server_cgi_fd_in = -1;
 
     this->_http_status = HttpStatus::OK;
 
@@ -280,6 +281,14 @@ size_t Event::getRemainingReadBufferSize() const {
 
 void Event::setRemainingReadBufferSize(size_t remainingReadBufferSize) {
     _remaining_read_buffer_size = remainingReadBufferSize;
+}
+
+int Event::getServerCgiFdIn() const {
+    return _server_cgi_fd_in;
+}
+
+void Event::setServerCgiFdIn(int serverCgiFdIn) {
+    _server_cgi_fd_in = serverCgiFdIn;
 }
 
 

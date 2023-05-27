@@ -63,6 +63,7 @@ private:
     int _cgi_fd_out;
     int _cgi_fd_in;
     int _server_cgi_fd_out;
+    int _server_cgi_fd_in;
 
     HttpStatus::event_http_status _http_status;
 
@@ -72,7 +73,7 @@ private:
     size_t _request_read_bytes;
 
     size_t _remaining_file_bytes;
-    char _content_chunk_buffer[UPLOAD_BUFFER_SIZE];
+    char _content_chunk_buffer[BODY_READ_BUFFER_SIZE];
 
     FILE *_file;
     std::string _file_path;
@@ -243,5 +244,9 @@ public:
     int getServerCgiFdOut() const;
 
     void setServerCgiFdOut(int serverCgiFdOut);
+
+    int getServerCgiFdIn() const;
+
+    void setServerCgiFdIn(int serverCgiFdIn);
 };
 #endif //WEBSERV_EVENT_H

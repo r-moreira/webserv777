@@ -48,26 +48,6 @@ void Write::write_upload_file() {
     }
 }
 
-void Write::write_body_to_cgi() {
-    if (ErrorState::is_error_state(this->_event)) return;
-
-    std::cout << CYAN << "Writing body content to CGI STDIN" << RESET << std::endl;
-
-    size_t bytes_written = write(STDOUT_FILENO/*this->_event.getCgiFdIn()*/, this->_event.getContentChunkBuffer(),_event.getFileChunkReadBytes());
-    if (bytes_written != _event.getFileChunkReadBytes()) {
-        std::cerr << RED << "Error while writing file to disk: " << strerror(errno) << RESET << std::endl;
-        ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
-        return;
-    }
-
-    std::cout << YELLOW << "Written Data Size " << bytes_written << " Bytes." << RESET << std::endl;
-
-    if (_event.getFileReadLeft() <= 0) {
-        _event.setEventStatus(Event::Status::Ended);
-        std::cout << GREEN << "\nCGI STDIN Write Complete" << RESET << std::endl;
-    }
-}
-
 void Write::write_remaining_read_buffer_to_file() {
     if (ErrorState::is_error_state(this->_event) || this->_event.isRemainingReadBytesWrited()) return;
 
@@ -98,8 +78,8 @@ void Write::write_remaining_read_buffer_to_file() {
     this->_event.setRemainingReadBytesWrited(true);
 }
 
-void Write::write_remaining_read_buffer_to_cgi() {
-    if (ErrorState::is_error_state(this->_event) || this->_event.isRemainingReadBytesWrited()) return;
+void Write::write_body_to_cgi() {
+    if (ErrorState::is_error_state(this->_event)) return;
 
     std::cout << CYAN << "Writing remaining read buffer to cgi" << RESET << std::endl;
 
@@ -113,8 +93,10 @@ void Write::write_remaining_read_buffer_to_cgi() {
         ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
     }
     this->_event.setServerCgiFdOut(_pipeFd[0]);
+    this->_event.setServerCgiFdIn(_pipeFd[1]);
 
-    size_t bytes_written = write(_pipeFd[1], this->_event.getRemainingReadBuffer().c_str(), write_size);
+    size_t bytes_written = 0;
+    bytes_written = write(this->_event.getServerCgiFdIn(), this->_event.getRemainingReadBuffer().c_str(), write_size);
     if (bytes_written != write_size) {
         std::cerr << RED << "Error while writing to CGI STDIN: " << strerror(errno) << RESET << std::endl;
         ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
@@ -126,12 +108,44 @@ void Write::write_remaining_read_buffer_to_cgi() {
 
     if (this->_event.getRemainingFileBytes() == 0) {
         std::cout << GREEN << "\nCGI STDIN Write Complete" << RESET << std::endl;
-        this->_event.setEventStatus(Event::Status::Ended);
+        return;
     }
-    this->_event.setRemainingReadBytesWrited(true);
 
-    //Continuar a leitura aqui
+    char buffer[BODY_READ_BUFFER_SIZE] = {};
 
+    std::cout << YELLOW << "Reading body content and sending it to CGI STDIN, remaining bytes: "
+        << this->_event.getRemainingFileBytes() << RESET << std::endl;
+
+    size_t read_size = this->_event.getRemainingFileBytes() < BODY_READ_BUFFER_SIZE ? this->_event.getRemainingFileBytes() : BODY_READ_BUFFER_SIZE;
+
+    long read_bytes = 0;
+    while ((read_bytes = read(this->_event.getClientFd(), buffer, read_size)) > 0) {
+        if (read_bytes < 0) {
+            std::cerr << RED << "Error while reading client body: " << strerror(errno) << RESET << std::endl;
+            _event.setEventStatus(Event::Status::Ended);
+            return;
+        }
+
+        std::cout << YELLOW << "Read " << read_bytes << " bytes from client body" << RESET << std::endl;
+
+        bytes_written = write(this->_event.getServerCgiFdIn(), buffer, read_bytes);
+        if (bytes_written != read_bytes) {
+            std::cerr << RED << "Error while writing to CGI STDIN: " << strerror(errno) << RESET << std::endl;
+            ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
+            break;
+        }
+        std::cout << YELLOW << "Transmitted " << bytes_written << " byte to CGI STDIN" << RESET << std::endl;
+
+        size_t _file_read_left = this->_event.getRemainingFileBytes() - bytes_written;
+        this->_event.setRemainingFileBytes(_file_read_left);
+        this->_event.setFileReadLeft(_file_read_left);
+
+        if (_file_read_left == 0) {
+            std::cout << GREEN << "\nCGI STDIN Write Complete!" << RESET << std::endl;
+            break;
+        }
+
+    }
 }
 
 void Write::write_auto_index_page(const std::string& auto_index_page) {
@@ -172,14 +186,19 @@ void Write::write_cgi_content() {
         }
 
         std::cout << YELLOW << "Read " << read_bytes << " bytes from CGI" << RESET << std::endl;
-        std::cout << MAGENTA << "CGI Buffer: |" << buffer << "|" << RESET << std::endl;
+        //std::cout << MAGENTA << "CGI Buffer: |" << buffer << "|" << RESET << std::endl;
 
-        if (send(_event.getClientFd(), buffer, read_bytes, 0) < 0) {
-            std::cerr << RED << "Error while writing status header to client: " << strerror(errno) << RESET << std::endl;
+        long bytes_sent = send(_event.getClientFd(), buffer, read_bytes, 0);
+
+        if (bytes_sent < 0) {
+            std::cerr << RED << "Error while writing CGI content to client: " << strerror(errno) << RESET << std::endl;
             _event.setEventStatus(Event::Status::Ended);
             return;
         }
+        std::cout << YELLOW << "Transmitted " << bytes_sent << " byte from CGI" << RESET << std::endl;
     }
+
+    std::cout << GREEN << "CGI Content Write Complete" << RESET << std::endl;
     _event.setEventStatus(Event::Status::Ended);
 }
 

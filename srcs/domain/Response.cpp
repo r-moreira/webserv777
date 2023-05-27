@@ -136,12 +136,12 @@ void Response::send_cgi_response() {
         clear_cgi_exec();
 
     } else if (this->_event.getRequest().getMethod() == "POST") {
-        _write.write_remaining_read_buffer_to_cgi();
+        _write.write_body_to_cgi();
 
         if ((this->_event.getRemainingFileBytes() == 0 || this->_event.getFileReadLeft() == 0)) {
             std::cout << MAGENTA << "Starting CGI" << RESET << std::endl;
-            this->_event.getCgi()->start(this->_event.getServerCgiFdOut());
 
+            this->_event.getCgi()->start(this->_event.getServerCgiFdOut());
             this->_event.setHttpStatus(_event.convert_int_to_http_status(this->_event.getCgi()->getHttpStatusCode()));
 
             std::cout << YELLOW << "CGI status: " << this->_event.getHttpStatus() << RESET << std::endl;
@@ -155,6 +155,7 @@ void Response::send_cgi_response() {
             _write.write_cgi_headers();
             this->_event.setCgiFdOut(this->_event.getCgi()->getStdOut());
             _write.write_cgi_content();
+
             clear_cgi_exec();
         }
 
@@ -164,13 +165,6 @@ void Response::send_cgi_response() {
     }
 }
 
-
-//Tem algum bug aqui -> Tentar outras alternativas como read e write ao mesmo tempo, reservar um vector com o tamanho do body e ir lendo e escrevendo
-//if (this->_event.getRemainingFileBytes() != 0 && !this->_event.isCgiExec()) {
-//_read.read_body_content();
-//_write.write_body_to_cgi(); //Trocar STDOUT de dentro do método para o FD do STDIN do CGI
-//}
-
 void Response::clear_cgi_exec() {
     Environment::freeCgiEnvp(this->_event.getEnvp());
     if (_event.isCgiSet() && _event.getEventStatus() == Event::Status::Ended) {
@@ -179,7 +173,6 @@ void Response::clear_cgi_exec() {
         close(_event.getCgiFdOut());
     }
 }
-
 
 void Response::send_is_directory_response() {
     std::cout << MAGENTA << "Send directory error response" << RESET << std::endl;

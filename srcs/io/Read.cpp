@@ -37,11 +37,11 @@ void Read::read_body_content() {
     if (ErrorState::is_error_state(this->_event)) return;
 
     std::cout << MAGENTA << "Reading body content from client" << RESET << std::endl;
-    std::memset((void *) this->_event.getContentChunkBuffer(), '\0', UPLOAD_BUFFER_SIZE);
+    std::memset((void *) this->_event.getContentChunkBuffer(), '\0', BODY_READ_BUFFER_SIZE);
 
     size_t read_size;
-    if (this->_event.getFileReadLeft() > UPLOAD_BUFFER_SIZE) {
-        read_size = UPLOAD_BUFFER_SIZE;
+    if (this->_event.getFileReadLeft() > BODY_READ_BUFFER_SIZE) {
+        read_size = BODY_READ_BUFFER_SIZE;
     } else {
         read_size = this->_event.getFileReadLeft();
     }

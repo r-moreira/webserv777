@@ -43,7 +43,7 @@
 #define MAX_EPOLL_EVENTS 64
 #define REQUEST_READ_BUFFER_SIZE 1024
 #define FILE_READ_CHUNK_SIZE 65536
-#define UPLOAD_BUFFER_SIZE 1024
+#define BODY_READ_BUFFER_SIZE 1024
 #define CGI_BUFFER_SIZE 1024
 
 #define ITOSTR( x ) dynamic_cast< std::ostringstream & >(( std::ostringstream() << std::dec << x )).str()

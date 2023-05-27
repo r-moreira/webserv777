@@ -14,18 +14,13 @@ EventHandler::EventHandler(Event &event, std::vector<Server> &servers) :
 EventHandler::~EventHandler() {}
 
 //TODO Server Features:
-// Refatorar cgi
-// Refatorar auto_index
+// CGI retornar erro no loop infinito
 // Fazer o parser de configuração instânciar os servidores e locations
 // Entender o que significa e implementar :
 //      Setup multiple servers with different hostnames (use something like: curl --resolve
 //      example.com:80:127.0.0.1 http://example.com/ (http://example.com/)).
 // Testar com todas configurações possíveis
 // Remover logs desnecessários, criar um padrão de log para o restante
-
-//TODO Atuais:
-// Refatorar o script CGI, ex: Colocar página de erro do servidor
-// Refatorar o script AutoIndex, ex: Colocar página de erro do servidor
 
 void EventHandler::process_event() {
 

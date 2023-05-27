@@ -45,15 +45,12 @@ public:
 
     void write_cgi_headers();
 
-    void write_cgi_content();
-
-    void write_remaining_read_buffer_to_cgi();
-
     void write_body_to_cgi();
+
+    void write_cgi_content();
 
 private:
     void _write_headers(const std::string &headers);
-
 };
 
 
