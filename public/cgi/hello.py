@@ -25,7 +25,7 @@ name = "World"
 
 if method == 'GET':
     name = query_params['name'][0] if 'name' in query_params else name
-    message = body_params['message'][0] if 'message' in body_params else message
+    message = query_params['message'][0] if 'message' in query_params else message
 
 if method == 'POST':
     name = body_params['name'][0] if 'name' in body_params else name

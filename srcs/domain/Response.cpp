@@ -136,8 +136,6 @@ void Response::send_cgi_response() {
         clear_cgi_exec();
 
     } else if (this->_event.getRequest().getMethod() == "POST") {
-
-        //this->_event_cgi.setCgiFdIn(cgi->getStdIn());
         _write.write_remaining_read_buffer_to_cgi();
 
         if ((this->_event.getRemainingFileBytes() == 0 || this->_event.getFileReadLeft() == 0)) {
@@ -156,7 +154,6 @@ void Response::send_cgi_response() {
 
             _write.write_cgi_headers();
             this->_event.setCgiFdOut(this->_event.getCgi()->getStdOut());
-            this->_event.setCgiFdIn(this->_event.getCgi()->getStdIn());
             _write.write_cgi_content();
             clear_cgi_exec();
         }
