@@ -32,9 +32,9 @@ public:
 
     ~Environment();
 
-    void setupCGIEnvironment(Event &event);
+    char* const* getCgiEnvp(Event &event);
 
-    char **getCgiEnvp();
+    static void freeCgiEnvp(char *const *envp);
 
 private:
     void setServerNameValue(const std::string& value);
@@ -58,9 +58,6 @@ private:
     void setContentLengthValue(const std::string& value);
 
     void setHttpUserAgentValue(const std::string& value);
-
-private:
-    static char *_convert(const std::string & s);
 };
 
 

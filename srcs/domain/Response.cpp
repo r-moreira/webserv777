@@ -99,20 +99,18 @@ void Response::send_cgi_response() {
     std::cout << MAGENTA << "Send CGI response" << RESET << std::endl;
 
     if (!this->_event.isCgiSet()) {
-        Environment env = Environment();
-        env.setupCGIEnvironment(_event);
-        std::cout << CYAN << "CGI envp:" << RESET << std::endl;
+        Environment env;
 
-        this->_event.setEnvp(env.getCgiEnvp());
+        this->_event.setEnvp(env.getCgiEnvp(this->_event));
+        std::cout << CYAN << "CGI envp:" << RESET << std::endl;
         for (int i = 0; i < Environment::ENV_VARIABLES_SIZE; i++) {
             std::cout << CYAN <<  this->_event.getEnvp()[i] << RESET << std::endl;
         }
 
         this->_event.setCgiPath(strdup(_event.getLocation().getCgiPath().c_str()));
         char *const cmd[] = {(char *) "python3",  this->_event.getCgiPath(), NULL};
-        char *const env_test[] = {(char *) "QUERY_STRING=name=Test", NULL};
 
-        this->_event.setCgi(new ExecPython(cmd,  /*this->_event.getEnvp()*/env_test));
+        this->_event.setCgi(new ExecPython(cmd, this->_event.getEnvp()));
 
         this->_event.setRemainingFileBytes(this->_event.getRequest().getBodyRemainingBytes());
         this->_event.setFileReadLeft(this->_event.getRequest().getBodyRemainingBytes());
@@ -180,10 +178,8 @@ void Response::send_cgi_response() {
 //}
 
 void Response::clear_cgi_exec() {
+    Environment::freeCgiEnvp(this->_event.getEnvp());
     if (_event.isCgiSet() && _event.getEventStatus() == Event::Status::Ended) {
-        for (int i = 0; i < Environment::ENV_VARIABLES_SIZE; i++)
-            free(this->_event.getEnvp()[i]);
-        free(this->_event.getEnvp());
         delete this->_event.getCgi();
         free(this->_event.getCgiPath());
         close(_event.getCgiFdOut());

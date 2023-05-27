@@ -307,12 +307,12 @@ void Event::setCgiPath(char *cgiPath) {
     _cgi_path = cgiPath;
 }
 
-char **Event::getEnvp() const {
-    return _envp;
+char* const* Event::getEnvp() const {
+    return _cgi_envp;
 }
 
-void Event::setEnvp(char **envp) {
-    Event::_envp = envp;
+void Event::setEnvp(char* const* cgi_envp) {
+    Event::_cgi_envp = cgi_envp;
 }
 
 Event::HttpStatus::event_http_status Event::convert_int_to_http_status(int status) {

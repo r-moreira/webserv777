@@ -10,7 +10,6 @@
 #include "../model/RequestData.h"
 #include "../cgi/Exec.h"
 
-
 class Event {
 
 public:
@@ -96,7 +95,7 @@ private:
 
     Exec *_cgi;
     char *_cgi_path;
-    char **_envp;
+    char * const* _cgi_envp;
 
     Server _server;
     Location _location;
@@ -236,8 +235,8 @@ public:
 
     void setCgiPath(char *cgiPath);
 
-    char **getEnvp() const;
+    char* const* getEnvp() const;
 
-    void setEnvp(char **envp);
+    void setEnvp(char* const* cgi_envp);
 };
 #endif //WEBSERV_EVENT_H

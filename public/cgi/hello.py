@@ -22,7 +22,7 @@ def get_name():
 name = get_name()
 current_date_time = time.strftime("%c")
 browser = os.environ.get('HTTP_USER_AGENT')
-if browser is None:
+if browser is None or len(browser) == 0:
     browser = 'Unknown'
 
 html_format = """

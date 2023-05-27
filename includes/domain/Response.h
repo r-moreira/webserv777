@@ -21,7 +21,6 @@ private:
     File _file;
     Read _read;
     Write _write;
-    Environment _environment;
 
 public:
     Response(Event &event);
