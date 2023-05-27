@@ -62,6 +62,7 @@ private:
     int _server_fd;
     int _cgi_fd_out;
     int _cgi_fd_in;
+    int _server_cgi_fd_out;
 
     HttpStatus::event_http_status _http_status;
 
@@ -238,5 +239,9 @@ public:
     char* const* getEnvp() const;
 
     void setEnvp(char* const* cgi_envp);
+
+    int getServerCgiFdOut() const;
+
+    void setServerCgiFdOut(int serverCgiFdOut);
 };
 #endif //WEBSERV_EVENT_H

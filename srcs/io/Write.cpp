@@ -98,8 +98,8 @@ void Write::write_remaining_read_buffer_to_file() {
     this->_event.setRemainingReadBytesWrited(true);
 }
 
-int Write::write_remaining_read_buffer_to_cgi() {
-    if (ErrorState::is_error_state(this->_event) || this->_event.isRemainingReadBytesWrited()) return -1;
+void Write::write_remaining_read_buffer_to_cgi() {
+    if (ErrorState::is_error_state(this->_event) || this->_event.isRemainingReadBytesWrited()) return;
 
     std::cout << CYAN << "Writing remaining read buffer to cgi" << RESET << std::endl;
 
@@ -111,14 +111,13 @@ int Write::write_remaining_read_buffer_to_cgi() {
     if (pipe(_pipeFd) < 0) {
         std::cout << RED << "Error: unable to Pipe" << RESET << '\n';
         ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
-        return int(-1);
     }
+    this->_event.setServerCgiFdOut(_pipeFd[0]);
 
-    size_t bytes_written = write(/*this->_event.getCgiFdIn()*/ _pipeFd[1], this->_event.getRemainingReadBuffer().c_str(), write_size);
+    size_t bytes_written = write(_pipeFd[1], this->_event.getRemainingReadBuffer().c_str(), write_size);
     if (bytes_written != write_size) {
         std::cerr << RED << "Error while writing to CGI STDIN: " << strerror(errno) << RESET << std::endl;
         ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
-        return int(-1);
     }
 
     size_t file_read_left = remaining_cgi_bytes - bytes_written;
@@ -128,12 +127,11 @@ int Write::write_remaining_read_buffer_to_cgi() {
     if (this->_event.getRemainingFileBytes() == 0) {
         std::cout << GREEN << "\nCGI STDIN Write Complete" << RESET << std::endl;
         this->_event.setEventStatus(Event::Status::Ended);
-        return int(_pipeFd[0]);
     }
-
     this->_event.setRemainingReadBytesWrited(true);
 
-    return int(_pipeFd[0]);
+    //Continuar a leitura aqui
+
 }
 
 void Write::write_auto_index_page(const std::string& auto_index_page) {

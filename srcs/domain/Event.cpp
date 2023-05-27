@@ -9,6 +9,7 @@ Event::Event(int server_fd, int client_fd) {
     this->_server_fd = server_fd;
     this->_cgi_fd_out = -1;
     this->_cgi_fd_in = -1;
+    this->_server_cgi_fd_out = -1;
 
     this->_http_status = HttpStatus::OK;
 
@@ -131,6 +132,14 @@ void Event::setFileReadLeft(size_t fileReadLeft) {
 
 size_t Event::getFileChunkReadBytes() const {
     return _file_chunk_read_bytes;
+}
+
+int Event::getServerCgiFdOut() const {
+    return _server_cgi_fd_out;
+}
+
+void Event::setServerCgiFdOut(int serverCgiFdOut) {
+    _server_cgi_fd_out = serverCgiFdOut;
 }
 
 void Event::setFileChunkReadBytes(size_t fileChunkReadBytes) {

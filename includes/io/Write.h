@@ -47,7 +47,7 @@ public:
 
     void write_cgi_content();
 
-    int write_remaining_read_buffer_to_cgi();
+    void write_remaining_read_buffer_to_cgi();
 
     void write_body_to_cgi();
 

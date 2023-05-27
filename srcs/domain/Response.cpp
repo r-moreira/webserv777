@@ -139,13 +139,11 @@ void Response::send_cgi_response() {
     } else if (this->_event.getRequest().getMethod() == "POST") {
 
         //this->_event_cgi.setCgiFdIn(cgi->getStdIn());
-        int server_fd = _write.write_remaining_read_buffer_to_cgi(); //Trocar STDOUT de dentro do método para o FD do STDIN do CGI
+        _write.write_remaining_read_buffer_to_cgi();
 
-
-        //----------- Chamar CGI aqui --------------//
         if ((this->_event.getRemainingFileBytes() == 0 || this->_event.getFileReadLeft() == 0)) {
             std::cout << MAGENTA << "Starting CGI" << RESET << std::endl;
-            this->_event.getCgi()->start(server_fd);
+            this->_event.getCgi()->start(this->_event.getServerCgiFdOut());
 
             this->_event.setHttpStatus(_event.convert_int_to_http_status(this->_event.getCgi()->getHttpStatusCode()));
 
