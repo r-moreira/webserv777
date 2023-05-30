@@ -33,6 +33,10 @@ int main(int argc, char **argv) {
     return EXIT_SUCCESS;
 }
 
+//TODO: Setar o mesmo FD para todos os servidores que usam o mesma porta
+//  Iterar a lista de servidores e pegar todas as portas necessárias
+//  Criar um map de portas e FDs (Depois de ter feito o Socket::setupServer)
+//  Setar o mesmo FD para todos os servidores que usam a mesma porta
 void start_servers(std::vector<Server> &servers) {
     for (std::vector<Server>::iterator it = servers.begin(); it != servers.end(); it++) {
         sleep(1);
@@ -60,7 +64,6 @@ std::vector<Server> servers_builder() {
 Server build_default_server(int port) {
     Server server = Server();
 
-    // Não precisa setar nem a porta, por default será 8080, apenas para evitar conflito de porta.
     server.setPort(port);
     return server;
 }
@@ -145,6 +148,21 @@ Server build_server_two(int port) {
     upload_location.setUploadPath("./public/uploaded-files/alternative");
     upload_location.setLimitExcept(allowed_method_post_delete);
 
+    Location upload_limited_location = Location();
+    upload_limited_location.setUploadLock(true);
+    upload_limited_location.setPath("/upload/limited");
+    upload_limited_location.setRoot("./public/uploaded-files/alternative");
+    upload_limited_location.setUploadPath("./public/uploaded-files/alternative");
+    upload_limited_location.setLimitExcept(allowed_method_post_delete);
+    upload_limited_location.setMaxBodySize(5120);
+
+    Location cgi_limited_location = Location();
+    cgi_limited_location.setCgiLock(true);
+    cgi_limited_location.setPath("/cgi/limited");
+    cgi_limited_location.setCgiPath("./public/cgi/hello.py");
+    cgi_limited_location.setLimitExcept(allowed_methods_get_post);
+    cgi_limited_location.setMaxBodySize(8);
+
     std::vector<std::string> allowed_method_get;
     allowed_method_get.push_back("GET");
 
@@ -173,6 +191,8 @@ Server build_server_two(int port) {
     locations.push_back(static_location);
     locations.push_back(upload_page_location);
     locations.push_back(cgi_page_location);
+    locations.push_back(upload_limited_location);
+    locations.push_back(cgi_limited_location);
 
     server.setPort(port);
     server.setUploadPath("./public/uploaded-files");
@@ -222,7 +242,6 @@ Server build_server_one(int port) {
 
     server.setName("greeting.com");
     server.setIndex("index.html");
-    server.setRoot("./");
     server.setDirectoryRequestPage("./public/directory-page/index.html");
     server.setAutoindex(true);
     server.setPort(port);

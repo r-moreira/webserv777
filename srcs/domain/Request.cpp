@@ -64,7 +64,9 @@ void Request::parse_request() {
     }
 }
 
-
+//TODO: Passar a considerar o Header Host para escolher qual servidor
+//  O primeiro servidor para um host:port é o que será escolhido por padrão
+//  Se tiver outro servidor com mesmo host:port, o mesmo deverá ser escolhido se o header Host for igual ao server_name
 void Request::choose_server(std::vector<Server> servers) {
     if (ErrorState::is_error_state(this->_event)) return;
 
@@ -89,26 +91,26 @@ void Request::choose_location() {
 
     std::vector<Location> locations = this->_event.getServer().getLocations();
 
-    if (locations.empty()) {
-        locations.push_back(Location());
-    }
-
     bool found = false;
-    size_t location_path_size = 0;
-    for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++) {
-        if (this->_event.getRequest().getUri().rfind(it->getPath(), 0) == 0) {
 
-            if (it->getPath().size() > location_path_size) {
-                this->_event.setLocation(*it);
-                location_path_size = it->getPath().size();
-                found = true;
+    if (!locations.empty()) {
+        size_t location_path_size = 0;
+        for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++) {
+            if (this->_event.getRequest().getUri().rfind(it->getPath(), 0) == 0) {
+
+                if (it->getPath().size() > location_path_size) {
+                    this->_event.setLocation(*it);
+                    location_path_size = it->getPath().size();
+                    found = true;
+                }
             }
         }
     }
 
-    if (!found) {
-        std::cerr << RED << "Location not found" << RESET << std::endl;
-        ErrorState::throw_error_state(this->_event, Event::HttpStatus::NOT_FOUND);
+    if (!found || locations.empty()) {
+        std::cerr << YELLOW << "Location not found" << YELLOW << std::endl;
+        this->_event.setLocation(Location());
+
         return;
     }
 
@@ -181,7 +183,8 @@ void Request::define_response_state() {
         return;
     }
 
-    bool file_upload_lock = this->_event.getLocation().isUploadLock() || this->_event.getServer().isUploadLock();
+    bool file_upload_lock = this->_event.getLocation().isUploadLock()
+            || (this->_event.getServer().isUploadLock() && this->_event.getLocation().getPath() == "/");
 
     if (this->_event.getRequest().getMethod() == "POST" && file_upload_lock && !this->_event.getLocation().isCgiLock()) {
         std::cout << MAGENTA << "Upload Event" << RESET << std::endl;
@@ -194,8 +197,8 @@ void Request::define_response_state() {
         this->_event.setEventStatus(Event::Status::Writing);
         return;
     } else if (this->_event.getRequest().getMethod() == "POST"){
-        std::cout << RED << "Not Implemented Event: Post Request allowed only for File Upload or CGI" << RESET << std::endl;
-        ErrorState::throw_error_state(this->_event, Event::HttpStatus::NOT_IMPLEMENTED);
+        std::cout << RED << "Forbidden Event: Post Request allowed only for File Upload or CGI" << RESET << std::endl;
+        ErrorState::throw_error_state(this->_event, Event::HttpStatus::FORBIDDEN);
         return;
     }
 

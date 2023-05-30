@@ -1,0 +1,790 @@
+{
+	"info": {
+		"_postman_id": "3d12d8d4-0724-4241-ac41-2f841e8d2fc6",
+		"name": "webserv-test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23229528"
+	},
+	"item": [
+		{
+			"name": "stress-test",
+			"item": []
+		},
+		{
+			"name": "functional-tests",
+			"item": [
+				{
+					"name": "Server 0 - Default Server",
+					"item": [
+						{
+							"name": "Default Server",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080"
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Default Directory Page",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/srcs/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"srcs",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Default Error Page",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/asdf/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"asdf",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Server 1 - Hello World",
+					"item": [
+						{
+							"name": "Location /hello",
+							"item": [
+								{
+									"name": "Custom Directory Page - Alternative",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8081/hello/directory/",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												"hello",
+												"directory",
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Custom Custom Error Page",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8081/hello/abc.txt",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												"hello",
+												"abc.txt"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Hello - Post 403 - Allowed only for CGI ou File Upload",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8081/hello",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												"hello"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete Method Not Allowed",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "abc",
+													"value": "123",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "http://localhost:8081/hello",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												"hello"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Redirect Location /",
+							"item": [
+								{
+									"name": "Redirect to Default Server",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8081/",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Redirect - 405 Post Method Not Allowed",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8081/",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Redirect - 405 Delete Method Not Allowed",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8081/",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Redirect - 405 Patch Method Not Allowed",
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8081/",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Redirect - 405 Options Method Not Allowed",
+									"request": {
+										"method": "OPTIONS",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8081/",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												""
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Server 2 - CGI - Upload - Auto Index",
+					"item": [
+						{
+							"name": "No Location Match",
+							"item": [
+								{
+									"name": "No location /, using Server Root/Index",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082"
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Location /images - Auto Index",
+							"item": [
+								{
+									"name": "Auto Index /",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/images",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"images"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Auto Index /test/",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/images",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"images"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "images/carro1.jpg",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/images/carro1.jpg",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"images",
+												"carro1.jpg"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "images/carro2.jpg",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/images/carro2.jpg",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"images",
+												"carro2.jpg"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "images/carro3.jpg",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/images/carro3.jpg",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"images",
+												"carro3.jpg"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "images/carro4.jpg - 404 Not Found",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/images/carro4.jpg",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"images",
+												"carro4.jpg"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "images/ - 405 Post Method Not Allowed",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/images/carro4.jpg",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"images",
+												"carro4.jpg"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "images/carro3.jpg - 405 Delete Method Not Allowed",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/images/carro3.jpg",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"images",
+												"carro3.jpg"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "CGI Test Page Location /test/cgi",
+							"item": [
+								{
+									"name": "Test Page for CGI",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/test/cgi",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"test",
+												"cgi"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Test Page for CGI - Post 403 - Allowed only for CGI ou File Upload",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/test/cgi",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"test",
+												"cgi"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "CGI Location /cgi",
+							"item": [
+								{
+									"name": "Location /cgi/limited - Body Limit 8 bytes",
+									"item": [
+										{
+											"name": "Python CGI - Login - 413 Entity Too Large",
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "urlencoded",
+													"urlencoded": [
+														{
+															"key": "name",
+															"value": "Rodrigo Avila",
+															"type": "text"
+														},
+														{
+															"key": "password",
+															"value": "42",
+															"type": "text"
+														}
+													]
+												},
+												"url": {
+													"raw": "http://localhost:8082/cgi/limited",
+													"protocol": "http",
+													"host": [
+														"localhost"
+													],
+													"port": "8082",
+													"path": [
+														"cgi",
+														"limited"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "Python CGI",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/cgi",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"cgi"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Python CGI ?name={}",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/cgi?name=Rodrigo",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"cgi"
+											],
+											"query": [
+												{
+													"key": "name",
+													"value": "Rodrigo"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Python CGI ?name={}&message={}",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/cgi?name=Rodrigo&message=This is a Message",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"cgi"
+											],
+											"query": [
+												{
+													"key": "name",
+													"value": "Rodrigo"
+												},
+												{
+													"key": "message",
+													"value": "This is a Message"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Python CGI - Login Error",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "name",
+													"value": "Rodrigo Avila",
+													"type": "text"
+												},
+												{
+													"key": "password",
+													"value": "123123123",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "http://localhost:8082/cgi",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"cgi"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Python CGI - Login Success",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "name",
+													"value": "Rodrigo Avila",
+													"type": "text"
+												},
+												{
+													"key": "password",
+													"value": "42",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "http://localhost:8082/cgi",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"cgi"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Python CGI - 405 Delete Method Not Allowed",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "name",
+													"value": "Rodrigo Avila",
+													"type": "text"
+												},
+												{
+													"key": "password",
+													"value": "42",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "http://localhost:8082/cgi",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"cgi"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Upload Test Page",
+							"item": [
+								{
+									"name": "Test Page for Upload",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/test/upload",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"test",
+												"upload"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Test Page for Upload - Post 403 - Allowed only for CGI ou File Upload",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/test/upload",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"test",
+												"upload"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Upload no Location Match - Server Default",
+							"item": []
+						},
+						{
+							"name": "Upload Location /upload",
+							"item": []
+						},
+						{
+							"name": "Delete Uploaded Files",
+							"item": []
+						}
+					]
+				}
+			]
+		}
+	]
+}
