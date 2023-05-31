@@ -11,7 +11,7 @@ Read::~Read() {}
 void Read::read_request() {
     if (ErrorState::is_error_state(this->_event)) return;
 
-    char buffer[REQUEST_READ_BUFFER_SIZE] = {};
+    char buffer[REQUEST_READ_BUFFER_SIZE] = {'\0'};
 
     long bytes_read = read(this->_event.getClientFd(), buffer, REQUEST_READ_BUFFER_SIZE);
 

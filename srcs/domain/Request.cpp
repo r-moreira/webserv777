@@ -33,7 +33,7 @@ void Request::parse_request() {
             bytes_read++;
             (void)*buffer++;
 
-            size_t request_read_remaining = REQUEST_READ_BUFFER_SIZE - bytes_read;
+            size_t request_read_remaining = this->_event.getRequestReadBytes() - bytes_read;
             size_t body_remaining_bytes = this->_event.getRequest().getBodyRemainingBytes() < request_read_remaining ?
                                           this->_event.getRequest().getBodyRemainingBytes() : request_read_remaining;
             std::string buffer_str(buffer, body_remaining_bytes);
@@ -164,7 +164,11 @@ void Request::define_response_state() {
 
     std::string request_uri = this->_event.getRequest().getUri();
 
-    if (request_uri.length() > 1 && request_uri[request_uri.length() - 1] != '/' && request_uri == this->_event.getLocation().getPath()) {
+    if (request_uri.length() > 1
+        && request_uri[request_uri.length() - 1] != '/'
+        && request_uri == this->_event.getLocation().getPath()
+        && this->_event.getRequest().getMethod() == "GET") {
+
         std::cout << MAGENTA << "Forcing redirect to location with /" << RESET << std::endl;
         std::string redirect_uri = request_uri + "/";
 

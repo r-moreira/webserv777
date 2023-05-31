@@ -37,6 +37,7 @@ Event::Event(int server_fd, int client_fd) {
     this->_remaining_read_bytes_writed = false;
     this->_is_cgi_set = false;
 
+    this->_remaining_read_buffer = "";
     this->_forced_redirect_location = "";
 
     this->_event_status = Status::Reading;
