@@ -75,7 +75,7 @@
 					]
 				},
 				{
-					"name": "Server 1 - Hello World",
+					"name": "Server 1 - Hello World - Redirect Server 0",
 					"item": [
 						{
 							"name": "Location /hello",
@@ -772,17 +772,317 @@
 						},
 						{
 							"name": "Upload no Location Match - Server Default",
-							"item": []
+							"item": [
+								{
+									"name": "Invalid Upload - 400 - Bad Request",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082"
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Upload large .csv file",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "csv",
+													"type": "file",
+													"src": "/Users/rodrigo/Dev/42/webserv777/public/upload-resources/customers.csv"
+												}
+											]
+										},
+										"url": {
+											"raw": "http://localhost:8082/",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Upload bin .jpg image",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "jpg",
+													"type": "file",
+													"src": "zelda.jpg"
+												}
+											]
+										},
+										"url": {
+											"raw": "http://localhost:8082/",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												""
+											]
+										}
+									},
+									"response": []
+								}
+							]
 						},
 						{
 							"name": "Upload Location /upload",
-							"item": []
+							"item": [
+								{
+									"name": "Invalid Upload - 400 Bad Request",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/upload/",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"upload",
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Invalid Upload - 405 Get Method Not Allowed",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/upload/",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"upload",
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Upload large .csv file",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "csv",
+													"type": "file",
+													"src": "customers.csv"
+												}
+											]
+										},
+										"url": {
+											"raw": "http://localhost:8082/upload",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"upload"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Upload bin .jpg image",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "csv",
+													"type": "file",
+													"src": "zelda.jpg"
+												}
+											]
+										},
+										"url": {
+											"raw": "http://localhost:8082/upload",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"upload"
+											]
+										}
+									},
+									"response": []
+								}
+							]
 						},
 						{
 							"name": "Delete Uploaded Files",
-							"item": []
+							"item": [
+								{
+									"name": "Delete - 404 Not Found from Location /",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/asdf",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"asdf"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete .csv from Location /",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/public/uploaded-files/customers.csv",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"public",
+												"uploaded-files",
+												"customers.csv"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete .jpg from Location /",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/public/uploaded-files/zelda.jpg",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"public",
+												"uploaded-files",
+												"zelda.jpg"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete - 404 Not Found from Location /upload",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/upload/asdf.txt",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"upload",
+												"asdf.txt"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete .csv from Location /upload",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/upload/customers.csv",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"upload",
+												"customers.csv"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete .jpg from Location /upload",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/upload/zelda.jpg",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"upload",
+												"zelda.jpg"
+											]
+										}
+									},
+									"response": []
+								}
+							]
 						}
 					]
+				},
+				{
+					"name": "Server 3 - Static Web Sites - Redirect Google",
+					"item": []
 				}
 			]
 		}
