@@ -28,6 +28,7 @@
 #include <netinet/in.h>
 #include <fstream>
 #include <fcntl.h>
+#include <set>
 
 #define RESET   "\033[0m"
 #define BLACK   "\033[30m"      /* Black */

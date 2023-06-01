@@ -65,8 +65,10 @@ void Request::parse_request() {
 }
 
 //TODO: Passar a considerar o Header Host para escolher qual servidor
-//  O primeiro servidor para um host:port é o que será escolhido por padrão
+//  O primeiro servidor para um host:port é o que será escolhido por padrão (Se não tiver header host)
 //  Se tiver outro servidor com mesmo host:port, o mesmo deverá ser escolhido se o header Host for igual ao server_name
+//  Se não tiver nenhum servidor com nome igual o header host passado, retornar 404
+
 void Request::choose_server(std::vector<Server> servers) {
     if (ErrorState::is_error_state(this->_event)) return;
 

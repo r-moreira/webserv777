@@ -13,10 +13,11 @@
 class Multiplexer {
 private:
     std::vector<Server> _servers;
+    std::map<int, int> _port_fd_map;
     int _epoll_fd;
 
 public:
-    Multiplexer(const std::vector<Server>& servers);
+    Multiplexer(const std::vector<Server>& servers, const std::map<int, int>& port_fd_map);
 
     ~Multiplexer();
 

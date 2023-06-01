@@ -1,5 +1,5 @@
 # Build and run:
-#   docker build -t clion/ubuntu/cpp-env:1.0 -f Dockerfile.cpp-env-ubuntu .
+#   docker build -t clion/ubuntu/cpp-env:1.1 -f Dockerfile.cpp-env-ubuntu .
 
 FROM arm64v8/ubuntu:latest
 
@@ -33,3 +33,4 @@ EXPOSE 8081
 EXPOSE 8082
 EXPOSE 8083
 EXPOSE 8084
+EXPOSE 8085

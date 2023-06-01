@@ -8,11 +8,17 @@ Server build_server_two(int port);
 
 Server build_server_three(int port);
 
+Server build_server_four(int port);
+
+Server build_server_five(int port);
+
 Server build_default_server(int port);
+
 
 std::vector<Server> servers_builder();
 
-void start_servers(std::vector<Server> &servers);
+std::map<int,int> start_servers(std::vector<Server> &servers);
+
 
 int main(int argc, char **argv) {
     signal(SIGPIPE, SIG_IGN);
@@ -25,24 +31,34 @@ int main(int argc, char **argv) {
     }
 
     std::vector<Server> servers = servers_builder();
-    start_servers(servers);
+    std::map<int,int> port_fd_map = start_servers(servers);
 
-    Multiplexer multiplexer(servers);
+    Multiplexer multiplexer(servers, port_fd_map);
     multiplexer.event_loop();
 
     return EXIT_SUCCESS;
 }
 
-//TODO: Setar o mesmo FD para todos os servidores que usam o mesma porta
-//  Iterar a lista de servidores e pegar todas as portas necessárias
-//  Criar um map de portas e FDs (Depois de ter feito o Socket::setupServer)
-//  Setar o mesmo FD para todos os servidores que usam a mesma porta
-void start_servers(std::vector<Server> &servers) {
+std::map<int, int> start_servers(std::vector<Server> &servers) {
+    std::set<int> ports;
+    std::map<int, int> port_fd_map;
+
+    for (std::vector<Server>::iterator it = servers.begin(); it != servers.end(); it++) {
+        ports.insert(it->getPort());
+    }
+
+    for (std::set<int>::iterator it = ports.begin(); it != ports.end(); it++) {
+        int fd = Socket::setupServer(*it);
+        port_fd_map.insert(std::pair<int, int>(*it, fd));
+    }
+
     for (std::vector<Server>::iterator it = servers.begin(); it != servers.end(); it++) {
         sleep(1);
-        it->setFd(Socket::setupServer(it->getPort()));
+        it->setFd(port_fd_map.find(it->getPort())->second);
         std::cout << BLUE << *it << RESET << std::endl << std::flush;
     }
+
+    return port_fd_map;
 }
 
 std::vector<Server> servers_builder() {
@@ -52,18 +68,62 @@ std::vector<Server> servers_builder() {
     Server server = build_server_one(port + 1);
     Server server2 = build_server_two(port + 2);
     Server server3 = build_server_three(port + 3);
+    Server server4 = build_server_four(port + 4);
+    Server server5 = build_server_five(port + 5);
 
     std::vector<Server> servers;
     servers.insert(servers.begin(), default_server);
     servers.insert(servers.begin() + 1, server);
     servers.insert(servers.begin() + 2, server2);
     servers.insert(servers.begin() + 3, server3);
+    servers.insert(servers.begin() + 4, server4);
+    servers.insert(servers.begin() + 5, server5);
     return servers;
 }
 
 Server build_default_server(int port) {
     Server server = Server();
 
+    server.setPort(port);
+    return server;
+}
+
+Server build_server_five(int port) {
+    Server server = Server();
+
+    std::vector<std::string> allowed_method_get;
+    allowed_method_get.push_back("GET");
+
+    std::vector<Location> locations = server.getLocations();
+
+    Location pet_lover_location = Location();
+    pet_lover_location.setRoot("./public/pet-lover");
+    pet_lover_location.setLimitExcept(allowed_method_get);
+
+    locations.push_back(pet_lover_location);
+
+    server.setLocations(locations);
+    server.setName("www.petlover.com");
+    server.setPort(port);
+    return server;
+}
+
+Server build_server_four(int port) {
+    Server server = Server();
+
+    std::vector<std::string> allowed_method_get;
+    allowed_method_get.push_back("GET");
+
+    std::vector<Location> locations = server.getLocations();
+
+    Location puppy_care_location = Location();
+    puppy_care_location.setRoot("./public/puppy-care");
+    puppy_care_location.setLimitExcept(allowed_method_get);
+
+    locations.push_back(puppy_care_location);
+
+    server.setLocations(locations);
+    server.setName("www.puppycare.com");
     server.setPort(port);
     return server;
 }

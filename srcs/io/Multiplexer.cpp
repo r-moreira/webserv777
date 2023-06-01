@@ -4,17 +4,17 @@
 
 #include "../../includes/io/Multiplexer.h"
 
-Multiplexer::Multiplexer(const std::vector<Server> &servers) : _servers(servers) {
+Multiplexer::Multiplexer(const std::vector<Server> &servers, const std::map<int,int>& port_fd_map)
+    : _servers(servers), _port_fd_map(port_fd_map){
+
     this->_epoll_fd = epoll_create1(0);
     if (_epoll_fd == -1) {
         std::cerr << RED << "Error while creating epoll fd: " << strerror(errno) << RESET << std::endl;
         exit(EXIT_FAILURE);
     }
 
-    std::vector<Server>::iterator it;
-    for (it = _servers.begin(); it != _servers.end(); it++) {
-
-        int server_socket_fd = it->getFd();
+    for (std::map<int,int>::const_iterator it = _port_fd_map.begin(); it != _port_fd_map.end(); it++) {
+        int server_socket_fd = it->second;
         struct epoll_event server_event = {};
 
         server_event.events = EPOLLIN;
@@ -70,8 +70,8 @@ void Multiplexer::event_loop() {
 }
 
 bool Multiplexer::is_server_fd(int fd) {
-    for (std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); it++)
-        if (it->getFd() == fd) return true;
+    for (std::map<int,int>::iterator it = _port_fd_map.begin(); it != _port_fd_map.end(); it++)
+        if (it->second == fd) return true;
     return false;
 }
 

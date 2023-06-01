@@ -2,7 +2,7 @@
   <configuration default="false" name="Dockerfile" type="docker-deploy" factoryName="dockerfile" server-name="Docker">
     <deployment type="dockerfile">
       <settings>
-        <option name="imageTag" value="cpp-env:1.0" />
+        <option name="imageTag" value="cpp-env:1.1" />
         <option name="containerName" value="Linux_for_cpp" />
         <option name="portBindings">
           <list>
@@ -25,6 +25,10 @@
             <DockerPortBindingImpl>
               <option name="containerPort" value="8084" />
               <option name="hostPort" value="8084" />
+            </DockerPortBindingImpl>
+            <DockerPortBindingImpl>
+              <option name="containerPort" value="8085" />
+              <option name="hostPort" value="8085" />
             </DockerPortBindingImpl>
           </list>
         </option>
