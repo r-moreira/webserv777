@@ -18,6 +18,19 @@
 					"item": [
 						{
 							"name": "Default Server",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "GET",
 								"header": [],
@@ -34,6 +47,19 @@
 						},
 						{
 							"name": "Default Directory Page",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 403\", function () {",
+											"    pm.response.to.have.status(403);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "GET",
 								"header": [],
@@ -54,6 +80,19 @@
 						},
 						{
 							"name": "Default Error Page",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "GET",
 								"header": [],
@@ -82,6 +121,19 @@
 							"item": [
 								{
 									"name": "Custom Directory Page - Alternative",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 403\", function () {",
+													"    pm.response.to.have.status(403);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -103,6 +155,19 @@
 								},
 								{
 									"name": "Custom Custom Error Page",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 404\", function () {",
+													"    pm.response.to.have.status(404);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -123,6 +188,19 @@
 								},
 								{
 									"name": "Hello - Post 403 - Allowed only for CGI ou File Upload",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 403\", function () {",
+													"    pm.response.to.have.status(403);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "POST",
 										"header": [],
@@ -142,6 +220,19 @@
 								},
 								{
 									"name": "Delete Method Not Allowed",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 405\", function () {",
+													"    pm.response.to.have.status(405);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "DELETE",
 										"header": [],
@@ -176,6 +267,19 @@
 							"item": [
 								{
 									"name": "Redirect to Default Server",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -195,6 +299,19 @@
 								},
 								{
 									"name": "Redirect - 405 Post Method Not Allowed",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 405\", function () {",
+													"    pm.response.to.have.status(405);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "POST",
 										"header": [],
@@ -214,6 +331,19 @@
 								},
 								{
 									"name": "Redirect - 405 Delete Method Not Allowed",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 405\", function () {",
+													"    pm.response.to.have.status(405);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "DELETE",
 										"header": [],
@@ -233,6 +363,19 @@
 								},
 								{
 									"name": "Redirect - 405 Patch Method Not Allowed",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 405\", function () {",
+													"    pm.response.to.have.status(405);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "PATCH",
 										"header": [],
@@ -252,6 +395,19 @@
 								},
 								{
 									"name": "Redirect - 405 Options Method Not Allowed",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 405\", function () {",
+													"    pm.response.to.have.status(405);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "OPTIONS",
 										"header": [],
@@ -281,6 +437,19 @@
 							"item": [
 								{
 									"name": "No location /, using Server Root/Index",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -302,6 +471,19 @@
 							"item": [
 								{
 									"name": "Auto Index /",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -321,6 +503,19 @@
 								},
 								{
 									"name": "Auto Index /test/",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -340,6 +535,19 @@
 								},
 								{
 									"name": "images/carro1.jpg",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -360,6 +568,19 @@
 								},
 								{
 									"name": "images/carro2.jpg",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -380,6 +601,19 @@
 								},
 								{
 									"name": "images/carro3.jpg",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -400,6 +634,19 @@
 								},
 								{
 									"name": "images/carro4.jpg - 404 Not Found",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 404\", function () {",
+													"    pm.response.to.have.status(404);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -420,6 +667,19 @@
 								},
 								{
 									"name": "images/ - 405 Post Method Not Allowed",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 405\", function () {",
+													"    pm.response.to.have.status(405);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "POST",
 										"header": [],
@@ -440,6 +700,19 @@
 								},
 								{
 									"name": "images/carro3.jpg - 405 Delete Method Not Allowed",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 405\", function () {",
+													"    pm.response.to.have.status(405);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "DELETE",
 										"header": [],
@@ -465,6 +738,19 @@
 							"item": [
 								{
 									"name": "Test Page for CGI",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -485,6 +771,19 @@
 								},
 								{
 									"name": "Test Page for CGI - Post 403 - Allowed only for CGI ou File Upload",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 403\", function () {",
+													"    pm.response.to.have.status(403);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "POST",
 										"header": [],
@@ -513,6 +812,19 @@
 									"item": [
 										{
 											"name": "Python CGI - Login - 413 Entity Too Large",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Status code is 413\", function () {",
+															"    pm.response.to.have.status(413);",
+															"});"
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
 											"request": {
 												"method": "POST",
 												"header": [],
@@ -550,6 +862,19 @@
 								},
 								{
 									"name": "Python CGI",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -569,6 +894,19 @@
 								},
 								{
 									"name": "Python CGI ?name={}",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -594,6 +932,19 @@
 								},
 								{
 									"name": "Python CGI ?name={}&message={}",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -623,6 +974,19 @@
 								},
 								{
 									"name": "Python CGI - Login Error",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "POST",
 										"header": [],
@@ -657,6 +1021,19 @@
 								},
 								{
 									"name": "Python CGI - Login Success",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "POST",
 										"header": [],
@@ -691,6 +1068,19 @@
 								},
 								{
 									"name": "Python CGI - 405 Delete Method Not Allowed",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 405\", function () {",
+													"    pm.response.to.have.status(405);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "DELETE",
 										"header": [],
@@ -730,6 +1120,19 @@
 							"item": [
 								{
 									"name": "Test Page for Upload",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -750,6 +1153,19 @@
 								},
 								{
 									"name": "Test Page for Upload - Post 403 - Allowed only for CGI ou File Upload",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 403\", function () {",
+													"    pm.response.to.have.status(403);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "POST",
 										"header": [],
@@ -775,6 +1191,19 @@
 							"item": [
 								{
 									"name": "Invalid Upload - 400 - Bad Request",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "POST",
 										"header": [],
@@ -791,6 +1220,19 @@
 								},
 								{
 									"name": "Upload large .csv file",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 201\", function () {",
+													"    pm.response.to.have.status(201);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "POST",
 										"header": [],
@@ -820,6 +1262,19 @@
 								},
 								{
 									"name": "Upload bin .jpg image",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 201\", function () {",
+													"    pm.response.to.have.status(201);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "POST",
 										"header": [],
@@ -854,6 +1309,19 @@
 							"item": [
 								{
 									"name": "Invalid Upload - 400 Bad Request",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "POST",
 										"header": [],
@@ -874,6 +1342,19 @@
 								},
 								{
 									"name": "Invalid Upload - 405 Get Method Not Allowed",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 405\", function () {",
+													"    pm.response.to.have.status(405);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -894,6 +1375,19 @@
 								},
 								{
 									"name": "Upload large .csv file",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 201\", function () {",
+													"    pm.response.to.have.status(201);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "POST",
 										"header": [],
@@ -923,6 +1417,19 @@
 								},
 								{
 									"name": "Upload bin .jpg image",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 201\", function () {",
+													"    pm.response.to.have.status(201);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "POST",
 										"header": [],
@@ -957,6 +1464,19 @@
 							"item": [
 								{
 									"name": "Delete - 404 Not Found from Location /",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 404\", function () {",
+													"    pm.response.to.have.status(404);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "DELETE",
 										"header": [],
@@ -976,6 +1496,19 @@
 								},
 								{
 									"name": "Delete .csv from Location /",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 204\", function () {",
+													"    pm.response.to.have.status(204);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "DELETE",
 										"header": [],
@@ -997,6 +1530,19 @@
 								},
 								{
 									"name": "Delete .jpg from Location /",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 204\", function () {",
+													"    pm.response.to.have.status(204);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "DELETE",
 										"header": [],
@@ -1018,6 +1564,19 @@
 								},
 								{
 									"name": "Delete - 404 Not Found from Location /upload",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 404\", function () {",
+													"    pm.response.to.have.status(404);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "DELETE",
 										"header": [],
@@ -1038,6 +1597,19 @@
 								},
 								{
 									"name": "Delete .csv from Location /upload",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 204\", function () {",
+													"    pm.response.to.have.status(204);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "DELETE",
 										"header": [],
@@ -1058,6 +1630,19 @@
 								},
 								{
 									"name": "Delete .jpg from Location /upload",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 204\", function () {",
+													"    pm.response.to.have.status(204);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "DELETE",
 										"header": [],
@@ -1088,6 +1673,19 @@
 							"item": [
 								{
 									"name": "redirect google /redirect",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -1107,6 +1705,19 @@
 								},
 								{
 									"name": "redirect google /redirect/",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -1127,6 +1738,19 @@
 								},
 								{
 									"name": "redirect google - 405 Post Method Not Allowed",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 405\", function () {",
+													"    pm.response.to.have.status(405);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "POST",
 										"header": [],
@@ -1146,6 +1770,19 @@
 								},
 								{
 									"name": "redirect google - 405 Delete Method Not Allowed",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 405\", function () {",
+													"    pm.response.to.have.status(405);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "POST",
 										"header": [],
@@ -1170,6 +1807,19 @@
 							"item": [
 								{
 									"name": "puppy care",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -1186,6 +1836,19 @@
 								},
 								{
 									"name": "puppy care /",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -1205,6 +1868,19 @@
 								},
 								{
 									"name": "puppy care - 405 Post Method Not Allowed",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 405\", function () {",
+													"    pm.response.to.have.status(405);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "POST",
 										"header": [],
@@ -1224,6 +1900,19 @@
 								},
 								{
 									"name": "puppy care - 405 Delete Method Not Allowed Copy",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 405\", function () {",
+													"    pm.response.to.have.status(405);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "DELETE",
 										"header": [],
@@ -1245,6 +1934,19 @@
 							"item": [
 								{
 									"name": "puppy /care",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -1264,6 +1966,19 @@
 								},
 								{
 									"name": "puppy /care/",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -1284,6 +1999,19 @@
 								},
 								{
 									"name": "puppy care - 405 Post Method Not Allowed",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 405\", function () {",
+													"    pm.response.to.have.status(405);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "POST",
 										"header": [],
@@ -1303,6 +2031,19 @@
 								},
 								{
 									"name": "puppy care - 405 Delete Method Not Allowed Copy",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 405\", function () {",
+													"    pm.response.to.have.status(405);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "DELETE",
 										"header": [],
@@ -1328,6 +2069,19 @@
 							"item": [
 								{
 									"name": "pet /lover",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -1347,6 +2101,19 @@
 								},
 								{
 									"name": "pet /lover/",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "GET",
 										"header": [],
@@ -1367,6 +2134,19 @@
 								},
 								{
 									"name": "puppy care - 405 Post Method Not Allowed",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 405\", function () {",
+													"    pm.response.to.have.status(405);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "POST",
 										"header": [],
@@ -1386,6 +2166,19 @@
 								},
 								{
 									"name": "puppy care - 405 Delete Method Not Allowed Copy",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 405\", function () {",
+													"    pm.response.to.have.status(405);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
 									"request": {
 										"method": "DELETE",
 										"header": [],
