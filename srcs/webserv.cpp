@@ -33,10 +33,6 @@ int main(int argc, char **argv) {
     return EXIT_SUCCESS;
 }
 
-//TODO: Setar o mesmo FD para todos os servidores que usam o mesma porta
-//  Iterar a lista de servidores e pegar todas as portas necessárias
-//  Criar um map de portas e FDs (Depois de ter feito o Socket::setupServer)
-//  Setar o mesmo FD para todos os servidores que usam a mesma porta
 void start_servers(std::vector<Server> &servers) {
     for (std::vector<Server>::iterator it = servers.begin(); it != servers.end(); it++) {
         sleep(1);
