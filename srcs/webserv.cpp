@@ -84,8 +84,8 @@ Server build_server_three(int port) {
     Location puppy_care_location_two = Location();
     puppy_care_location_two.setPath("/care");
     puppy_care_location_two.setRoot("./public/puppy-care");
-    puppy_care_location_one.setIndex("index.html");
-    puppy_care_location_one.setLimitExcept(allowed_method_get);
+    puppy_care_location_two.setIndex("index.html");
+    puppy_care_location_two.setLimitExcept(allowed_method_get);
 
     std::map<int, std::string> error_pages_lover_location;
     error_pages_lover_location.insert(std::pair<int, std::string>(403, "./public/error-pages/403.html"));

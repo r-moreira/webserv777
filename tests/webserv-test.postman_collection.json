@@ -1082,7 +1082,331 @@
 				},
 				{
 					"name": "Server 3 - Static Web Sites - Redirect Google",
-					"item": []
+					"item": [
+						{
+							"name": "Redirect Location /redirect",
+							"item": [
+								{
+									"name": "redirect google /redirect",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8083/redirect",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8083",
+											"path": [
+												"redirect"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "redirect google /redirect/",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8083/redirect/",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8083",
+											"path": [
+												"redirect",
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "redirect google - 405 Post Method Not Allowed",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8083/redirect",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8083",
+											"path": [
+												"redirect"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "redirect google - 405 Delete Method Not Allowed",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8083/redirect",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8083",
+											"path": [
+												"redirect"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Web Site Location /",
+							"item": [
+								{
+									"name": "puppy care",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8083",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8083"
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "puppy care /",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8083/",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8083",
+											"path": [
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "puppy care - 405 Post Method Not Allowed",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8083/",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8083",
+											"path": [
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "puppy care - 405 Delete Method Not Allowed Copy",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8083",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8083"
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Web Site Location /care",
+							"item": [
+								{
+									"name": "puppy /care",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8083/care",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8083",
+											"path": [
+												"care"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "puppy /care/",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8083/care/",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8083",
+											"path": [
+												"care",
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "puppy care - 405 Post Method Not Allowed",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8083/care",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8083",
+											"path": [
+												"care"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "puppy care - 405 Delete Method Not Allowed Copy",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8083/care/",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8083",
+											"path": [
+												"care",
+												""
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Web Site Location /lover",
+							"item": [
+								{
+									"name": "pet /lover",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8083/lover",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8083",
+											"path": [
+												"lover"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "pet /lover/",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8083/lover/",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8083",
+											"path": [
+												"lover",
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "puppy care - 405 Post Method Not Allowed",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8083/lover",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8083",
+											"path": [
+												"lover"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "puppy care - 405 Delete Method Not Allowed Copy",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8083/lover/",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8083",
+											"path": [
+												"lover",
+												""
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
 				}
 			]
 		}
