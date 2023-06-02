@@ -7,24 +7,34 @@ class LocationParser
 {
 private:
     std::string endPoint;
-    std::string limitExcept;
+    std::vector<std::string> limitExcept;
     std::string root;
-    std::string returnPage;
+    std::string redirect;
+    std::string directoryPage;
+    std::vector<std::string> errorPage;
+    int maxBodySize;
+    bool autoIndex;
     bool cgi_lock;
     void parcerLimitExcept(std::string location);
     void parcerRoot(std::string location);
-    void parcerReturnPage(std::string location);
+    void parcerRedirect(std::string location);
     void parcerCgiLock(std::string location);
     void parcerEndPoint(std::string location);
+    void parcerDirPage(std::string location);
+    void parcerErrorPage(std::string location);
     int contains(std::string delimiter, std::string str);
 public:
     LocationParser();
     void addNewAtribute(std::string str);
-    std::string getLimitExcept();
+    std::vector<std::string> getLimitExcept();
     std::string getRoot();
-    std::string getReturnPage();
+    std::string getRedirect();
     std::string getEndPoint();
+    std::string getDirPage();
+    std::vector<std::string> getErrorPage();
     bool getCgiLock();
 };
+
+std::vector<std::string> spliteString(std::string str);
 
 #endif

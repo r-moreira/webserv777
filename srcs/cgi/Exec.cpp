@@ -70,6 +70,7 @@ int Exec::getHttpStatusCode() {
 }
 
 void Exec::script_exec(int stdIn, int stdOut) {
+    dup2(stdIn, STDIN_FILENO);
     dup2(stdOut, STDOUT_FILENO);
 
     char* errorMessage = (char *)"Content-Type: text/html\r\n\r Status: 500 Internal Server Error\r\n\r\n";

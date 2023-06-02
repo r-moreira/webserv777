@@ -129,7 +129,7 @@ void Write::write_body_to_cgi() {
         std::cout << YELLOW << "Read " << read_bytes << " bytes from client body" << RESET << std::endl;
 
         bytes_written = write(this->_event.getServerCgiFdIn(), buffer, read_bytes);
-        if (bytes_written != read_bytes) {
+        if ((long)bytes_written != read_bytes) {
             std::cerr << RED << "Error while writing to CGI STDIN: " << strerror(errno) << RESET << std::endl;
             ErrorState::throw_error_state(this->_event, Event::HttpStatus::INTERNAL_SERVER_ERROR);
             break;

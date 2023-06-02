@@ -1,54 +1,38 @@
 #include "../../includes/parser/ConfigParser.hpp"
 
-FT::ConfigParser::ConfigParser(std::string fileName) {
-    read_file(fileName);
-    is_valide();
-    serverParcer();
-}
-
-void FT::ConfigParser::read_file(std::string fileName) {
-    int fd;
-    fd = open(fileName.data(), O_RDONLY, 0644);
-
-    char buffer[REQUEST_READ_BUFFER_SIZE] = {};
-
-    long bytes_read = read(fd, buffer, REQUEST_READ_BUFFER_SIZE);
-
-    if (bytes_read == -1) {
-        std::cerr << RED << "Error while reading server config file " << strerror(errno) << RESET << std::endl;
-    }
-    fileContent = buffer;
-}
-
-void FT::ConfigParser::serverParcer() {
+FT::ConfigParser::ConfigParser(std::string fileName): serverLocationCount(0), serverLocationAtribute(NULL) {
     std::string delimiter = "server {";
     int serverCount = 0;
     ServerType* server = new ServerType();
-    std::istringstream iss(fileContent);
+    std::ifstream iss(fileName.data());
 
     std::string word;
     while (std::getline(iss, word, '\n')) {
-        if (word.find(delimiter) != std::string::npos) {
-            serverCount++;
-            if (serverLocationAtribute) {
-                server->locations.push_back(serverLocationAtribute);
+        if (!is_comment(word)) {
+            if (word.find(delimiter) != std::string::npos) {
+                serverCount++;
+                if (serverLocationAtribute) {
+                    server->locations.push_back(serverLocationAtribute);
+                }
+                serverLocationCount = 0;
+                serverLocationAtribute = NULL;
             }
-            serverLocationCount = 0;
-            serverLocationAtribute = NULL;
-        }
-        else if (serverCount) {
-            if (serverCount > 1) {
-                servers.push_back(server);
-                serverCount--;
-                server = new ServerType();
+            else if (serverCount) {
+                if (serverCount > 1) {
+                    servers.push_back(server);
+                    serverCount--;
+                    server = new ServerType();
+                }
+                parcerPort(server, word);
+                serverName(server, word);
+                root(server, word);
+                index(server, word);
+                errorPage(server, word);
+                maxBodySize(server, word);
+                parcerLocation(server, word);
+                parcerLimitExcept(server, word);
+                parcerDirPage(server, word);
             }
-            parcerPort(server, word);
-            serverName(server, word);
-            root(server, word);
-            index(server, word);
-            errorPage(server, word);
-            maxBodySize(server, word);
-            parcerLocation(server, word);
         }
     }
     if (serverCount == 1) {
@@ -56,29 +40,8 @@ void FT::ConfigParser::serverParcer() {
     }
 }
 
-int FT::ConfigParser::is_valide() {
-    std::string delimiter = "server";
-    int openQuotes = 0;
-
-    if(fileContent.find(delimiter) == fileContent.size()){
-        return 0;
-    }
-    for (size_t i = 0; i < fileContent.size(); i++) {
-        if (fileContent[i] == '{') {
-            openQuotes++;
-        }
-        else if (fileContent[i] == '}') {
-            openQuotes--;
-        }
-    }
-    if (openQuotes != 0) {
-        return 0;
-    }
-    return 1;
-}
-   
 void FT::ConfigParser::parcerPort(ServerType *server, std::string atribute) {
-    std::string delimiter = "port ";
+    std::string delimiter = "listen ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
     if (contains(delimiter, atribute)) {
@@ -87,7 +50,7 @@ void FT::ConfigParser::parcerPort(ServerType *server, std::string atribute) {
 }
 
 void FT::ConfigParser::serverName(ServerType *server, std::string atribute) {
-    std::string delimiter = "server_name ";
+    std::string delimiter = "_server_name ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
     if (contains(delimiter, atribute)) {
@@ -124,7 +87,7 @@ void FT::ConfigParser::errorPage(ServerType *server, std::string atribute) {
 }
 
 void FT::ConfigParser::maxBodySize(ServerType *server, std::string atribute) {
-    std::string delimiter = "client_max_body_size ";
+    std::string delimiter = "max_body_size ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
     if (contains(delimiter, atribute)) {
@@ -148,17 +111,6 @@ void FT::ConfigParser::parcerLocation(ServerType* server, std::string atribute) 
     }
 }
 
-std::vector<std::string> FT::ConfigParser::spliteString(std::string str) {
-    std::istringstream iss(str);
-    std::vector<std::string> words;
-
-    std::string word;
-    while (std::getline(iss, word, ' ')) {
-        words.push_back(word);
-    }
-    return words;
-}
-
 int FT::ConfigParser::contains(std::string delimiter, std::string str) {
     return str.find(delimiter) != std::string::npos ? 1 : 0;
 }
@@ -173,4 +125,27 @@ int FT::ConfigParser::getHowMuchServers() {
 
 FT::ServerType & FT::ConfigParser::operator[](int i) {
     return *(servers[i]);
+}
+
+void FT::ConfigParser::parcerLimitExcept(ServerType *server, std::string atribute) {
+    std::string delimiter = "limit_except ";
+    std::string endDelimiter = "\n";
+    int n = delimiter.size();
+    if (contains(delimiter, atribute)) {
+        server->limitExcept = spliteString(atribute.substr(atribute.find(delimiter) + n, atribute.find(endDelimiter) - n));
+    }
+}
+
+void FT::ConfigParser::parcerDirPage(ServerType *server, std::string atribute) {
+    std::string delimiter = "directory_page ";
+    std::string endDelimiter = "\n";
+    int n = delimiter.size();
+    if (contains(delimiter, atribute)) {
+        server->directoryPage = atribute.substr(atribute.find(delimiter) + n, atribute.find(endDelimiter) - n);
+    }
+}
+
+int FT::ConfigParser::is_comment(std::string str) {
+    std::string delimiter = "#";
+    return contains(delimiter, str);
 }
