@@ -74,9 +74,8 @@ void Exec::script_exec(int stdIn, int stdOut) {
     dup2(stdOut, STDOUT_FILENO);
 
     char* errorMessage = (char *)"Content-Type: text/html\r\n\r Status: 500 Internal Server Error\r\n\r\n";
-    char * const cmd[] = {(char *)"python3", (char *)"tt.py", NULL};
 
-    execve("/usr/bin/python3", cmd, NULL);
+    execve(_path, _cmd, _env);
     write(STDOUT_FILENO, errorMessage, 64);
 }
 

@@ -32,6 +32,8 @@ FT::ConfigParser::ConfigParser(std::string fileName): serverLocationCount(0), se
                 parcerLocation(server, word);
                 parcerLimitExcept(server, word);
                 parcerDirPage(server, word);
+                parcerUploadPath(server, word);
+                parcerAutoIndex(server, word);
             }
         }
     }
@@ -91,7 +93,7 @@ void FT::ConfigParser::maxBodySize(ServerType *server, std::string atribute) {
     std::string endDelimiter = "\n";
     int n = delimiter.size();
     if (contains(delimiter, atribute)) {
-        server->maxBodySize = atoi(atribute.substr(atribute.find(delimiter) + n, atribute.find(endDelimiter) - n).data());
+        server->maxBodySize = std::atoi(atribute.substr(atribute.find(delimiter) + n, atribute.find(endDelimiter) - n).c_str());
     }
 }
 
@@ -148,4 +150,23 @@ void FT::ConfigParser::parcerDirPage(ServerType *server, std::string atribute) {
 int FT::ConfigParser::is_comment(std::string str) {
     std::string delimiter = "#";
     return contains(delimiter, str);
+}
+
+void FT::ConfigParser::parcerUploadPath(ServerType *server, std::string atribute) {
+    std::string delimiter = "upload ";
+    std::string endDelimiter = "\n";
+    int n = delimiter.size();
+    if (contains(delimiter, atribute)) {
+        server->uploadPath = atribute.substr(atribute.find(delimiter) + n, atribute.find(endDelimiter) - n);
+        server->uploadLock = true;
+    }
+}
+
+void FT::ConfigParser::parcerAutoIndex(ServerType *server, std::string atribute) {
+    std::string delimiter = "auto_index ";
+    std::string endDelimiter = "\n";
+    int n = delimiter.size();
+    if (contains(delimiter, atribute)) {
+        server->auto_index = atribute.substr(atribute.find(delimiter) + n, atribute.find(endDelimiter) - n) == "on" ? true : false;
+    }
 }

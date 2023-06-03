@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
 
     FT::ConfigParser configParser(argv[1]);
     FT::ServerType* firstServer = configParser.getServers()[0];
-    std::cout << firstServer->auto_index << std::endl;
+    std::cout << firstServer->maxBodySize << std::endl;
     std::vector<Server> servers = servers_builder();
     start_servers(servers);
 

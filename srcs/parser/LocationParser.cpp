@@ -8,9 +8,12 @@ void LocationParser::addNewAtribute(std::string str) {
     parcerLimitExcept(str);
     parcerRoot(str);
     parcerRedirect(str);
-    parcerCgiLock(str);
     parcerDirPage(str);
     parcerErrorPage(str);
+    parcerCgiPath(str);
+    parcerUploadPath(str);
+    parcerMaxBodySize(str);
+    parcerAutoIndex(str);
 }
 
 void LocationParser::parcerRoot(std::string location) {
@@ -18,7 +21,7 @@ void LocationParser::parcerRoot(std::string location) {
     std::string endDelimiter = "\n";
     int n = delimiter.size();
     if (contains(delimiter, location)) {
-        root = location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n);
+        _location.setRoot(location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n));
     }
 }
 
@@ -27,7 +30,7 @@ void LocationParser::parcerLimitExcept(std::string location) {
     std::string endDelimiter = "\n";
     int n = delimiter.size();
     if (contains(delimiter, location)) {
-        limitExcept = spliteString(location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n));
+        _location.setLimitExcept(spliteString(location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n)));
     }
 }
 
@@ -36,7 +39,8 @@ void LocationParser::parcerRedirect(std::string location) {
     std::string endDelimiter = "\n";
     int n = delimiter.size();
     if (contains(delimiter, location)) {
-        redirect = location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n);
+        _location.setRedirectLocation(location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n));
+        _location.setRedirectLock(true);
     }
 }
 
@@ -45,36 +49,8 @@ void LocationParser::parcerEndPoint(std::string location) {
     std::string endDelimiter = " ";
     int n = delimiter.size();
     if (contains(delimiter, location)) {
-        endPoint = location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n);
+        _location.setPath(location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n));
     }
-}
-
-void LocationParser::parcerCgiLock(std::string location) {
-    std::string delimiter = "cgi_lock";
-    if (contains(delimiter, location)) {
-        cgi_lock = 1;
-    }
-    cgi_lock = 0;
-}
-
-bool LocationParser::getCgiLock() {
-    return cgi_lock;
-}
-
-std::string LocationParser::getEndPoint() {
-    return endPoint;
-}
-
-std::vector<std::string> LocationParser::getLimitExcept() {
-    return limitExcept;
-}
-
-std::string LocationParser::getRedirect() {
-    return redirect;
-}
-
-std::string LocationParser::getRoot() {
-    return root;
 }
 
 int LocationParser::contains(std::string delimiter, std::string str) {
@@ -86,7 +62,7 @@ void LocationParser::parcerDirPage(std::string location) {
     std::string endDelimiter = "\n";
     int n = delimiter.size();
     if (contains(delimiter, location)) {
-        directoryPage = location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n);
+        _location.setRoot(location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n));
     }
 }
 
@@ -95,16 +71,15 @@ void LocationParser::parcerErrorPage(std::string location) {
     std::string endDelimiter = "\n";
     int n = delimiter.size();
     if (contains(delimiter, location)) {
-        errorPage = spliteString(location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n));
+        std::vector<std::string> errors = spliteString(location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n));
+        std::map<int, std::string> errorPages;
+        for (size_t i = 0; i < errors.size(); i++) {
+            int key = std::atoi(errors[i].c_str());
+            i += 1;
+            errorPages.insert(std::pair<int, std::string>(key, errors[i]));
+        }
+        _location.setErrorPages(errorPages);
     }
-}
-
-std::string LocationParser::getDirPage() {
-    return directoryPage;
-}
-
-std::vector<std::string> LocationParser::getErrorPage() {
-    return errorPage;
 }
 
 std::vector<std::string> spliteString(std::string str) {
@@ -116,4 +91,46 @@ std::vector<std::string> spliteString(std::string str) {
         words.push_back(word);
     }
     return words;
+}
+
+void LocationParser::parcerUploadPath(std::string location) {
+    std::string delimiter = "upload ";
+    std::string endDelimiter = "\n";
+    int n = delimiter.size();
+    if (contains(delimiter, location)) {
+        _location.setUploadPath(location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n));
+        _location.setUploadLock(true);
+    }
+}
+
+void LocationParser::parcerCgiPath(std::string location) {
+    std::string delimiter = "cgi_path ";
+    std::string endDelimiter = "\n";
+    int n = delimiter.size();
+    if (contains(delimiter, location)) {
+        _location.setCgiPath(location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n));
+        _location.setCgiLock(true);
+    }
+}
+
+void LocationParser::parcerMaxBodySize(std::string location) {
+    std::string delimiter = "max_body_size ";
+    std::string endDelimiter = "\n";
+    int n = delimiter.size();
+    if (contains(delimiter, location)) {
+        _location.setMaxBodySize(std::atoi(location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n).c_str()));
+    }
+}
+
+void LocationParser::parcerAutoIndex(std::string location) {
+    std::string delimiter = "auto_index ";
+    std::string endDelimiter = "\n";
+    int n = delimiter.size();
+    if (contains(delimiter, location)) {
+        _location.setAutoIndex(location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n) == "on" ? 1 : 0);
+    }
+}
+
+Location LocationParser::getLocation() {
+    return _location;
 }

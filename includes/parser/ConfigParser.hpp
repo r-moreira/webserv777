@@ -13,10 +13,11 @@ struct ServerType {
     std::string directoryPage;
     std::vector<std::string> index;
     std::vector<std::string> errorPage;
-    std::vector<std::string> cgi;
     int maxBodySize;
     bool auto_index;
     std::vector<LocationParser*> locations;
+    std::string uploadPath;
+    bool uploadLock;
 };
 
 class ConfigParser
@@ -36,6 +37,8 @@ private:
     void parcerLimitExcept(ServerType *server, std::string location);
     void parcerDirPage(ServerType *server, std::string atribute);
     int is_comment(std::string str);
+    void parcerUploadPath(ServerType *server, std::string atribute);
+    void parcerAutoIndex(ServerType *server, std::string atribute);
 public:
     ConfigParser(std::string fileName);
     std::vector<ServerType *> getServers();

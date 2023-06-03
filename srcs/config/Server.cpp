@@ -5,17 +5,25 @@
 #include "../../includes/config/Server.h"
 
 Server::Server() {
-    this->_port = 8080;
-    this->_index = "index.html";
-    this->_root = "./";
-    this->_fd = -1;
-    this->_max_body_size = -1;
-    this->_autoindex = AutoIndexOption::NONE;
-    this->_upload_lock = false;
-    this->_limit_except = std::vector<std::string>();
-    this->_limit_except.push_back("GET");
-    this->_limit_except.push_back("POST");
-    this->_limit_except.push_back("DELETE");
+    // _name = serverParam->serverName;
+    // _port = serverParam->port;
+    // _root = serverParam->root;
+    // _index = serverParam->index[0];
+    // _max_body_size = serverParam->maxBodySize;
+    // _upload_path = serverParam->uploadPath;
+    // _directory_request_page = serverParam->directoryPage;
+    // // _error_pages = serverParam->errorPage;
+    // for (int i = 0; i < serverParam->errorPage.size(); i++) {
+    //     int key = std::atoi(serverParam->errorPage[i].c_str());
+    //     _error_pages.insert(std::pair<int, std::string>(key, serverParam->errorPage[i + 1]));
+    //     i++;
+    // }
+    // _limit_except = serverParam->limitExcept;
+    // _autoindex = AutoIndexOption::NONE;
+    // _upload_lock = serverParam->uploadLock;
+    // for (int i = 0; i < serverParam->locations.size(); i++) {
+    //     _locations.push_back(serverParam->locations[i]->getLocation());
+    // }
 }
 
 Server::~Server() {
