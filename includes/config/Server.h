@@ -8,7 +8,7 @@
 #include "../webserv.h"
 #include "../network/Socket.h"
 #include "Location.h"
-
+#include "../parser/ConfigParser.hpp"
 
 class Server {
 public:
@@ -35,8 +35,10 @@ private:
     AutoIndexOption::auto_index_option _autoindex;
     bool _upload_lock;
 public:
-    Server();
+    Server(FT::ServerType *serverParam);
 
+    Server();
+    
     const std::vector<Location> &getLocations() const;
 
     void setLocations(const std::vector<Location> &locations);

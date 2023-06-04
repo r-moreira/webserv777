@@ -4,27 +4,29 @@
 
 #include "../../includes/config/Server.h"
 
-Server::Server() {
-    // _name = serverParam->serverName;
-    // _port = serverParam->port;
-    // _root = serverParam->root;
-    // _index = serverParam->index[0];
-    // _max_body_size = serverParam->maxBodySize;
-    // _upload_path = serverParam->uploadPath;
-    // _directory_request_page = serverParam->directoryPage;
-    // // _error_pages = serverParam->errorPage;
-    // for (int i = 0; i < serverParam->errorPage.size(); i++) {
-    //     int key = std::atoi(serverParam->errorPage[i].c_str());
-    //     _error_pages.insert(std::pair<int, std::string>(key, serverParam->errorPage[i + 1]));
-    //     i++;
-    // }
-    // _limit_except = serverParam->limitExcept;
-    // _autoindex = AutoIndexOption::NONE;
-    // _upload_lock = serverParam->uploadLock;
-    // for (int i = 0; i < serverParam->locations.size(); i++) {
-    //     _locations.push_back(serverParam->locations[i]->getLocation());
-    // }
+Server::Server(FT::ServerType *serverParam) {
+    _name = serverParam->serverName;
+    _port = serverParam->port;
+    _root = serverParam->root;
+    _index = serverParam->index[0];
+    _max_body_size = serverParam->maxBodySize;
+    _upload_path = serverParam->uploadPath;
+    _directory_request_page = serverParam->directoryPage;
+    // _error_pages = serverParam->errorPage;
+    for (size_t i = 0; i < serverParam->errorPage.size(); i++) {
+        int key = std::atoi(serverParam->errorPage[i].c_str());
+        i += 1;
+        _error_pages.insert(std::pair<int, std::string>(key, serverParam->errorPage[i]));
+    }
+    _limit_except = serverParam->limitExcept;
+    this->setAutoindex(serverParam->auto_index);
+    _upload_lock = serverParam->uploadLock;
+    for (size_t i = 0; i < serverParam->locations.size(); i++) {
+        _locations.push_back(serverParam->locations[i]->getLocation());
+    }
 }
+
+Server::Server() {}
 
 Server::~Server() {
 }

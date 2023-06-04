@@ -42,7 +42,6 @@ private:
 public:
     ConfigParser(std::string fileName);
     std::vector<ServerType *> getServers();
-    int getHowMuchServers();
     ServerType & operator[](int i);
 };
 

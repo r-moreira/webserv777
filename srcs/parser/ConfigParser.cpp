@@ -121,10 +121,6 @@ std::vector<FT::ServerType *> FT::ConfigParser::getServers() {
     return servers;
 }
 
-int FT::ConfigParser::getHowMuchServers() {
-    return servers.size();
-}
-
 FT::ServerType & FT::ConfigParser::operator[](int i) {
     return *(servers[i]);
 }
