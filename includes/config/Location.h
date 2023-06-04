@@ -36,6 +36,10 @@ private:
 public:
     Location();
 
+    Location(const Location& obj);
+    
+    Location& operator=(const Location& obj);
+
     const std::string &getPath() const;
 
     void setPath(const std::string &path);

@@ -17,6 +17,26 @@ Location::Location() {
     this->_redirect_lock = false;
 }
 
+Location &Location::operator=(const Location &obj) {
+    if (this == &obj)
+        return *this;
+    this->_path = obj._path;
+    this->_root = obj._root;
+    this->_index = obj._index;
+    this->_limit_except = obj._limit_except;
+    this->_redirect_location = obj._redirect_location;
+    this->_cgi_path = obj._cgi_path;
+    this->_upload_path = obj._upload_path;
+    this->_directory_request_page = obj._directory_request_page;
+    this->_error_pages = obj._error_pages;
+    this->_max_body_size = obj._max_body_size;
+    this->_auto_index = obj._auto_index;
+    this->_cgi_lock = obj._cgi_lock;
+    this->_upload_lock = obj._upload_lock;
+    this->_redirect_lock = obj._redirect_lock;
+    return *this;
+}
+
 const std::string &Location::getPath() const {
     return _path;
 }
@@ -163,4 +183,8 @@ std::ostream &operator<<(std::ostream &os, const Location &location) {
         os.flush();
     }
     return os;
+}
+
+Location::Location(const Location &obj) {
+    *this = obj;
 }
