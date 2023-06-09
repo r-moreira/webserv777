@@ -203,6 +203,13 @@ void Request::define_response_state() {
         return;
     }
 
+    if (this->_event.getRequest().getMethod() == "GET" && this->_event.getLocation().isCgiLock()) {
+        std::cout << MAGENTA << "GET CGI Event" << RESET << std::endl;
+        this->_event.setEventSubStatus(Event::SubStatus::SendingCGIResponse);
+        this->_event.setEventStatus(Event::Status::Writing);
+        return;
+    }
+
     std::string file_path = path_to_root();
     this->_event.setFilePath(file_path);
 
@@ -234,12 +241,6 @@ void Request::define_response_state() {
         return;
     }
 
-    if (this->_event.getRequest().getMethod() == "GET" && this->_event.getLocation().isCgiLock()) {
-        std::cout << MAGENTA << "GET CGI Event" << RESET << std::endl;
-        this->_event.setEventSubStatus(Event::SubStatus::SendingCGIResponse);
-        this->_event.setEventStatus(Event::Status::Writing);
-        return;
-    }
 
     if (this->_event.getRequest().getMethod() == "GET") {
         this->_event.setEventSubStatus(Event::SubStatus::SendingResponseFile);
