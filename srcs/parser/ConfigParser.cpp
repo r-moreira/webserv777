@@ -1,7 +1,7 @@
 #include "../../includes/parser/ConfigParser.hpp"
 
-FT::ConfigParser::ConfigParser(std::string fileName): serverLocationCount(0), serverLocationAtribute(NULL) {
-    std::string delimiter = "server {";
+ConfigParser::ConfigParser(std::string fileName): serverLocationCount(0), serverLocationAtribute(NULL) {
+    std::string delimiter = "server";
     int serverCount = 0;
     ServerType* server = new ServerType();
     std::ifstream iss(fileName.data());
@@ -9,7 +9,7 @@ FT::ConfigParser::ConfigParser(std::string fileName): serverLocationCount(0), se
     std::string word;
     while (std::getline(iss, word, '\n')) {
         if (!is_comment(word)) {
-            if (word.find(delimiter) != std::string::npos) {
+            if (word == delimiter or word == (delimiter + " {")) {
                 serverCount++;
                 if (serverLocationAtribute) {
                     server->locations.push_back(serverLocationAtribute);
@@ -40,9 +40,12 @@ FT::ConfigParser::ConfigParser(std::string fileName): serverLocationCount(0), se
     if (serverCount == 1) {
         servers.push_back(server);
     }
+    if (serverLocationCount) {
+        server->locations.push_back(serverLocationAtribute);
+    }
 }
 
-void FT::ConfigParser::parcerPort(ServerType *server, std::string atribute) {
+void ConfigParser::parcerPort(ServerType *server, std::string atribute) {
     std::string delimiter = "listen ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
@@ -51,7 +54,7 @@ void FT::ConfigParser::parcerPort(ServerType *server, std::string atribute) {
     }
 }
 
-void FT::ConfigParser::serverName(ServerType *server, std::string atribute) {
+void ConfigParser::serverName(ServerType *server, std::string atribute) {
     std::string delimiter = "_server_name ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
@@ -60,7 +63,7 @@ void FT::ConfigParser::serverName(ServerType *server, std::string atribute) {
     }
 }
 
-void FT::ConfigParser::root(ServerType *server, std::string atribute) {
+void ConfigParser::root(ServerType *server, std::string atribute) {
     std::string delimiter = "root ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
@@ -69,7 +72,7 @@ void FT::ConfigParser::root(ServerType *server, std::string atribute) {
     }
 }
 
-void FT::ConfigParser::index(ServerType *server, std::string atribute) {
+void ConfigParser::index(ServerType *server, std::string atribute) {
     std::string delimiter = "index ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
@@ -78,7 +81,7 @@ void FT::ConfigParser::index(ServerType *server, std::string atribute) {
     }
 }
 
-void FT::ConfigParser::errorPage(ServerType *server, std::string atribute) {
+void ConfigParser::errorPage(ServerType *server, std::string atribute) {
     std::string delimiter = "error_page ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
@@ -88,7 +91,7 @@ void FT::ConfigParser::errorPage(ServerType *server, std::string atribute) {
     
 }
 
-void FT::ConfigParser::maxBodySize(ServerType *server, std::string atribute) {
+void ConfigParser::maxBodySize(ServerType *server, std::string atribute) {
     std::string delimiter = "max_body_size ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
@@ -97,7 +100,7 @@ void FT::ConfigParser::maxBodySize(ServerType *server, std::string atribute) {
     }
 }
 
-void FT::ConfigParser::parcerLocation(ServerType* server, std::string atribute) {
+void ConfigParser::parcerLocation(ServerType* server, std::string atribute) {
     std::string delimiter = "location ";
     int isContains = contains(delimiter, atribute);
     if (isContains || serverLocationCount) {
@@ -113,19 +116,19 @@ void FT::ConfigParser::parcerLocation(ServerType* server, std::string atribute) 
     }
 }
 
-int FT::ConfigParser::contains(std::string delimiter, std::string str) {
+int ConfigParser::contains(std::string delimiter, std::string str) {
     return str.find(delimiter) != std::string::npos ? 1 : 0;
 }
 
-std::vector<FT::ServerType *> FT::ConfigParser::getServers() {
+std::vector<ConfigParser::ServerType *> ConfigParser::getServers() {
     return servers;
 }
 
-FT::ServerType & FT::ConfigParser::operator[](int i) {
+ConfigParser::ServerType & ConfigParser::operator[](int i) {
     return *(servers[i]);
 }
 
-void FT::ConfigParser::parcerLimitExcept(ServerType *server, std::string atribute) {
+void ConfigParser::parcerLimitExcept(ServerType *server, std::string atribute) {
     std::string delimiter = "limit_except ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
@@ -134,7 +137,7 @@ void FT::ConfigParser::parcerLimitExcept(ServerType *server, std::string atribut
     }
 }
 
-void FT::ConfigParser::parcerDirPage(ServerType *server, std::string atribute) {
+void ConfigParser::parcerDirPage(ServerType *server, std::string atribute) {
     std::string delimiter = "directory_page ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
@@ -143,12 +146,12 @@ void FT::ConfigParser::parcerDirPage(ServerType *server, std::string atribute) {
     }
 }
 
-int FT::ConfigParser::is_comment(std::string str) {
+int ConfigParser::is_comment(std::string str) {
     std::string delimiter = "#";
     return contains(delimiter, str);
 }
 
-void FT::ConfigParser::parcerUploadPath(ServerType *server, std::string atribute) {
+void ConfigParser::parcerUploadPath(ServerType *server, std::string atribute) {
     std::string delimiter = "upload ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
@@ -158,11 +161,11 @@ void FT::ConfigParser::parcerUploadPath(ServerType *server, std::string atribute
     }
 }
 
-void FT::ConfigParser::parcerAutoIndex(ServerType *server, std::string atribute) {
+void ConfigParser::parcerAutoIndex(ServerType *server, std::string atribute) {
     std::string delimiter = "auto_index ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
     if (contains(delimiter, atribute)) {
-        server->auto_index = atribute.substr(atribute.find(delimiter) + n, atribute.find(endDelimiter) - n) == "on" ? true : false;
+        server->auto_index = (atribute.substr(atribute.find(delimiter) + n, atribute.find(endDelimiter) - n) == "on" ? Server::AutoIndexOption::ON : Server::AutoIndexOption::OFF);
     }
 }

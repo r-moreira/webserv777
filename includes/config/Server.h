@@ -35,7 +35,7 @@ private:
     AutoIndexOption::auto_index_option _autoindex;
     bool _upload_lock;
 public:
-    Server(FT::ServerType *serverParam);
+    Server(ConfigParser::ServerType *serverParam);
 
     Server();
     
