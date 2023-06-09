@@ -1,6 +1,6 @@
 #include "../includes/webserv.h"
 #include "../includes/io/Multiplexer.h"
-#include "../includes/parser/ConfigParser.hpp"
+#include "../includes/parser/ConfigParser.h"
 #include "../includes/utils/Logger.h"
 
 Server build_server_one(int port);
@@ -15,7 +15,7 @@ std::vector<Server> servers_builder();
 
 void start_servers(std::vector<Server> &servers);
 
-std::vector<Server> servers_builder(std::vector<FT::ServerType*> serverConfigList);
+std::vector<Server> servers_builder(std::vector<ConfigParser::ServerType*> serverConfigList);
 
 int main(int argc, char **argv) {
     signal(SIGPIPE, SIG_IGN);
@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    FT::ConfigParser configParser(argv[1]);
+    ConfigParser configParser(argv[1]);
 
     std::vector<Server> servers = servers_builder(configParser.getServers());
     start_servers(servers);
@@ -46,7 +46,7 @@ void start_servers(std::vector<Server> &servers) {
     }
 }
 
-std::vector<Server> servers_builder(std::vector<FT::ServerType*> serverConfigList) {
+std::vector<Server> servers_builder(std::vector<ConfigParser::ServerType*> serverConfigList) {
     std::vector<Server> servers;
     for (size_t i = 0; i < serverConfigList.size(); i++) {
         servers.push_back(Server(serverConfigList[i]));

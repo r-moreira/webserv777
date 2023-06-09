@@ -4,7 +4,8 @@
 
 #include "../../includes/config/Server.h"
 
-Server::Server(FT::ServerType *serverParam) {
+Server::Server(ConfigParser::ServerType *serverParam) {
+    _fd = -1;
     _name = serverParam->serverName;
     _port = serverParam->port;
     _root = serverParam->root;
@@ -19,7 +20,7 @@ Server::Server(FT::ServerType *serverParam) {
         _error_pages.insert(std::pair<int, std::string>(key, serverParam->errorPage[i]));
     }
     _limit_except = serverParam->limitExcept;
-    this->setAutoindex(serverParam->auto_index);
+    _autoindex = serverParam->auto_index;
     _upload_lock = serverParam->uploadLock;
     for (size_t i = 0; i < serverParam->locations.size(); i++) {
         _locations.push_back(serverParam->locations[i]->getLocation());
@@ -28,8 +29,7 @@ Server::Server(FT::ServerType *serverParam) {
 
 Server::Server() {}
 
-Server::~Server() {
-}
+Server::~Server() {}
 
 const std::string &Server::getName() const {
     return _name;
@@ -136,7 +136,7 @@ void Server::setAutoindex(bool autoindex) {
         this->_autoindex = AutoIndexOption::OFF;
 }
 
-Server::AutoIndexOption::auto_index_option Server::getAutoIndexOption() const {
+AutoIndexOption::option Server::getAutoIndexOption() const {
     return _autoindex;
 }
 

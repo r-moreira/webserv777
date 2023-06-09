@@ -2,26 +2,26 @@
 #define ConfigParser_hpp
 
 #include "../webserv.h"
-#include "LocationParser.hpp"
-
-namespace FT {
-struct ServerType {
-    int port;
-    std::string serverName;
-    std::string root;
-    std::vector<std::string> limitExcept;
-    std::string directoryPage;
-    std::vector<std::string> index;
-    std::vector<std::string> errorPage;
-    int maxBodySize;
-    bool auto_index;
-    std::vector<LocationParser*> locations;
-    std::string uploadPath;
-    bool uploadLock;
-};
+#include "LocationParser.h"
+#include "../config/AutoIndexOption.h"
 
 class ConfigParser
 {
+public:
+    struct ServerType {
+        int port;
+        std::string serverName;
+        std::string root;
+        std::vector<std::string> limitExcept;
+        std::string directoryPage;
+        std::vector<std::string> index;
+        std::vector<std::string> errorPage;
+        int maxBodySize;
+        AutoIndexOption::option auto_index;
+        std::vector<LocationParser*> locations;
+        std::string uploadPath;
+        bool uploadLock;
+    };
 private:
     int serverLocationCount;
     LocationParser *serverLocationAtribute;
@@ -44,6 +44,4 @@ public:
     std::vector<ServerType *> getServers();
     ServerType & operator[](int i);
 };
-
-}
 #endif

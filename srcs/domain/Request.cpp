@@ -206,9 +206,9 @@ void Request::define_response_state() {
     std::string file_path = path_to_root();
     this->_event.setFilePath(file_path);
 
-     bool is_auto_index = this->_event.getLocation().getAutoIndexOption() != Location::AutoIndexOption::NONE
-        ? this->_event.getLocation().getAutoIndexOption() == Location::AutoIndexOption::ON
-        : this->_event.getServer().getAutoIndexOption() == Server::AutoIndexOption::ON;
+     bool is_auto_index = this->_event.getLocation().getAutoIndexOption() != AutoIndexOption::NONE
+        ? this->_event.getLocation().getAutoIndexOption() == AutoIndexOption::ON
+        : this->_event.getServer().getAutoIndexOption() == AutoIndexOption::ON;
 
     bool is_dir = is_directory(file_path);
 
