@@ -73,7 +73,7 @@ void ConfigParser::root(ServerType *server, std::string atribute) {
 }
 
 void ConfigParser::index(ServerType *server, std::string atribute) {
-    std::string delimiter = "index ";
+    std::string delimiter = " index ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
     if (contains(delimiter, atribute)) {
