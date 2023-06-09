@@ -28,4 +28,4 @@ add_executable(
         srcs/model/RequestData.cpp includes/model/RequestData.h
         srcs/model/AutoIndex.cpp includes/model/AutoIndex.h
         srcs/cgi/ExecPython.cpp includes/cgi/ExecPython.h
-        srcs/cgi/Exec.cpp includes/cgi/Exec.h srcs/cgi/Environment.cpp includes/cgi/Environment.h)
+        srcs/cgi/Exec.cpp includes/cgi/Exec.h srcs/cgi/Environment.cpp includes/cgi/Environment.h srcs/utils/Logger.cpp includes/utils/Logger.h)

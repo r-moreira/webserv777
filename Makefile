@@ -1,5 +1,5 @@
 NAME	 			= webserv
-CC 					= clang++
+CC 					= g++
 CFLAGS 				=  -g -std=c++98 -Wall -Wextra -Werror
 OBJS_DIR			= objs
 OBJS				= $(patsubst $(SRCS_DIR)/%.cpp, $(OBJS_DIR)/%.o, $(SRCS))
@@ -11,6 +11,7 @@ MODEL_DIR			= ${SRCS_DIR}/model
 NETWORK_DIR			= ${SRCS_DIR}/network
 PARSER_DIR			= ${SRCS_DIR}/parser
 CGI_DIR				= ${SRCS_DIR}/cgi
+UTILS_DIR			= ${SRCS_DIR}/utils
 
 SRCS				= ${SRCS_DIR}/webserv.cpp\
 					  ${CONFIG_DIR}/Location.cpp\
@@ -35,7 +36,8 @@ SRCS				= ${SRCS_DIR}/webserv.cpp\
 					  ${PARSER_DIR}/LocationParser.cpp\
 					  ${CGI_DIR}/Environment.cpp\
 					  ${CGI_DIR}/Exec.cpp\
-					  ${CGI_DIR}/ExecPython.cpp
+					  ${CGI_DIR}/ExecPython.cpp\
+					  ${UTILS_DIR}/Logger.cpp
 
 all:				$(NAME)
 

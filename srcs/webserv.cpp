@@ -1,6 +1,7 @@
 #include "../includes/webserv.h"
 #include "../includes/io/Multiplexer.h"
 #include "../includes/parser/ConfigParser.hpp"
+#include "../includes/utils/Logger.h"
 
 Server build_server_one(int port);
 
@@ -25,6 +26,13 @@ int main(int argc, char **argv) {
         std::cout << CYAN << "Usage :  ./webserv {PATH TO CONFIGURATION FILE}" << RESET << std::endl;
         return EXIT_FAILURE;
     }
+
+    Logger::info("Starting webserv");
+    Logger::error("Error webserv");
+    Logger::warning("Warning webserv");
+    Logger::debug("Debug webserv");
+    Logger::trace("Trace webserv");
+
 
     FT::ConfigParser configParser(argv[1]);
 

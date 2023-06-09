@@ -10,6 +10,7 @@
 #include <csignal>
 #include <cstring>
 #include <cstdlib>
+#include <ctime>
 #include <string>
 #include <sstream>
 #include <fstream>
@@ -47,5 +48,8 @@
 #define CGI_BUFFER_SIZE 1024
 
 #define ITOSTR( x ) dynamic_cast< std::ostringstream & >(( std::ostringstream() << std::dec << x )).str()
+
+#define ENABLE_LOGGER_DEBUG 1
+#define ENABLE_LOGGER_TRACE 1
 
 #endif //WEBSERV_WEBSERV_H
