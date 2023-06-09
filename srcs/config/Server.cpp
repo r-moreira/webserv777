@@ -5,6 +5,7 @@
 #include "../../includes/config/Server.h"
 
 Server::Server(ConfigParser::ServerType *serverParam) {
+    _fd = -1;
     _name = serverParam->serverName;
     _port = serverParam->port;
     _root = serverParam->root;
@@ -28,8 +29,7 @@ Server::Server(ConfigParser::ServerType *serverParam) {
 
 Server::Server() {}
 
-Server::~Server() {
-}
+Server::~Server() {}
 
 const std::string &Server::getName() const {
     return _name;
@@ -136,7 +136,7 @@ void Server::setAutoindex(bool autoindex) {
         this->_autoindex = AutoIndexOption::OFF;
 }
 
-Server::AutoIndexOption::auto_index_option Server::getAutoIndexOption() const {
+AutoIndexOption::option Server::getAutoIndexOption() const {
     return _autoindex;
 }
 

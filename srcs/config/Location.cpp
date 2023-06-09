@@ -85,7 +85,7 @@ void Location::setUploadPath(const std::string &uploadPath) {
     _upload_path = uploadPath;
 }
 
-Location::AutoIndexOption::auto_index_option Location::getAutoIndexOption() const {
+AutoIndexOption::option Location::getAutoIndexOption() const {
     return _auto_index;
 }
 

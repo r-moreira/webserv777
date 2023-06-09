@@ -1,5 +1,5 @@
 NAME	 			= webserv
-CC 					= clang++
+CC 					= g++
 CFLAGS 				=  -g -std=c++98 -Wall -Wextra -Werror
 OBJS_DIR			= objs
 OBJS				= $(patsubst $(SRCS_DIR)/%.cpp, $(OBJS_DIR)/%.o, $(SRCS))
@@ -15,6 +15,7 @@ CGI_DIR				= ${SRCS_DIR}/cgi
 SRCS				= ${SRCS_DIR}/webserv.cpp\
 					  ${CONFIG_DIR}/Location.cpp\
 					  ${CONFIG_DIR}/Server.cpp\
+					  ${CONFIG_DIR}/AutoIndexOption.cpp\
 					  ${DOMAIN_DIR}/ErrorState.cpp\
 					  ${DOMAIN_DIR}/Event.cpp\
 					  ${DOMAIN_DIR}/EventHandler.cpp\

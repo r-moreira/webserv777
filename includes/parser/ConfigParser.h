@@ -2,8 +2,8 @@
 #define ConfigParser_hpp
 
 #include "../webserv.h"
-#include "../config/Server.h"
-#include "LocationParser.hpp"
+#include "LocationParser.h"
+#include "../config/AutoIndexOption.h"
 
 class ConfigParser
 {
@@ -17,7 +17,7 @@ public:
         std::vector<std::string> index;
         std::vector<std::string> errorPage;
         int maxBodySize;
-        Server::AutoIndexOption::auto_index_option auto_index;
+        AutoIndexOption::option auto_index;
         std::vector<LocationParser*> locations;
         std::string uploadPath;
         bool uploadLock;

@@ -1,4 +1,4 @@
-#include "../../includes/parser/ConfigParser.hpp"
+#include "../../includes/parser/ConfigParser.h"
 
 ConfigParser::ConfigParser(std::string fileName): serverLocationCount(0), serverLocationAtribute(NULL) {
     std::string delimiter = "server";
@@ -166,6 +166,6 @@ void ConfigParser::parcerAutoIndex(ServerType *server, std::string atribute) {
     std::string endDelimiter = "\n";
     int n = delimiter.size();
     if (contains(delimiter, atribute)) {
-        server->auto_index = (atribute.substr(atribute.find(delimiter) + n, atribute.find(endDelimiter) - n) == "on" ? Server::AutoIndexOption::ON : Server::AutoIndexOption::OFF);
+        server->auto_index = (atribute.substr(atribute.find(delimiter) + n, atribute.find(endDelimiter) - n) == "on" ? AutoIndexOption::ON : AutoIndexOption::OFF);
     }
 }

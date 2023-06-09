@@ -8,17 +8,13 @@
 #include "../webserv.h"
 #include "../network/Socket.h"
 #include "Location.h"
-#include "../parser/ConfigParser.hpp"
+#include "../parser/ConfigParser.h"
+#include "AutoIndexOption.h"
+
+class ConfigParser;
 
 class Server {
 public:
-    struct AutoIndexOption {
-        enum auto_index_option {
-            OFF,
-            ON,
-            NONE = -1
-        };
-    };
 
 private:
     std::string _name;
@@ -32,8 +28,9 @@ private:
     std::map<int, std::string> _error_pages;
     std::vector<std::string> _limit_except;
     std::vector<Location> _locations;
-    AutoIndexOption::auto_index_option _autoindex;
+    AutoIndexOption::option _autoindex;
     bool _upload_lock;
+
 public:
     Server(ConfigParser::ServerType *serverParam);
 
@@ -79,7 +76,7 @@ public:
 
     void setAutoindex(bool autoindex);
 
-    AutoIndexOption::auto_index_option getAutoIndexOption() const;
+    AutoIndexOption::option getAutoIndexOption() const;
 
     const std::vector<std::string> &getLimitExcept() const;
 

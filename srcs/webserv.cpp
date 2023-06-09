@@ -1,6 +1,6 @@
 #include "../includes/webserv.h"
 #include "../includes/io/Multiplexer.h"
-#include "../includes/parser/ConfigParser.hpp"
+#include "../includes/parser/ConfigParser.h"
 
 Server build_server_one(int port);
 

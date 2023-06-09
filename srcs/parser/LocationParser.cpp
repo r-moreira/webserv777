@@ -1,4 +1,4 @@
-#include "../../includes/parser/LocationParser.hpp"
+#include "../../includes/parser/LocationParser.h"
 #include "../../includes/webserv.h"
 
 LocationParser::LocationParser() {}
