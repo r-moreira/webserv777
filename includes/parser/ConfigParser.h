@@ -9,14 +9,15 @@ class ConfigParser
 {
 public:
     struct ServerType {
+        ServerType(): port(8080), maxBodySize(-1) {}
         int port;
+        int maxBodySize;
         std::string serverName;
         std::string root;
         std::vector<std::string> limitExcept;
         std::string directoryPage;
         std::vector<std::string> index;
         std::vector<std::string> errorPage;
-        int maxBodySize;
         AutoIndexOption::option auto_index;
         std::vector<LocationParser*> locations;
         std::string uploadPath;

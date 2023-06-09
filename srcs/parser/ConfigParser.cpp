@@ -1,9 +1,9 @@
 #include "../../includes/parser/ConfigParser.h"
 
-ConfigParser::ConfigParser(std::string fileName): serverLocationCount(0), serverLocationAtribute(NULL) {
+ConfigParser::ConfigParser(std::string fileName): serverLocationCount(0), serverLocationAtribute(new LocationParser()) {
+    ServerType* server = new ServerType();
     std::string delimiter = "server";
     int serverCount = 0;
-    ServerType* server = new ServerType();
     std::ifstream iss(fileName.data());
 
     std::string word;
@@ -12,11 +12,10 @@ ConfigParser::ConfigParser(std::string fileName): serverLocationCount(0), server
         if (!is_comment(word)) {
             if (word == delimiter or word == (delimiter + " {")) {
                 serverCount++;
-                if (serverLocationAtribute) {
+                if (serverLocationCount) {
                     server->locations.push_back(serverLocationAtribute);
                 }
                 serverLocationCount = 0;
-                serverLocationAtribute = NULL;
             }
             else if (serverCount) {
                 if (serverCount > 1) {
@@ -111,11 +110,11 @@ void ConfigParser::parcerLocation(ServerType* server, std::string atribute) {
     int isContains = contains(delimiter, atribute);
     if (isContains || serverLocationCount) {
         if (isContains) {
-            if (serverLocationAtribute) {
+            if (serverLocationCount) {
                 server->locations.push_back(serverLocationAtribute);
+                serverLocationAtribute = new LocationParser();
                 serverLocationCount--;
             }
-            serverLocationAtribute = new LocationParser();
             serverLocationCount++;
         }
         serverLocationAtribute->addNewAtribute(atribute);
