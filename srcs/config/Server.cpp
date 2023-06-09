@@ -13,7 +13,6 @@ Server::Server(ConfigParser::ServerType *serverParam) {
     _max_body_size = serverParam->maxBodySize;
     _upload_path = serverParam->uploadPath;
     _directory_request_page = serverParam->directoryPage;
-    // _error_pages = serverParam->errorPage;
     for (size_t i = 0; i < serverParam->errorPage.size(); i++) {
         int key = std::atoi(serverParam->errorPage[i].c_str());
         i += 1;
