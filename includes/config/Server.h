@@ -32,7 +32,7 @@ private:
     bool _upload_lock;
 
 public:
-    Server(ConfigParser::ServerType *serverParam);
+    Server& build(ConfigParser::ServerType *serverParam);
 
     Server();
     

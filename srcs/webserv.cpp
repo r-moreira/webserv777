@@ -49,7 +49,7 @@ void start_servers(std::vector<Server> &servers) {
 std::vector<Server> servers_builder(std::vector<ConfigParser::ServerType*> serverConfigList) {
     std::vector<Server> servers;
     for (size_t i = 0; i < serverConfigList.size(); i++) {
-        servers.push_back(Server(serverConfigList[i]));
+        servers.push_back(Server().build(serverConfigList[i]));
     }
     return servers;
 }

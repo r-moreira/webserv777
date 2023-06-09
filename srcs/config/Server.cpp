@@ -4,7 +4,7 @@
 
 #include "../../includes/config/Server.h"
 
-Server::Server(ConfigParser::ServerType *serverParam) {
+Server& Server::build(ConfigParser::ServerType *serverParam) {
     _fd = -1;
     _name = serverParam->serverName;
     _port = serverParam->port;
@@ -25,6 +25,7 @@ Server::Server(ConfigParser::ServerType *serverParam) {
     for (size_t i = 0; i < serverParam->locations.size(); i++) {
         _locations.push_back(serverParam->locations[i]->getLocation());
     }
+    return *this;
 }
 
 Server::Server() {
