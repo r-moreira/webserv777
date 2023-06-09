@@ -19,6 +19,7 @@ private:
     void parcerUploadPath(std::string location);
     void parcerMaxBodySize(std::string location);
     void parcerAutoIndex(std::string location);
+    void parcerIndex(std::string location);
 public:
     LocationParser();
     void addNewAtribute(std::string str);

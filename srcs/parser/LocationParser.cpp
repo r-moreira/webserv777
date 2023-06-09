@@ -14,6 +14,7 @@ void LocationParser::addNewAtribute(std::string str) {
     parcerUploadPath(str);
     parcerMaxBodySize(str);
     parcerAutoIndex(str);
+    parcerIndex(str);
 }
 
 void LocationParser::parcerRoot(std::string location) {
@@ -128,6 +129,15 @@ void LocationParser::parcerAutoIndex(std::string location) {
     int n = delimiter.size();
     if (contains(delimiter, location)) {
         _location.setAutoIndex(location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n) == "on" ? 1 : 0);
+    }
+}
+
+void LocationParser::parcerIndex(std::string location) {
+    std::string delimiter = " index ";
+    std::string endDelimiter = "\n";
+    int n = delimiter.size();
+    if (contains(delimiter, location)) {
+        _location.setIndex(location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n));
     }
 }
 

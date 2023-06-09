@@ -9,7 +9,8 @@ Server::Server(ConfigParser::ServerType *serverParam) {
     _name = serverParam->serverName;
     _port = serverParam->port;
     _root = serverParam->root;
-    _index = serverParam->index[0];
+    if(!serverParam->index.empty())
+        _index = serverParam->index[0];
     _max_body_size = serverParam->maxBodySize;
     _upload_path = serverParam->uploadPath;
     _directory_request_page = serverParam->directoryPage;
@@ -27,7 +28,19 @@ Server::Server(ConfigParser::ServerType *serverParam) {
     }
 }
 
-Server::Server() {}
+Server::Server() {
+    _port = 8080;
+    _index = "index.html";
+    _root = "./";
+    _fd = -1;
+    _max_body_size = -1;
+    _autoindex = AutoIndexOption::NONE;
+    _upload_lock = false;
+    _limit_except = std::vector<std::string>();
+    _limit_except.push_back("GET");
+    _limit_except.push_back("POST");
+    _limit_except.push_back("DELETE");
+}
 
 Server::~Server() {}
 
