@@ -47,7 +47,7 @@ void LocationParser::parcerRedirect(std::string location) {
 
 void LocationParser::parcerEndPoint(std::string location) {
     std::string delimiter = "location ";
-    std::string endDelimiter = " ";
+    std::string endDelimiter = "{";
     int n = delimiter.size();
     if (contains(delimiter, location)) {
         _location.setPath(location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n));
