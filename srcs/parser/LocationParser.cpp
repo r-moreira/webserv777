@@ -1,7 +1,8 @@
 #include "../../includes/parser/LocationParser.h"
-#include "../../includes/webserv.h"
 
-LocationParser::LocationParser() {}
+LocationParser::LocationParser() {
+    _location = Location();
+}
 
 void LocationParser::addNewAtribute(std::string str) {
     parcerRoot(str);
