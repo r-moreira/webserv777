@@ -27,13 +27,6 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    Logger::info("Starting webserv");
-    Logger::error("Error webserv");
-    Logger::warning("Warning webserv");
-    Logger::debug("Debug webserv");
-    Logger::trace("Trace webserv");
-
-
     FT::ConfigParser configParser(argv[1]);
 
     std::vector<Server> servers = servers_builder(configParser.getServers());
