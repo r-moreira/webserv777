@@ -5,6 +5,7 @@
 #ifndef WEBSERV_WRITE_H
 #define WEBSERV_WRITE_H
 
+#include "../utils/Logger.h"
 #include "../domain/Event.h"
 #include "../domain/ErrorState.h"
 #include "../../includes/model/Headers.h"

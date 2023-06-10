@@ -5,7 +5,7 @@
 #ifndef WEBSERV_READ_H
 #define WEBSERV_READ_H
 
-
+#include "../utils/Logger.h"
 #include "../domain/Event.h"
 #include "../domain/ErrorState.h"
 

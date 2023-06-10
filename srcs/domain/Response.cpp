@@ -9,7 +9,7 @@ Response::Response(Event &event) : _event(event), _file(event), _read(event), _w
 Response::~Response() {}
 
 void Response::send_response_file() {
-    std::cout << MAGENTA << "Send file response" << RESET << std::endl;
+    Logger::debug("Send response file");
 
     _file.open_file();
     _read.read_file();
@@ -18,14 +18,14 @@ void Response::send_response_file() {
 }
 
 void Response::send_redirection_response() {
-    std::cout << MAGENTA << "Send redirection response" << RESET << std::endl;
+    Logger::debug("Send redirection response");
 
     _write.write_redirection_headers();
     _event.setEventStatus(Event::Status::Ended);
 }
 
 void Response::send_upload_response() {
-    std::cout << MAGENTA << "Send upload response" << RESET << std::endl;
+    Logger::debug("Send upload response");
 
     if (!this->_event.isFileOpened()) {
         std::string upload_path;
@@ -36,7 +36,7 @@ void Response::send_upload_response() {
                       : this->_event.getServer().getUploadPath();
 
         if (upload_path.empty()) {
-            std::cout << RED << "Upload path not found" << RESET << std::endl;
+            Logger::warning("Upload path not found");
             this->_event.setHttpStatus(Event::HttpStatus::INTERNAL_SERVER_ERROR);
             send_error_response();
             return;
@@ -46,7 +46,7 @@ void Response::send_upload_response() {
 
         if (this->_event.getRequest().getContentDisposition().empty() ||
             this->_event.getRequest().getContentDisposition().find("filename=\"") == std::string::npos) {
-            std::cout << RED << "Content-Disposition header not found" << RESET << std::endl;
+            Logger::warning("Content-Disposition header not found");
 
             this->_event.setHttpStatus(Event::HttpStatus::BAD_REQUEST);
             send_error_response();
@@ -78,14 +78,14 @@ void Response::send_upload_response() {
 }
 
 void Response::send_delete_response() {
-    std::cout << MAGENTA << "Send delete response" << RESET << std::endl;
+    Logger::debug("Send delete response");
 
     _file.delete_file();
     _write.write_no_content_headers();
 }
 
 void Response::send_auto_index_response() {
-    std::cout << MAGENTA << "Send auto index response" << RESET << std::endl;
+    Logger::debug("Send auto index response");
 
     std::string auto_index_page = AutoIndex::pageGenerator(_event.getFilePath(), _event.getRequest().getUri(),
                                                            _event.getServer().getPort());
@@ -94,16 +94,19 @@ void Response::send_auto_index_response() {
 }
 
 void Response::send_cgi_response() {
-    std::cout << MAGENTA << "Send CGI response" << RESET << std::endl;
+    Logger::debug("Send CGI response");
 
     if (!this->_event.isCgiSet()) {
         Environment env;
 
         this->_event.setEnvp(env.getCgiEnvp(this->_event));
-        std::cout << CYAN << "CGI envp:" << RESET << std::endl;
+
+        Logger::trace("CGI envp:\n");
+        std::stringstream log;
         for (int i = 0; i < Environment::ENV_VARIABLES_SIZE; i++) {
-            std::cout << CYAN <<  this->_event.getEnvp()[i] << RESET << std::endl;
+            log << this->_event.getEnvp()[i] << std::endl;
         }
+        Logger::trace(log.str());
 
         this->_event.setCgiPath(strdup(_event.getLocation().getCgiPath().c_str()));
         char *const cmd[] = {(char *) "python3",  this->_event.getCgiPath(), NULL};
@@ -122,7 +125,7 @@ void Response::send_cgi_response() {
         this->_event.getCgi()->start(1);
         this->_event.setHttpStatus(_event.convert_int_to_http_status(this->_event.getCgi()->getHttpStatusCode()));
 
-        std::cout << YELLOW << "CGI status: " << this->_event.getHttpStatus() << RESET << std::endl;
+        Logger::debug("CGI status: " + ITOSTR(this->_event.getHttpStatus()));
 
         if (this->_event.getHttpStatus() != Event::HttpStatus::OK) {
             clear_cgi_exec();
@@ -139,12 +142,12 @@ void Response::send_cgi_response() {
         _write.write_body_to_cgi();
 
         if ((this->_event.getRemainingFileBytes() == 0 || this->_event.getFileReadLeft() == 0)) {
-            std::cout << MAGENTA << "Starting CGI" << RESET << std::endl;
+            Logger::trace("Starting CGI");
 
             this->_event.getCgi()->start(this->_event.getServerCgiFdOut());
             this->_event.setHttpStatus(_event.convert_int_to_http_status(this->_event.getCgi()->getHttpStatusCode()));
 
-            std::cout << YELLOW << "CGI status: " << this->_event.getHttpStatus() << RESET << std::endl;
+            Logger::debug("CGI status: " + ITOSTR(this->_event.getHttpStatus()));
 
             if (this->_event.getHttpStatus() != Event::HttpStatus::OK) {
                 clear_cgi_exec();
@@ -175,7 +178,7 @@ void Response::clear_cgi_exec() {
 }
 
 void Response::send_is_directory_response() {
-    std::cout << MAGENTA << "Send directory error response" << RESET << std::endl;
+    Logger::debug("Send is directory response");
 
     if (!_event.getServer().getDirectoryRequestPage().empty() ||
         !_event.getLocation().getDirectoryRequestPage().empty()) {
@@ -200,7 +203,7 @@ void Response::send_is_directory_response() {
 }
 
 void Response::send_error_response() {
-    std::cout << MAGENTA << "Send error response" << RESET << std::endl;
+    Logger::debug("Send error response");
 
     bool server_has_error_page;
     bool location_has_error_page;

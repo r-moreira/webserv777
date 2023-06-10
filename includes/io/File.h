@@ -5,7 +5,7 @@
 #ifndef WEBSERV_FILE_H
 #define WEBSERV_FILE_H
 
-
+#include "../utils/Logger.h"
 #include "../domain/Event.h"
 #include "../domain/ErrorState.h"
 

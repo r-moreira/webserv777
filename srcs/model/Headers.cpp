@@ -14,7 +14,7 @@ std::string Headers::getFileHeaders(const std::string& file_path, size_t file_si
     std::string extension = file_path.substr(file_path.find_last_of('.') + 1);
 
     if (snprintf(size_t_byte_buffer, 25, "%lu", file_size) < 0) {
-        std::cerr << RED << "Error while formatting file size: " << strerror(errno) << RESET << std::endl;
+        Logger::error("Error while formatting file size: " + std::string(strerror(errno)));
         return "HTTP/1.1 200 Ok\r\nContent-Type: " + this->_mime_types.get_mime_type(extension) + "\r\n\r\n";
     }
 
@@ -40,21 +40,21 @@ std::string Headers::getRedirectionHeaders(const std::string &location) {
     return headers.str();
 }
 
-const std::string Headers::getCreatedHeaders(const std::string &location) {
+std::string Headers::getCreatedHeaders(const std::string &location) {
     std::ostringstream headers;
 
     headers << "HTTP/1.1 " << 201 << " Created\r\nLocation: " << location << "\r\n\r\n";
     return headers.str();
 }
 
-const std::string Headers::getNoContentHeaders(const std::string &basicString) {
+std::string Headers::getNoContentHeaders(const std::string &basicString) {
     std::ostringstream headers;
 
     headers << "HTTP/1.1 " << 204 << " No Content\r\nContent-Type: " << basicString << "\r\n\r\n";
     return headers.str();
 }
 
-const std::string Headers::getCGIHeaders(Event::HttpStatus::event_http_status status) {
+std::string Headers::getCGIHeaders(Event::HttpStatus::event_http_status status) {
     std::ostringstream headers;
 
     headers << "HTTP/1.1 " << status << "\r\n";

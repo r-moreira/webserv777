@@ -21,7 +21,7 @@ int Socket::setupClient(int server_socket_fd) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
             return -1;
         } else {
-            std::cerr << RED << "Error while accepting client: " << strerror(errno) << RESET << std::endl;
+            Logger::error("Error while accepting client: " + std::string(strerror(errno)));
             return -1;
         }
     }
@@ -39,20 +39,21 @@ int Socket::setupServer(int port) {
     int server_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
     if (server_fd < 0) {
-        std::cerr << RED << "Error while opening server_fd: " << strerror(errno) << RESET << std::endl;
+        Logger::error("Error while creating server_fd: " + std::string(strerror(errno)));
         exit(EXIT_FAILURE);
     }
 
     if (bind(server_fd, (struct sockaddr *) &sevr_addr, sizeof(sevr_addr)) != 0) {
-        std::cerr << RED << "Error while binding server_fd to address: " << strerror(errno) << RESET << std::endl;
-        exit(EXIT_FAILURE);
-    }
-    if (listen(server_fd, SOMAXCONN) < 0) {
-        std::cerr << RED << "Error while listening on server_fd: " << strerror(errno) << RESET << std::endl;
+        Logger::error("Error while binding server_fd to address: " + std::string(strerror(errno)));
         exit(EXIT_FAILURE);
     }
 
-    std::cout << GREEN << "Server started to listen" << RESET << std::endl;
+    if (listen(server_fd, SOMAXCONN) < 0) {
+        Logger::error("Error while listening on server_fd: " + std::string(strerror(errno)));
+        exit(EXIT_FAILURE);
+    }
+
+    Logger::info("Server started to listen on port" + ITOSTR(port));
 
     set_non_blocking(server_fd);
     return server_fd;
@@ -61,12 +62,12 @@ int Socket::setupServer(int port) {
 void Socket::set_non_blocking(int fd) {
     int flags = fcntl(fd, F_GETFL, 0);
     if (flags == -1) {
-        std::cerr << RED << "Error while getting flags: " << strerror(errno) << RESET << std::endl;
+        Logger::error("Error while getting flags: " + std::string(strerror(errno)));
         exit(EXIT_FAILURE);
     }
     flags |= O_NONBLOCK;
     if (fcntl(fd, F_SETFL, flags) == -1) {
-        std::cerr << RED << "Error while setting flags: " << strerror(errno) << RESET << std::endl;
+        Logger::error("Error while setting flags: " + std::string(strerror(errno)));
         exit(EXIT_FAILURE);
     }
 

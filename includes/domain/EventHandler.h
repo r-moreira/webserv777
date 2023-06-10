@@ -5,6 +5,7 @@
 #ifndef WEBSERV_EVENTHANDLER_H
 #define WEBSERV_EVENTHANDLER_H
 
+#include "../utils/Logger.h"
 #include "../webserv.h"
 #include "Event.h"
 #include "Request.h"

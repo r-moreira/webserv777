@@ -27,7 +27,7 @@ void Request::parse_request() {
         parse_state = parser.parse(_event._request, c);
 
         if (parse_state == RequestParser::ParseState::ParsingCompleted) {
-            std::cout << WHITE << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
+            Logger::debug("Parsed Request: \n" + _event.getRequest().inspect());
             this->_event.setEventSubStatus(Event::SubStatus::ChoosingServer);
 
             bytes_read++;
@@ -41,13 +41,14 @@ void Request::parse_request() {
             this->_event.setRequestReadBytes(body_remaining_bytes);
             this->_event.setRemainingReadBuffer(buffer_str);
 
-            std::cout << YELLOW << "Remaining Bytes: " << this->_event.getRequestReadBytes() << RESET << std::endl;
-            std::cout << YELLOW << "Remaining Buffer: |" << this->_event.getRemainingReadBuffer() << "|" << RESET<< std::endl;
+            Logger::trace("Remaining Bytes: " + ITOSTR(this->_event.getRequestReadBytes()));
+            Logger::trace("Remaining Buffer: |" + this->_event.getRemainingReadBuffer() + "|");
             return;
         }
 
         if (parse_state == RequestParser::ParseState::ParsingError || parse_state == RequestParser::ParseState::ParsingIncompleted){
-            std::cerr << RED << "Parsing failed:\n" << RESET << _event.getRequest().inspect() << std::endl;
+            Logger::warning("Parsing failed:");
+            Logger::trace("Request:\n" + _event.getRequest().inspect());
             ErrorState::throw_error_state(this->_event, Event::HttpStatus::BAD_REQUEST);
             return;
         }
@@ -57,8 +58,8 @@ void Request::parse_request() {
     }
 
     if (parse_state != RequestParser::ParseState::ParsingCompleted) {
-        std::cout << RED << "Parsing Error" << RESET << std::endl;
-        std::cout << RED << "Parsed Request:\n" << _event.getRequest().inspect() << RESET << std::endl;
+        Logger::warning("Parsing failed:");
+        Logger::trace("Request:\n" + _event.getRequest().inspect());
         ErrorState::throw_error_state(this->_event, Event::HttpStatus::BAD_REQUEST);
         return;
     }
@@ -67,7 +68,7 @@ void Request::parse_request() {
 void Request::choose_server(std::vector<Server> servers) {
     if (ErrorState::is_error_state(this->_event)) return;
 
-    std::cout << BLUE << "Choosing Server:" << RESET << std::endl;
+    Logger::debug("Choosing Server:");
 
     for (std::vector<Server>::iterator it = servers.begin(); it != servers.end(); it++) {
         if (it->getFd() == this->_event.getServerFd()) {
@@ -76,7 +77,9 @@ void Request::choose_server(std::vector<Server> servers) {
         }
     }
 
-    std::cout << BLUE << "Choosed server =\n" << this->_event.getServer() << RESET << std::endl << std::endl;
+    std::stringstream log;
+    log << BLUE << "Choosed server =\n"<< this->_event.getServer() << RESET << std::endl << std::endl;
+    Logger::trace(log.str());
 
     this->_event.setEventSubStatus(Event::SubStatus::ChoosingLocation);
 }
@@ -84,7 +87,7 @@ void Request::choose_server(std::vector<Server> servers) {
 void Request::choose_location() {
     if (ErrorState::is_error_state(this->_event)) return;
 
-    std::cout << CYAN << "Handling Location:" << CYAN << std::endl;
+    Logger::debug("Choosing Location:");
 
     std::vector<Location> locations = this->_event.getServer().getLocations();
 
@@ -105,13 +108,15 @@ void Request::choose_location() {
     }
 
     if (!found || locations.empty()) {
-        std::cerr << YELLOW << "Location not found" << YELLOW << std::endl;
+        Logger::warning("Location not found, using defaults");
         this->_event.setLocation(Location());
 
         return;
     }
 
-    std::cout << YELLOW << "Choosed location <" << std::endl << this->_event.getLocation() << RESET << std::endl;
+    std::stringstream log;
+    log << YELLOW << "Choosed location >\n" << this->_event.getLocation() << RESET << std::endl;
+    Logger::trace(log.str());
 
     this->_event.setEventSubStatus(Event::SubStatus::ValidatingConstraints);
 }
@@ -119,7 +124,8 @@ void Request::choose_location() {
 void Request::validate_constraints() {
     if (ErrorState::is_error_state(this->_event)) return;
 
-    std::cout << MAGENTA << "Validating Allowed Methods" << RESET << std::endl;
+    Logger::debug("Validating Allowed Methods");
+
     std::vector<std::string> allowed_methods = this->_event.getLocation().getLimitExcept().size() < 3
                                                ? this->_event.getLocation().getLimitExcept()
                                                : this->_event.getServer().getLimitExcept();
@@ -134,7 +140,8 @@ void Request::validate_constraints() {
             : this->_event.getServer().getMaxBodySize();
 
     if (max_body_size != -1) {
-        std::cout << MAGENTA << "Validating Content Length" << RESET <<std::endl;
+
+        Logger::debug("Validating Content Length");
 
         std::vector<RequestData::HeaderItem> headers = this->_event.getRequest().getHeaders();
 
@@ -157,7 +164,7 @@ void Request::validate_constraints() {
 void Request::define_response_state() {
     if (ErrorState::is_error_state(this->_event)) return;
 
-    std::cout << CYAN << "Defining Response State" << RESET << std::endl;
+    Logger::debug("Defining Response State");
 
     std::string request_uri = this->_event.getRequest().getUri();
 
@@ -166,7 +173,7 @@ void Request::define_response_state() {
         && request_uri == this->_event.getLocation().getPath()
         && this->_event.getRequest().getMethod() == "GET") {
 
-        std::cout << MAGENTA << "Forcing redirect to location with /" << RESET << std::endl;
+        Logger::warning("Forcing redirect to location with /");
         std::string redirect_uri = request_uri + "/";
 
         this->_event.setForcedRedirect(true);
@@ -177,7 +184,7 @@ void Request::define_response_state() {
     }
 
     if (this->_event.getLocation().isRedirectLock()) {
-        std::cout << MAGENTA << "Redirection Event" << RESET << std::endl;
+        Logger::trace("Redirecion Event");
 
         this->_event.setEventSubStatus(Event::SubStatus::SendingRedirectionResponse);
         this->_event.setEventStatus(Event::Status::Writing);
@@ -188,17 +195,17 @@ void Request::define_response_state() {
             || (this->_event.getServer().isUploadLock() && this->_event.getLocation().getPath() == "/");
 
     if (this->_event.getRequest().getMethod() == "POST" && file_upload_lock && !this->_event.getLocation().isCgiLock()) {
-        std::cout << MAGENTA << "Upload Event" << RESET << std::endl;
+        Logger::trace("Upload Event");
         this->_event.setEventSubStatus(Event::SubStatus::SendingUploadResponse);
         this->_event.setEventStatus(Event::Status::Writing);
         return;
     } else if (this->_event.getRequest().getMethod() == "POST" && this->_event.getLocation().isCgiLock()) {
-        std::cout << MAGENTA << "POST CGI Event" << RESET << std::endl;
+        Logger::trace("CGI Event");
         this->_event.setEventSubStatus(Event::SubStatus::SendingCGIResponse);
         this->_event.setEventStatus(Event::Status::Writing);
         return;
     } else if (this->_event.getRequest().getMethod() == "POST"){
-        std::cout << RED << "Forbidden Event: Post Request allowed only for File Upload or CGI" << RESET << std::endl;
+        Logger::warning("Forbidden Event: Post Request allowed only for File Upload or CGI");
         ErrorState::throw_error_state(this->_event, Event::HttpStatus::FORBIDDEN);
         return;
     }
@@ -213,7 +220,7 @@ void Request::define_response_state() {
     bool is_dir = is_directory(file_path);
 
     if (is_dir && !is_auto_index) {
-         std::cerr << RED << "Redirecting to directory error page" << RESET << std::endl;
+         Logger::trace("Redirecting to directory error page");
          this->_event.setEventSubStatus(Event::SubStatus::SendingDirectoryResponse);
          this->_event.setHttpStatus(Event::HttpStatus::FORBIDDEN);
          this->_event.setEventStatus(Event::Status::Writing);
@@ -221,33 +228,34 @@ void Request::define_response_state() {
     }
 
     if (is_dir) {
-         std::cout << MAGENTA << "Auto Index Event" << RESET << std::endl;
+         Logger::trace("Auto Index Event");
          this->_event.setEventSubStatus(Event::SubStatus::SendingAutoIndexResponse);
          this->_event.setEventStatus(Event::Status::Writing);
          return;
     }
 
     if (this->_event.getRequest().getMethod() == "DELETE") {
-        std::cout << MAGENTA << "Delete Event" << RESET << std::endl;
+        Logger::trace("Delete Event");
         this->_event.setEventSubStatus(Event::SubStatus::SendingDeleteResponse);
         this->_event.setEventStatus(Event::Status::Writing);
         return;
     }
 
     if (this->_event.getRequest().getMethod() == "GET" && this->_event.getLocation().isCgiLock()) {
-        std::cout << MAGENTA << "GET CGI Event" << RESET << std::endl;
+        Logger::trace("CGI Event");
         this->_event.setEventSubStatus(Event::SubStatus::SendingCGIResponse);
         this->_event.setEventStatus(Event::Status::Writing);
         return;
     }
 
     if (this->_event.getRequest().getMethod() == "GET") {
+        Logger::trace("Request File Event");
         this->_event.setEventSubStatus(Event::SubStatus::SendingResponseFile);
         this->_event.setEventStatus(Event::Status::Writing);
         return;
     }
 
-    std::cout << RED << "Not Implemented Request" << RESET << std::endl;
+    Logger::warning("Not Implemented Request");
     ErrorState::throw_error_state(this->_event, Event::HttpStatus::NOT_IMPLEMENTED);
 }
 
@@ -256,6 +264,7 @@ bool Request::is_directory(const std::string& path) {
 
     if (stat(path.c_str(), &s) == 0) {
         if (s.st_mode & S_IFDIR) {
+            Logger::warning("Path is a directory: " + path);
             std::cout << YELLOW << "Path is a directory: " << path <<RESET << std::endl;
             return true;
         }
@@ -264,7 +273,7 @@ bool Request::is_directory(const std::string& path) {
 }
 
 std::string Request::path_to_root() {
-    std::cout << YELLOW << "Path to root" << RESET << std::endl;
+    Logger::trace("Path to root");
 
     std::string request_uri = this->_event.getRequest().getUri();
     std::string location_path = this->_event.getLocation().getPath();
@@ -277,10 +286,10 @@ std::string Request::path_to_root() {
             ? this->_event.getLocation().getIndex()
             : this->_event.getServer().getIndex();
 
-    std::cout << BLUE << "request_uri: " << request_uri << RESET << std::endl;
-    std::cout << BLUE << "location_path: " << location_path << RESET << std::endl;
-    std::cout << BLUE << "location_root: " << location_root << RESET << std::endl;
-    std::cout << BLUE << "index: " << index << RESET << std::endl;
+    Logger::trace("request_uri: " + request_uri);
+    Logger::trace("location_path: " + location_path);
+    Logger::trace("location_root: " + location_root);
+    Logger::trace("index: " + index);
 
     std::string request_without_slash = request_uri.length() > 1 && request_uri[request_uri.length() - 1] == '/' ?
                                     request_uri.substr(0, request_uri.length() - 1) : request_uri;
@@ -309,7 +318,7 @@ bool Request::is_index_exists_in_directory(const std::string& path, const std::s
     struct stat s;
     if (stat(index_html.c_str(), &s) == 0) {
         if (s.st_mode & S_IFREG) {
-            std::cout << YELLOW << "Index exists in directory: " << index_html << RESET << std::endl;
+            Logger::trace("Index exists in directory: " + index_html);
             return true;
         }
     }

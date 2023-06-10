@@ -5,7 +5,7 @@
 #ifndef WEBSERV_ERRORSTATE_H
 #define WEBSERV_ERRORSTATE_H
 
-
+#include "../utils/Logger.h"
 #include "Event.h"
 
 class ErrorState {

@@ -7,7 +7,7 @@
 ErrorState::ErrorState() {}
 
 void ErrorState::throw_error_state(Event &event, Event::HttpStatus::event_http_status status) {
-    std::cout << YELLOW << "Ativando estado de erro para o status " << status << RESET << std::endl;
+    Logger::debug("Ativando estado de erro para o status " + ITOSTR(status));
 
     event.setErrorResponse(false);
     event.setHttpStatus(status);

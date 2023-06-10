@@ -33,7 +33,7 @@ void EventHandler::process_event() {
             case Event::SubStatus::DefiningResponseState: _request.define_response_state(); /* falls through */
                 break;
             default:
-                std::cerr << RED << "Invalid Reading Event Status" << RESET << std::endl;
+                Logger::error("Invalid Reading Event Status");
                 break;
         }
     }
@@ -57,7 +57,7 @@ void EventHandler::process_event() {
             case Event::SubStatus::SendingErrorResponse: _response.send_error_response();
                 break;
             default:
-                std::cerr << RED << "Invalid Writing Event Sub Status:" << RESET << std::endl;
+                Logger::error("Invalid Writing Event Status");
                 break;
         }
     }
@@ -112,8 +112,8 @@ void EventHandler::print_event_status() {
             break;
     }
 
-    std::cout << std::endl << "Event Status: " << status << std::endl;
-    std::cout <<  "Event Sub Status: " << sub_status << std::endl;
+    Logger::trace("Event Status: " + status);
+    Logger::trace("Event Sub Status: " + sub_status);
 }
 
 const Event &EventHandler::getEvent() const {

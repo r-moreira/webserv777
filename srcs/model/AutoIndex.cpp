@@ -8,7 +8,7 @@ std::string AutoIndex::pageGenerator(const std::string& request_root, const std:
     const std::string& path = request_uri;
     DIR *dir = opendir(request_root.c_str());
     if (dir == NULL) {
-        std::cout << "Error: could not open this folder!\n";
+        Logger::error("AutoIndex:: could not open this folder!");
         return "404";
     }
     page = "<!DOCTYPE html>\n\
