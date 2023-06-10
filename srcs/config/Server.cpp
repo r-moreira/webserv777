@@ -76,11 +76,11 @@ void Server::addServerNametoHost(std::string name) {
 		std::ofstream outfile("/etc/hosts", std::ios::app);
 
 		if (!outfile) {
-            Logger::error("Could not open file /etc/hosts");
+            Logger::warning("Could not open file /etc/hosts. Try with sudo if you want to resolve server hosts");
 			return;
 		}
 		if (fileToString("/etc/hosts", contents) == -1) {
-            Logger::warning("Could not capture contents of /etc/hosts file. Try with sudo if you want to resolve server hosts");
+            Logger::error("Could not capture contents of /etc/hosts file");
 			return;
 		}
         if(contents.find(loopback + name) == std::string::npos) {
