@@ -76,7 +76,7 @@ void Server::addServerNametoHost(std::string name) {
 		std::ofstream outfile("/etc/hosts", std::ios::app);
 
 		if (!outfile) {
-            Logger::warning("Could not open file /etc/hosts");
+            Logger::error("Could not open file /etc/hosts");
 			return;
 		}
 		if (fileToString("/etc/hosts", contents) == -1) {
