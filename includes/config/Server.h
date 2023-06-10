@@ -10,6 +10,7 @@
 #include "Location.h"
 #include "../parser/ConfigParser.h"
 #include "AutoIndexOption.h"
+#include "../utils/Logger.h"
 
 class ConfigParser;
 
