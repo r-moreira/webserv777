@@ -80,7 +80,7 @@ void Server::addServerNametoHost(std::string name) {
 			return;
 		}
 		if (fileToString("/etc/hosts", contents) == -1) {
-            Logger::warning("Could not capture contents of /etc/hosts file. Try with sudo want to resolve server hosts");
+            Logger::warning("Could not capture contents of /etc/hosts file. Try with sudo if you want to resolve server hosts");
 			return;
 		}
         if(contents.find(loopback + name) == std::string::npos) {
