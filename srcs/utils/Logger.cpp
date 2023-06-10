@@ -17,12 +17,12 @@ void Logger::_log(const std::string &message, Logger::Level level) {
             break;
         case DEBUG:
             if (ENABLE_LOGGER_DEBUG) {
-                std::cout << "[" << _date_now() << "] [" << CYAN "DEBUG" << RESET << "] " << message << std::endl;
+                std::cout << "[" << _date_now() << "] [" << MAGENTA "DEBUG" << RESET << "] " << message << std::endl;
             }
             break;
         case TRACE:
             if (ENABLE_LOGGER_TRACE) {
-                std::cout << "[" << _date_now() << "] [" << MAGENTA "TRACE" << RESET << "] " << message << std::endl;
+                std::cout << "[" << _date_now() << "] [" << CYAN "TRACE" << RESET << "] " << message << std::endl;
             }
     }
 

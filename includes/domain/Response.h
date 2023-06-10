@@ -5,7 +5,7 @@
 #ifndef WEBSERV_RESPONSE_H
 #define WEBSERV_RESPONSE_H
 
-
+#include "../utils/Logger.h"
 #include "Event.h"
 #include "../io/File.h"
 #include "../io/Read.h"

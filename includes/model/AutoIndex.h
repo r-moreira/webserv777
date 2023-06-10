@@ -1,9 +1,9 @@
-#ifndef Autoindex_h
-#define Autoindex_h
+#ifndef AutoIndex_h
+#define AutoIndex_h
 
 #include <iostream>
 #include <dirent.h>
-
+#include "../utils/Logger.h"
 #include "../config/Server.h"
 
 class AutoIndex {

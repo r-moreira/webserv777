@@ -5,6 +5,7 @@
 #ifndef WEBSERV_MULTIPLEXER_H
 #define WEBSERV_MULTIPLEXER_H
 
+#include "../utils/Logger.h"
 #include "../webserv.h"
 #include "../../includes/domain/EventHandler.h"
 #include "../../includes/network/Socket.h"

@@ -5,6 +5,7 @@
 #ifndef WEBSERV_REQUEST_H
 #define WEBSERV_REQUEST_H
 
+#include "../utils/Logger.h"
 #include "Event.h"
 #include "ErrorState.h"
 #include "../io/Read.h"

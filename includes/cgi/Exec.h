@@ -1,5 +1,7 @@
 #ifndef exec_h
 #define exec_h
+
+#include "../utils/Logger.h"
 #include <iostream>
 #include <unistd.h>
 #include <sys/wait.h>

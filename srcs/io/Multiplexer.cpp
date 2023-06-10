@@ -7,7 +7,7 @@
 Multiplexer::Multiplexer(const std::vector<Server> &servers) : _servers(servers) {
     this->_epoll_fd = epoll_create1(0);
     if (_epoll_fd == -1) {
-        std::cerr << RED << "Error while creating epoll fd: " << strerror(errno) << RESET << std::endl;
+        Logger::error("Error while creating epoll fd" + std::string(strerror(errno)));
         exit(EXIT_FAILURE);
     }
 
@@ -21,7 +21,7 @@ Multiplexer::Multiplexer(const std::vector<Server> &servers) : _servers(servers)
         server_event.data.fd = server_socket_fd;
 
         if (epoll_ctl(this->_epoll_fd, EPOLL_CTL_ADD, server_socket_fd, &server_event) == -1) {
-            std::cerr << RED << "Error while adding server socket to epoll: " << strerror(errno) << RESET << std::endl;
+            Logger::error("Error while adding server socket to epoll: " + std::string(strerror(errno)));
             exit(EXIT_FAILURE);
         }
     }
@@ -31,7 +31,7 @@ Multiplexer::~Multiplexer() {}
 
 
 void Multiplexer::event_loop() {
-    std::cout << GREEN << "Starting event loop" << RESET << std::endl;
+    Logger::info("Starting event loop");
 
     struct epoll_event epoll_events[MAX_EPOLL_EVENTS];
 
@@ -61,7 +61,7 @@ void Multiplexer::event_loop() {
                         delete event;
                         break;
                     default:
-                        std::cerr << RED << "Error: Invalid event_status on event_loop" << RESET << std::endl;
+                        Logger::error("Invalid event_status on event_loop");\
                 }
 
             }
@@ -79,7 +79,7 @@ int Multiplexer::wait_events(epoll_event *epoll_events) const {
 
     int nfds = epoll_wait(this->_epoll_fd, epoll_events, MAX_EPOLL_EVENTS, -1);
     if (nfds == -1) {
-        std::cerr << RED << "Error while waiting for epoll events: " << strerror(errno) << RESET << std::endl;
+        Logger::error("Error while waiting for epoll events: " + std::string(strerror(errno)));
         return -1;
     }
     return nfds;
@@ -93,7 +93,7 @@ int Multiplexer::server_event_callback(int server_fd, int client_fd) const {
     client_event.events = EPOLLIN;
 
     if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, client_fd, &client_event) == -1) {
-        std::cerr << RED << "Error while adding client to epoll: " << strerror(errno) << RESET << std::endl;
+        Logger::error("Error while adding client to epoll: " + std::string(strerror(errno)));
         return -1;
     }
     return 1;
@@ -105,7 +105,7 @@ int Multiplexer::client_read_event_callback(Event *event) const {
     client_event.events = EPOLLIN;
     client_event.data.ptr = event;
     if (epoll_ctl(_epoll_fd, EPOLL_CTL_MOD, event->getClientFd(), &client_event) < 0) {
-        std::cerr << RED << "Error while adding reading event to epoll: " << strerror(errno) << RESET << std::endl;
+        Logger::error("Error while adding reading event to epoll: " + std::string(strerror(errno)));
         return -1;
     }
     return 1;
@@ -117,7 +117,7 @@ int Multiplexer::client_write_event_callback(Event *event) const {
     client_event.events = EPOLLOUT;
     client_event.data.ptr = event;
     if (epoll_ctl(_epoll_fd, EPOLL_CTL_MOD, event->getClientFd(), &client_event) < 0) {
-        std::cerr << RED << "Error while adding writing event to epoll: " << strerror(errno) << RESET << std::endl;
+        Logger::error("Error while adding writing event to epoll: " + std::string(strerror(errno)));
         return -1;
     }
     return 1;

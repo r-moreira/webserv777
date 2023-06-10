@@ -6,6 +6,7 @@
 #define WEBSERV_SOCKET_H
 
 #include "../webserv.h"
+#include "../utils/Logger.h"
 
 class Socket {
 

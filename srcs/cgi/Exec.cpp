@@ -9,7 +9,7 @@ Exec::~Exec() {
 
 int Exec::pipe_init() {
     if (pipe(_pipeFd) < 0) {
-        std::cout << RED << "Error: unable to Pipe" << RESET << '\n';
+        Logger::error("Error: unable to Pipe");
         return -1;
     }
     return 0;
@@ -40,7 +40,7 @@ void Exec::is_infity_loop() {
 void Exec::_handleScript(int std_out_from_server) {
     _pid = fork();
     if (_pid == -1) {
-        std::cout << RED << "Error: unable to fork" << RESET << '\n';
+        Logger::error("Error: unable to fork");
         return ;
     } else if (!_pid) {
         script_exec(std_out_from_server, _pipeFd[1]);

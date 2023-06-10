@@ -6,6 +6,7 @@
 #define WEBSERV_HEADERS_H
 
 #include "../webserv.h"
+#include "../utils/Logger.h"
 #include "../domain/Event.h"
 #include "MimeTypes.h"
 
@@ -23,13 +24,13 @@ public:
 
     std::string getRedirectionHeaders(const std::string &location);
 
-    const std::string getCreatedHeaders(const std::string &location);
+    std::string getCreatedHeaders(const std::string &location);
 
-    const std::string getNoContentHeaders(const std::string &basicString);
+    std::string getNoContentHeaders(const std::string &basicString);
 
     std::string getAutoIndexHeaders();
 
-    const std::string getCGIHeaders(Event::HttpStatus::event_http_status status);
+    std::string getCGIHeaders(Event::HttpStatus::event_http_status status);
 };
 
 
