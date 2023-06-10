@@ -188,3 +188,11 @@ std::ostream &operator<<(std::ostream &os, const Location &location) {
 Location::Location(const Location &obj) {
     *this = obj;
 }
+
+void Location::setCgiBin(const std::string &cgiBin) {
+    _cgi_bin = cgiBin;
+}
+
+const std::string &Location::getCgiBin() const {
+    return _cgi_bin;
+}

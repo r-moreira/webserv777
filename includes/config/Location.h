@@ -26,6 +26,7 @@ private:
     bool _cgi_lock;
     bool _upload_lock;
     bool _redirect_lock;
+    std::string _cgi_bin;
 
 public:
     Location();
@@ -89,6 +90,10 @@ public:
     const std::map<int, std::string> &getErrorPages() const;
 
     void setErrorPages(const std::map<int, std::string> &errorPages);
+
+    void setCgiBin(const std::string &cgiBin);
+
+    const std::string &getCgiBin() const;
 };
 
 std::ostream& operator << (std::ostream& os, const Location& obj);

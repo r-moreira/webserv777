@@ -20,6 +20,7 @@ private:
     void parcerMaxBodySize(std::string location);
     void parcerAutoIndex(std::string location);
     void parcerIndex(std::string location);
+    void parcerCgiBin(std::string location);
 public:
     LocationParser();
     void addNewAtribute(std::string str);

@@ -16,6 +16,7 @@ void LocationParser::addNewAtribute(std::string str) {
     parcerMaxBodySize(str);
     parcerAutoIndex(str);
     parcerIndex(str);
+    parcerCgiBin(str);
 }
 
 void LocationParser::parcerRoot(std::string location) {
@@ -144,4 +145,13 @@ void LocationParser::parcerIndex(std::string location) {
 
 Location LocationParser::getLocation() {
     return _location;
+}
+
+void LocationParser::parcerCgiBin(std::string location) {
+    std::string delimiter = "cgi_bin ";
+    std::string endDelimiter = "\n";
+    int n = delimiter.size();
+    if (contains(delimiter, location)) {
+        _location.setCgiBin(location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n));
+    }
 }
