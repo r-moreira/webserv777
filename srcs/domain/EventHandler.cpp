@@ -13,14 +13,6 @@ EventHandler::EventHandler(Event &event, std::vector<Server> &servers) :
 
 EventHandler::~EventHandler() {}
 
-//TODO Server Features:
-// Talvez implementar multiplos CGIs
-// Entender o que significa e implementar :
-//      Setup multiple servers with different hostnames (use something like: curl --resolve
-//      example.com:80:127.0.0.1 http://example.com/ (http://example.com/)).
-// Criar logs INFO com apenas as informações importantes do request e response
-// Testar com todas configurações possíveis
-
 void EventHandler::process_event() {
 
     if (this->_event.getEventStatus() == Event::Status::Reading) {

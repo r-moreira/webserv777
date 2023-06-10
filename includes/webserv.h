@@ -49,8 +49,10 @@
 
 #define ITOSTR( x ) dynamic_cast< std::ostringstream & >(( std::ostringstream() << std::dec << x )).str()
 
-#define ENABLE_LOGGER_DEBUG 1
-#define ENABLE_LOGGER_TRACE 1
+#define ENABLE_LOGGER_DEBUG 0
+#define ENABLE_LOGGER_TRACE 0
 #define DISABLE_BROKEN_PIPE_ERROR_LOG 1
+#define ENABLE_CONFIG_READ 1
+
 
 #endif //WEBSERV_WEBSERV_H

@@ -60,6 +60,39 @@ void Event::clear_file_info() {
     this->setFileSize(0);
 }
 
+Event::HttpStatus::event_http_status Event::convert_int_to_http_status(int status) {
+    switch (status) {
+        case 200:
+            return Event::HttpStatus::OK;
+        case 201:
+            return Event::HttpStatus::CREATED;
+        case 204:
+            return Event::HttpStatus::NO_CONTENT;
+        case 400:
+            return Event::HttpStatus::BAD_REQUEST;
+        case 403:
+            return Event::HttpStatus::FORBIDDEN;
+        case 404:
+            return Event::HttpStatus::NOT_FOUND;
+        case 405:
+            return Event::HttpStatus::METHOD_NOT_ALLOWED;
+        case 413:
+            return Event::HttpStatus::PAYLOAD_TOO_LARGE;
+        case 499:
+            return Event::HttpStatus::CLIENT_CLOSED_REQUEST;
+        case 500:
+            return Event::HttpStatus::INTERNAL_SERVER_ERROR;
+        case 501:
+            return Event::HttpStatus::NOT_IMPLEMENTED;
+        case 508:
+            return Event::HttpStatus::LOOP_DETECTED;
+        default:
+            return Event::HttpStatus::INTERNAL_SERVER_ERROR;
+
+    }
+
+}
+
 int Event::getClientFd() const {
     return _client_fd;
 }
@@ -334,35 +367,10 @@ void Event::setEnvp(char* const* cgi_envp) {
     Event::_cgi_envp = cgi_envp;
 }
 
-Event::HttpStatus::event_http_status Event::convert_int_to_http_status(int status) {
-    switch (status) {
-        case 200:
-            return Event::HttpStatus::OK;
-        case 201:
-            return Event::HttpStatus::CREATED;
-        case 204:
-            return Event::HttpStatus::NO_CONTENT;
-        case 400:
-            return Event::HttpStatus::BAD_REQUEST;
-        case 403:
-            return Event::HttpStatus::FORBIDDEN;
-        case 404:
-            return Event::HttpStatus::NOT_FOUND;
-        case 405:
-            return Event::HttpStatus::METHOD_NOT_ALLOWED;
-        case 413:
-            return Event::HttpStatus::PAYLOAD_TOO_LARGE;
-        case 499:
-            return Event::HttpStatus::CLIENT_CLOSED_REQUEST;
-        case 500:
-            return Event::HttpStatus::INTERNAL_SERVER_ERROR;
-        case 501:
-            return Event::HttpStatus::NOT_IMPLEMENTED;
-        case 508:
-            return Event::HttpStatus::LOOP_DETECTED;
-        default:
-            return Event::HttpStatus::INTERNAL_SERVER_ERROR;
+const std::string &Event::getRequestLogInfo() const {
+    return _request_log_info;
+}
 
-    }
-
+void Event::setRequestLogInfo(const std::string &requestLogInfo) {
+    _request_log_info = requestLogInfo;
 }

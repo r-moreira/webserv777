@@ -3,7 +3,7 @@ project(webserv)
 
 set(CMAKE_CXX_STANDARD 98)
 
-#add_compile_options(-Wall -Wextra -Werror -std=c++98)
+add_compile_options(-Wall -Wextra -Werror -std=c++98)
 add_compile_options(-std=c++98)
 
 add_executable(

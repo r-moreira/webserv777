@@ -259,8 +259,10 @@ void Response::send_error_response() {
 void Response::_response_logger() {
     std::stringstream log;
 
-    log << " | " << MAGENTA << "Status: " << RESET << this->_event.getHttpStatus() << std::endl;
-    Logger::info(log.str());
+    if (this->_event.getHttpStatus() != 499) {
+        log << this->_event.getRequestLogInfo() << " | " << MAGENTA << "Status" << RESET << ": " << this->_event.getHttpStatus();
+        Logger::info(log.str());
+    }
 }
 
 void Response::_clear_cgi_exec() {

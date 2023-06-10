@@ -65,6 +65,8 @@ private:
     int _server_cgi_fd_out;
     int _server_cgi_fd_in;
 
+    std::string _request_log_info;
+
     HttpStatus::event_http_status _http_status;
 
     std::string _request_read_buffer;
@@ -248,5 +250,9 @@ public:
     int getServerCgiFdIn() const;
 
     void setServerCgiFdIn(int serverCgiFdIn);
+
+    const std::string &getRequestLogInfo() const;
+
+    void setRequestLogInfo(const std::string &requestLogInfo);
 };
 #endif //WEBSERV_EVENT_H
