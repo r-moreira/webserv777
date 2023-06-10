@@ -26,6 +26,7 @@ Location &Location::operator=(const Location &obj) {
     this->_limit_except = obj._limit_except;
     this->_redirect_location = obj._redirect_location;
     this->_cgi_path = obj._cgi_path;
+    this->_cgi_bin = obj._cgi_bin;
     this->_upload_path = obj._upload_path;
     this->_directory_request_page = obj._directory_request_page;
     this->_error_pages = obj._error_pages;
@@ -160,6 +161,7 @@ std::ostream &operator<<(std::ostream &os, const Location &location) {
         << "\tIndex: " << location.getIndex() << std::endl
         << "\tRedirect Url: " << location.getRedirectLocation() << std::endl
         << "\tCgi Path: " << location.getCgiPath() << std::endl
+        << "\tCgin Bin: " << location.getCgiBin() << std::endl
         << "\tUpload Path: " << location.getUploadPath() << std::endl
         << "\tAuto Index: " << location.getAutoIndexOption() << std::endl
         << "\tMax Body Size: " << location.getMaxBodySize() << std::endl

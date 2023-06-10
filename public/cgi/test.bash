@@ -1,5 +1,6 @@
 #!/bin/bash
 
+printf "Content-type: text/plain\n\n"
 echo "-------------------------"
 echo "CGI Environment Variables:"
 echo "-------------------------"

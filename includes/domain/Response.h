@@ -43,7 +43,10 @@ public:
 
     void send_cgi_response();
 
-    void clear_cgi_exec();
+private:
+    void _response_logger();
+
+    void _clear_cgi_exec();
 };
 
 

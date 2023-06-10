@@ -15,6 +15,10 @@ void Response::send_response_file() {
     _read.read_file();
     _write.write_file_response_headers();
     _write.write_requested_file();
+
+    if (_event.getEventStatus() == Event::Status::Ended) {
+        _response_logger();
+    }
 }
 
 void Response::send_redirection_response() {
@@ -22,6 +26,7 @@ void Response::send_redirection_response() {
 
     _write.write_redirection_headers();
     _event.setEventStatus(Event::Status::Ended);
+    _response_logger();
 }
 
 void Response::send_upload_response() {
@@ -74,6 +79,7 @@ void Response::send_upload_response() {
 
     if (this->_event.getRemainingFileBytes() == 0 || this->_event.getFileReadLeft() == 0) {
         _write.write_created_headers();
+        _response_logger();
     }
 }
 
@@ -82,6 +88,7 @@ void Response::send_delete_response() {
 
     _file.delete_file();
     _write.write_no_content_headers();
+    _response_logger();
 }
 
 void Response::send_auto_index_response() {
@@ -91,6 +98,7 @@ void Response::send_auto_index_response() {
                                                            _event.getServer().getPort());
     _write.write_auto_index_headers();
     _write.write_auto_index_page(auto_index_page);
+    _response_logger();
 }
 
 void Response::send_cgi_response() {
@@ -101,17 +109,27 @@ void Response::send_cgi_response() {
 
         this->_event.setEnvp(env.getCgiEnvp(this->_event));
 
-        Logger::trace("CGI envp:\n");
+        Logger::trace("CGI envp:");
         std::stringstream log;
         for (int i = 0; i < Environment::ENV_VARIABLES_SIZE; i++) {
             log << this->_event.getEnvp()[i] << std::endl;
         }
         Logger::trace(log.str());
 
-        this->_event.setCgiPath(strdup(_event.getLocation().getCgiPath().c_str()));
+        std::string cgi_bin = "python3";
+        if (!this->_event.getLocation().getCgiBin().empty()) {
+            cgi_bin = this->_event.getLocation().getCgiBin();
+        }
 
-        char *const cmd[] = {(char *) "python3",  this->_event.getCgiPath(), NULL};
-        this->_event.setCgi(new ExecPython(cmd, this->_event.getEnvp()));
+        this->_event.setCgiPath(strdup(_event.getLocation().getCgiPath().c_str()));
+        char *const cmd[] = {(char *) cgi_bin.c_str(),  this->_event.getCgiPath(), NULL};
+
+        if (cgi_bin == "python3") {
+            this->_event.setCgi(new ExecPython(cmd, this->_event.getEnvp()));
+        } else {
+            this->_event.setCgi(new Exec((char *)this->_event.getLocation().getCgiBin().c_str(), cmd, this->_event.getEnvp()));
+        }
+
 
         if (this->_event.getRequest().getMethod() == "POST") {
             this->_event.setRemainingFileBytes(this->_event.getRequest().getBodyRemainingBytes());
@@ -128,7 +146,7 @@ void Response::send_cgi_response() {
         Logger::debug("CGI status: " + ITOSTR(this->_event.getHttpStatus()));
 
         if (this->_event.getHttpStatus() != Event::HttpStatus::OK) {
-            clear_cgi_exec();
+            _clear_cgi_exec();
             send_error_response();
             return;
         }
@@ -136,7 +154,8 @@ void Response::send_cgi_response() {
         _write.write_cgi_headers();
         this->_event.setCgiFdOut(this->_event.getCgi()->getStdOut());
         _write.write_cgi_content();
-        clear_cgi_exec();
+        _clear_cgi_exec();
+        _response_logger();
 
     } else if (this->_event.getRequest().getMethod() == "POST") {
         _write.write_body_to_cgi();
@@ -150,7 +169,7 @@ void Response::send_cgi_response() {
             Logger::debug("CGI status: " + ITOSTR(this->_event.getHttpStatus()));
 
             if (this->_event.getHttpStatus() != Event::HttpStatus::OK) {
-                clear_cgi_exec();
+                _clear_cgi_exec();
                 send_error_response();
                 return;
             }
@@ -159,21 +178,13 @@ void Response::send_cgi_response() {
             this->_event.setCgiFdOut(this->_event.getCgi()->getStdOut());
             _write.write_cgi_content();
 
-            clear_cgi_exec();
+            _clear_cgi_exec();
+            _response_logger();
         }
 
     } else {
         this->_event.setHttpStatus(Event::HttpStatus::FORBIDDEN);
         send_error_response();
-    }
-}
-
-void Response::clear_cgi_exec() {
-    Environment::freeCgiEnvp(this->_event.getEnvp());
-    if (_event.isCgiSet() && _event.getEventStatus() == Event::Status::Ended) {
-        delete this->_event.getCgi();
-        free(this->_event.getCgiPath());
-        close(_event.getCgiFdOut());
     }
 }
 
@@ -199,6 +210,7 @@ void Response::send_is_directory_response() {
         _write.write_default_error_page();
     }
 
+    _response_logger();
     _event.setEventStatus(Event::Status::Ended);
 }
 
@@ -240,5 +252,22 @@ void Response::send_error_response() {
         _write.write_default_error_page();
     }
 
+    _response_logger();
     _event.setEventStatus(Event::Status::Ended);
+}
+
+void Response::_response_logger() {
+    std::stringstream log;
+
+    log << " | " << MAGENTA << "Status: " << RESET << this->_event.getHttpStatus() << std::endl;
+    Logger::info(log.str());
+}
+
+void Response::_clear_cgi_exec() {
+    Environment::freeCgiEnvp(this->_event.getEnvp());
+    if (_event.isCgiSet() && _event.getEventStatus() == Event::Status::Ended) {
+        delete this->_event.getCgi();
+        free(this->_event.getCgiPath());
+        close(_event.getCgiFdOut());
+    }
 }
