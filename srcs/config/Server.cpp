@@ -6,7 +6,10 @@
 
 Server& Server::build(ConfigParser::ServerType *serverParam) {
     _fd = -1;
-    _name = serverParam->serverName;
+    if (!serverParam->serverName.empty()) {
+        _name = serverParam->serverName;
+        addServerNametoHost(_name);
+    }
     _port = serverParam->port;
     if (!serverParam->root.empty()) {
         _root = serverParam->root[0];
@@ -54,6 +57,36 @@ const std::string &Server::getName() const {
 
 void Server::setName(const std::string &name) {
     _name = name;
+}
+
+int Server::fileToString(const std::string& filename, std::string& fileContents) {
+		std::ifstream input(filename.c_str());
+		if (!input) {
+			return (-1);
+		}
+		std::stringstream buffer;
+		buffer << input.rdbuf();
+		fileContents = buffer.str();
+		return (1);
+}
+
+void Server::addServerNametoHost(std::string name) {
+		std::string contents;
+		std::string loopback = "127.0.0.1  "; 
+		std::ofstream outfile("/etc/hosts", std::ios::app);
+
+		if (!outfile) {
+			std::cerr << "Error: Could not open file /etc/hosts" << std::endl;
+			return;
+		}
+		if (fileToString("/etc/hosts", contents) == -1) {
+			std::cerr << "Error: could not capture contents of /etc/hosts file" << std::endl;
+			return;
+		}
+        if(contents.find(loopback + name) == std::string::npos) {
+            outfile << loopback << name << "\n";
+        }
+		outfile.close();
 }
 
 int Server::getPort() const {

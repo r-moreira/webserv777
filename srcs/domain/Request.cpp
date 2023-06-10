@@ -370,9 +370,7 @@ void Request::_request_logger() {
         if (!content_type_header_value.empty()) {
             log << " | " << BLUE << "Body" << RESET << ": " << content_type_header_value;
         }
-
-        if (this->_event.getRequest().getContentLength() != -1)
-            log << " with " << this->_event.getRequest().getContentLength() << " bytes";
+        log << " with " << this->_event.getRequest().getContentLength() << " bytes";
     }
 
     Logger::info(log.str());
