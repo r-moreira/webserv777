@@ -8,7 +8,8 @@ RequestData::RequestData() :
         _version_major(0),
         _version_minor(0),
         _keep_alive(false),
-        _remaining_body_bytes(0){}
+        _remaining_body_bytes(0),
+        _content_length(-1){}
 
 RequestData::~RequestData() {}
 
@@ -159,4 +160,12 @@ const std::string &RequestData::getUploadFileType() const {
 
 void RequestData::setUploadFileType(const std::string &uploadFileType) {
     _upload_file_type = uploadFileType;
+}
+
+void RequestData::setContentLength(size_t content_size) {
+    _content_length = content_size;
+}
+
+size_t RequestData::getContentLength() const {
+    return _content_length;
 }

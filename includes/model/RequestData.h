@@ -26,6 +26,7 @@ private:
     std::string _boundary;
     std::string _content_disposition;
     std::string _upload_file_type;
+    size_t _content_length;
 
 
 public:
@@ -98,6 +99,9 @@ public:
 
     void setUploadFileType(const std::string &uploadFileType);
 
+    void setContentLength(size_t content_size);
+
+    size_t getContentLength() const;
 };
 
 

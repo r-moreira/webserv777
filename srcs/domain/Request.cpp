@@ -331,6 +331,8 @@ bool Request::_is_index_exists_in_directory(const std::string& path, const std::
 void Request::_request_logger() {
     std::stringstream log;
 
+    log << "HTTP/" << this->_event.getRequest().getVersionMajor() << "." << this->_event.getRequest().getVersionMinor() << " ";
+
     if (this->_event.getRequest().getMethod() == "GET") {
         log << GREEN << "GET " << RESET;
     } else if (this->_event.getRequest().getMethod() == "POST") {
@@ -341,7 +343,37 @@ void Request::_request_logger() {
         log << YELLOW << this->_event.getRequest().getMethod() << " " << RESET;
     }
 
+    std::vector<RequestData::HeaderItem> headers = this->_event.getRequest().getHeaders();
+
+    std::string host_header_value;
+    std::string content_type_header_value;
+    for (size_t i = 0; i < headers.size(); i++) {
+        if (headers[i].name == "Host") {
+            host_header_value = headers[i].value;
+        }
+        if ((this->_event.getRequest().getMethod() == "POST" || this->_event.getRequest().getMethod() == "PUT")
+            && headers[i].name == "Content-Type") {
+            content_type_header_value = headers[i].value;
+            if (content_type_header_value.find("boundary=") != std::string::npos) {
+                content_type_header_value = content_type_header_value.substr(0, content_type_header_value.find(';'));
+            }
+        }
+    }
+
+    if (!host_header_value.empty()) {
+        log << host_header_value;
+    }
+
     log << this->_event.getRequest().getUri();
+
+    if (this->_event.getRequest().getMethod() == "POST" || this->_event.getRequest().getMethod() == "PUT") {
+        if (!content_type_header_value.empty()) {
+            log << " | " << BLUE << "Body" << RESET << ": " << content_type_header_value;
+        }
+
+        if (this->_event.getRequest().getContentLength() != -1)
+            log << " with " << this->_event.getRequest().getContentLength() << " bytes";
+    }
 
     Logger::info(log.str());
 }

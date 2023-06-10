@@ -179,6 +179,7 @@ RequestParser::ParseState::State RequestParser::consume(RequestData &req, char i
                     if (strcasecmp(h.name.c_str(), "Content-Length") == 0) {
                         _content_size = strtol(h.value.c_str(), NULL, 10);
                         req.reserveContent(_content_size);
+                        req.setContentLength(_content_size);
                     }
                 }
                 _state = ParseState::ExpectingNewline;
