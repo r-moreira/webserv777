@@ -200,13 +200,20 @@ void Request::define_response_state() {
         this->_event.setEventStatus(Event::Status::Writing);
         return;
     } else if (this->_event.getRequest().getMethod() == "POST" && this->_event.getLocation().isCgiLock()) {
-        Logger::trace("CGI Event");
+        Logger::trace("POST CGI Event");
         this->_event.setEventSubStatus(Event::SubStatus::SendingCGIResponse);
         this->_event.setEventStatus(Event::Status::Writing);
         return;
     } else if (this->_event.getRequest().getMethod() == "POST"){
         Logger::warning("Forbidden Event: Post Request allowed only for File Upload or CGI");
         ErrorState::throw_error_state(this->_event, Event::HttpStatus::FORBIDDEN);
+        return;
+    }
+
+    if (this->_event.getRequest().getMethod() == "GET" && this->_event.getLocation().isCgiLock()) {
+        Logger::trace("GET CGI Event");
+        this->_event.setEventSubStatus(Event::SubStatus::SendingCGIResponse);
+        this->_event.setEventStatus(Event::Status::Writing);
         return;
     }
 
@@ -241,13 +248,6 @@ void Request::define_response_state() {
         return;
     }
 
-    if (this->_event.getRequest().getMethod() == "GET" && this->_event.getLocation().isCgiLock()) {
-        Logger::trace("CGI Event");
-        this->_event.setEventSubStatus(Event::SubStatus::SendingCGIResponse);
-        this->_event.setEventStatus(Event::Status::Writing);
-        return;
-    }
-
     if (this->_event.getRequest().getMethod() == "GET") {
         Logger::trace("Request File Event");
         this->_event.setEventSubStatus(Event::SubStatus::SendingResponseFile);
@@ -265,7 +265,6 @@ bool Request::is_directory(const std::string& path) {
     if (stat(path.c_str(), &s) == 0) {
         if (s.st_mode & S_IFDIR) {
             Logger::warning("Path is a directory: " + path);
-            std::cout << YELLOW << "Path is a directory: " << path <<RESET << std::endl;
             return true;
         }
     }

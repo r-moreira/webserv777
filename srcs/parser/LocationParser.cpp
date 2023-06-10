@@ -1,12 +1,13 @@
 #include "../../includes/parser/LocationParser.h"
-#include "../../includes/webserv.h"
 
-LocationParser::LocationParser() {}
+LocationParser::LocationParser() {
+    _location = Location();
+}
 
 void LocationParser::addNewAtribute(std::string str) {
+    parcerRoot(str);
     parcerEndPoint(str);
     parcerLimitExcept(str);
-    parcerRoot(str);
     parcerRedirect(str);
     parcerDirPage(str);
     parcerErrorPage(str);
@@ -19,10 +20,9 @@ void LocationParser::addNewAtribute(std::string str) {
 
 void LocationParser::parcerRoot(std::string location) {
     std::string delimiter = "root ";
-    std::string endDelimiter = "\n";
     int n = delimiter.size();
     if (contains(delimiter, location)) {
-        _location.setRoot(location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n));
+        _location.setRoot(location.substr(location.find(delimiter) + n, location.size()));
     }
 }
 
@@ -50,7 +50,8 @@ void LocationParser::parcerEndPoint(std::string location) {
     std::string endDelimiter = "{";
     int n = delimiter.size();
     if (contains(delimiter, location)) {
-        _location.setPath(location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n));
+        std::string loc = location.substr(location.find(delimiter) + n, location.find(endDelimiter));
+        _location.setPath(loc.substr(0,  loc.find(endDelimiter) - 1));
     }
 }
 
@@ -63,7 +64,7 @@ void LocationParser::parcerDirPage(std::string location) {
     std::string endDelimiter = "\n";
     int n = delimiter.size();
     if (contains(delimiter, location)) {
-        _location.setRoot(location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n));
+        _location.setDirectoryRequestPage(location.substr(location.find(delimiter) + n, location.find(endDelimiter) - n));
     }
 }
 
@@ -95,7 +96,7 @@ std::vector<std::string> spliteString(std::string str) {
 }
 
 void LocationParser::parcerUploadPath(std::string location) {
-    std::string delimiter = "upload ";
+    std::string delimiter = "upload_path ";
     std::string endDelimiter = "\n";
     int n = delimiter.size();
     if (contains(delimiter, location)) {

@@ -1,21 +1,21 @@
 #include "../../includes/parser/ConfigParser.h"
 
-ConfigParser::ConfigParser(std::string fileName): serverLocationCount(0), serverLocationAtribute(NULL) {
+ConfigParser::ConfigParser(std::string fileName): serverLocationCount(0), serverLocationAtribute(new LocationParser()) {
+    ServerType* server = new ServerType();
     std::string delimiter = "server";
     int serverCount = 0;
-    ServerType* server = new ServerType();
     std::ifstream iss(fileName.data());
 
     std::string word;
     while (std::getline(iss, word, '\n')) {
+        word.find('\r') != std::string::npos ? word.replace(word.find('\r'), 1, "") : word;
         if (!is_comment(word)) {
             if (word == delimiter or word == (delimiter + " {")) {
                 serverCount++;
-                if (serverLocationAtribute) {
+                if (serverLocationCount) {
                     server->locations.push_back(serverLocationAtribute);
                 }
                 serverLocationCount = 0;
-                serverLocationAtribute = NULL;
             }
             else if (serverCount) {
                 if (serverCount > 1) {
@@ -23,17 +23,10 @@ ConfigParser::ConfigParser(std::string fileName): serverLocationCount(0), server
                     serverCount--;
                     server = new ServerType();
                 }
-                parcerPort(server, word);
-                serverName(server, word);
-                root(server, word);
-                index(server, word);
-                errorPage(server, word);
-                maxBodySize(server, word);
+                if (serverLocationCount == 0) {
+                    setServerAtributes(server, word);
+                }
                 parcerLocation(server, word);
-                parcerLimitExcept(server, word);
-                parcerDirPage(server, word);
-                parcerUploadPath(server, word);
-                parcerAutoIndex(server, word);
             }
         }
     }
@@ -43,6 +36,19 @@ ConfigParser::ConfigParser(std::string fileName): serverLocationCount(0), server
     if (serverLocationCount) {
         server->locations.push_back(serverLocationAtribute);
     }
+}
+
+void ConfigParser::setServerAtributes(ServerType *server, std::string atribute) {
+    parcerPort(server, atribute);
+    serverName(server, atribute);
+    root(server, atribute);
+    index(server, atribute);
+    errorPage(server, atribute);
+    maxBodySize(server, atribute);
+    parcerLimitExcept(server, atribute);
+    parcerDirPage(server, atribute);
+    parcerUploadPath(server, atribute);
+    parcerAutoIndex(server, atribute);
 }
 
 void ConfigParser::parcerPort(ServerType *server, std::string atribute) {
@@ -65,10 +71,9 @@ void ConfigParser::serverName(ServerType *server, std::string atribute) {
 
 void ConfigParser::root(ServerType *server, std::string atribute) {
     std::string delimiter = "root ";
-    std::string endDelimiter = "\n";
     int n = delimiter.size();
     if (contains(delimiter, atribute)) {
-        server->root = atribute.substr(atribute.find(delimiter) + n, atribute.find(endDelimiter) - n);
+        server->root = atribute.substr(atribute.find(delimiter) + n, atribute.size());
     }
 }
 
@@ -105,11 +110,11 @@ void ConfigParser::parcerLocation(ServerType* server, std::string atribute) {
     int isContains = contains(delimiter, atribute);
     if (isContains || serverLocationCount) {
         if (isContains) {
-            if (serverLocationAtribute) {
+            if (serverLocationCount) {
                 server->locations.push_back(serverLocationAtribute);
+                serverLocationAtribute = new LocationParser();
                 serverLocationCount--;
             }
-            serverLocationAtribute = new LocationParser();
             serverLocationCount++;
         }
         serverLocationAtribute->addNewAtribute(atribute);
@@ -152,11 +157,11 @@ int ConfigParser::is_comment(std::string str) {
 }
 
 void ConfigParser::parcerUploadPath(ServerType *server, std::string atribute) {
-    std::string delimiter = "upload ";
-    std::string endDelimiter = "\n";
+    std::string delimiter = "upload_path ";
     int n = delimiter.size();
+
     if (contains(delimiter, atribute)) {
-        server->uploadPath = atribute.substr(atribute.find(delimiter) + n, atribute.find(endDelimiter) - n);
+        server->uploadPath = atribute.substr(atribute.find(delimiter) + n, atribute.size());
         server->uploadLock = true;
     }
 }

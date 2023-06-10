@@ -8,7 +8,9 @@ Server& Server::build(ConfigParser::ServerType *serverParam) {
     _fd = -1;
     _name = serverParam->serverName;
     _port = serverParam->port;
-    _root = serverParam->root;
+    if (!serverParam->root.empty()) {
+        _root = serverParam->root[0];
+    }
     if(!serverParam->index.empty())
         _index = serverParam->index[0];
     _max_body_size = serverParam->maxBodySize;
