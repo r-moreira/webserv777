@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-#include "../config/Location.h"
+#include "../config/Location.hpp"
 class LocationParser
 {
 private:

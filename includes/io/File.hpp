@@ -2,12 +2,12 @@
 // Created by rmore on 10/04/2023.
 //
 
-#ifndef WEBSERV_FILE_H
-#define WEBSERV_FILE_H
+#ifndef WEBSERV_FILE_HPP
+#define WEBSERV_FILE_HPP
 
-#include "../utils/Logger.h"
-#include "../domain/Event.h"
-#include "../domain/ErrorState.h"
+#include "../utils/Logger.hpp"
+#include "../domain/Event.hpp"
+#include "../domain/ErrorState.hpp"
 
 class File {
 
@@ -27,4 +27,4 @@ public:
 };
 
 
-#endif //WEBSERV_FILE_H
+#endif //WEBSERV_FILE_HPP

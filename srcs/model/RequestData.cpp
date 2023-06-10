@@ -2,7 +2,7 @@
 // Created by rmore on 13/05/2023.
 //
 
-#include "../../includes/model/RequestData.h"
+#include "../../includes/model/RequestData.hpp"
 
 RequestData::RequestData() :
         _version_major(0),

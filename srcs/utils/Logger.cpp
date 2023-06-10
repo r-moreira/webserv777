@@ -2,7 +2,7 @@
 // Created by rmore on 09/06/2023.
 //
 
-#include "../../includes/utils/Logger.h"
+#include "../../includes/utils/Logger.hpp"
 
 void Logger::_log(const std::string &message, Logger::Level level) {
     switch (level) {

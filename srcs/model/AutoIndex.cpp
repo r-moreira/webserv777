@@ -1,4 +1,4 @@
-#include "../../includes/model/AutoIndex.h"
+#include "../../includes/model/AutoIndex.hpp"
 
 AutoIndex::AutoIndex() {};
 

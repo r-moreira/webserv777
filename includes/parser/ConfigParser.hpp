@@ -1,9 +1,9 @@
 #ifndef ConfigParser_hpp
 #define ConfigParser_hpp
 
-#include "../webserv.h"
-#include "LocationParser.h"
-#include "../config/AutoIndexOption.h"
+#include "../webserv.hpp"
+#include "LocationParser.hpp"
+#include "../config/AutoIndexOption.hpp"
 
 class ConfigParser
 {

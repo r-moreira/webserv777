@@ -2,7 +2,7 @@
 // Created by rmore on 10/05/2023.
 //
 
-#include "../../includes/model/Pages.h"
+#include "../../includes/model/Pages.hpp"
 
 Pages::Pages() {}
 

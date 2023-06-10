@@ -2,7 +2,7 @@
 // Created by rmore on 10/04/2023.
 //
 
-#include "../../includes/domain/Response.h"
+#include "../../includes/domain/Response.hpp"
 
 Response::Response(Event &event) : _event(event), _file(event), _read(event), _write(event) {}
 

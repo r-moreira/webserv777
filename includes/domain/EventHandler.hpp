@@ -2,15 +2,15 @@
 // Created by rmore on 10/04/2023.
 //
 
-#ifndef WEBSERV_EVENTHANDLER_H
-#define WEBSERV_EVENTHANDLER_H
+#ifndef WEBSERV_EVENTHANDLER_HPP
+#define WEBSERV_EVENTHANDLER_HPP
 
-#include "../utils/Logger.h"
-#include "../webserv.h"
-#include "Event.h"
-#include "Request.h"
-#include "Response.h"
-#include "../io/File.h"
+#include "../utils/Logger.hpp"
+#include "../webserv.hpp"
+#include "Event.hpp"
+#include "Request.hpp"
+#include "Response.hpp"
+#include "../io/File.hpp"
 
 class EventHandler {
 
@@ -37,4 +37,4 @@ private:
 };
 
 
-#endif //WEBSERV_EVENTHANDLER_H
+#endif //WEBSERV_EVENTHANDLER_HPP

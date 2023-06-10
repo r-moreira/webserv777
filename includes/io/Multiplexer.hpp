@@ -2,14 +2,14 @@
 // Created by rmore on 15/03/2023.
 //
 
-#ifndef WEBSERV_MULTIPLEXER_H
-#define WEBSERV_MULTIPLEXER_H
+#ifndef WEBSERV_MULTIPLEXER_HPP
+#define WEBSERV_MULTIPLEXER_HPP
 
-#include "../utils/Logger.h"
-#include "../webserv.h"
-#include "../../includes/domain/EventHandler.h"
-#include "../../includes/network/Socket.h"
-#include "../config/Server.h"
+#include "../utils/Logger.hpp"
+#include "../webserv.hpp"
+#include "../../includes/domain/EventHandler.hpp"
+#include "../../includes/network/Socket.hpp"
+#include "../config/Server.hpp"
 
 class Multiplexer {
 private:
@@ -36,4 +36,4 @@ private:
 };
 
 
-#endif //WEBSERV_MULTIPLEXER_H
+#endif //WEBSERV_MULTIPLEXER_HPP

@@ -2,8 +2,8 @@
 // Created by rmore on 15/03/2023.
 //
 
-#ifndef WEBSERV_WEBSERV_H
-#define WEBSERV_WEBSERV_H
+#ifndef WEBSERV_WEBSERV_HPP
+#define WEBSERV_WEBSERV_HPP
 
 #include <iostream>
 #include <unistd.h>
@@ -55,4 +55,4 @@
 #define ENABLE_CONFIG_READ 1
 
 
-#endif //WEBSERV_WEBSERV_H
+#endif //WEBSERV_WEBSERV_HPP

@@ -2,10 +2,10 @@
 // Created by rmore on 10/05/2023.
 //
 
-#ifndef WEBSERV_MIMETYPES_H
-#define WEBSERV_MIMETYPES_H
+#ifndef WEBSERV_MIMETYPES_HPP
+#define WEBSERV_MIMETYPES_HPP
 
-#include "../webserv.h"
+#include "../webserv.hpp"
 
 class MimeTypes {
 private:
@@ -19,4 +19,4 @@ public:
 };
 
 
-#endif //WEBSERV_MIMETYPES_H
+#endif //WEBSERV_MIMETYPES_HPP

@@ -2,7 +2,7 @@
 // Created by rmore on 13/05/2023.
 //
 
-#include "../../includes/parser/RequestParser.h"
+#include "../../includes/parser/RequestParser.hpp"
 
 RequestParser::RequestParser() : _content_size(0), _state(ParseState::RequestMethodStart) {}
 

@@ -2,10 +2,10 @@
 // Created by rmore on 09/06/2023.
 //
 
-#ifndef WEBSERV_LOGGER_H
-#define WEBSERV_LOGGER_H
+#ifndef WEBSERV_LOGGER_HPP
+#define WEBSERV_LOGGER_HPP
 
-#include "../webserv.h"
+#include "../webserv.hpp"
 
 class Logger {
     enum Level {
@@ -35,4 +35,4 @@ private:
 };
 
 
-#endif //WEBSERV_LOGGER_H
+#endif //WEBSERV_LOGGER_HPP

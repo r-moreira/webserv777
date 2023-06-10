@@ -2,11 +2,11 @@
 // Created by rmore on 07/05/2023.
 //
 
-#ifndef WEBSERV_LOCATION_H
-#define WEBSERV_LOCATION_H
+#ifndef WEBSERV_LOCATION_HPP
+#define WEBSERV_LOCATION_HPP
 
-#include "../webserv.h"
-#include "AutoIndexOption.h"
+#include "../webserv.hpp"
+#include "AutoIndexOption.hpp"
 
 class Location {
 public:
@@ -98,4 +98,4 @@ public:
 
 std::ostream& operator << (std::ostream& os, const Location& obj);
 
-#endif //WEBSERV_LOCATION_H
+#endif //WEBSERV_LOCATION_HPP

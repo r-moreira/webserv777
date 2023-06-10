@@ -1,12 +1,12 @@
 #ifndef exec_h
 #define exec_h
 
-#include "../utils/Logger.h"
+#include "../utils/Logger.hpp"
 #include <iostream>
 #include <unistd.h>
 #include <sys/wait.h>
 
-#include "../webserv.h"
+#include "../webserv.hpp"
 #define LIMIT_IN_SECONDS 5
 
 class Exec

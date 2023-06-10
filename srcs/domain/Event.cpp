@@ -2,7 +2,7 @@
 // Created by rmore on 09/04/2023.
 //
 
-#include "../../includes/domain/Event.h"
+#include "../../includes/domain/Event.hpp"
 
 Event::Event(int server_fd, int client_fd) {
     this->_client_fd = client_fd;

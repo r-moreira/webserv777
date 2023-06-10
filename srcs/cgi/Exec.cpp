@@ -1,4 +1,4 @@
-#include "../../includes/cgi/Exec.h"
+#include "../../includes/cgi/Exec.hpp"
 
 
 Exec::Exec(char * path_bin, char* const* command, char* const* env): _path(path_bin), _cmd(command), _env(env) {}

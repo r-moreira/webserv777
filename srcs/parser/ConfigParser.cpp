@@ -1,4 +1,4 @@
-#include "../../includes/parser/ConfigParser.h"
+#include "../../includes/parser/ConfigParser.hpp"
 
 ConfigParser::ConfigParser(std::string fileName): serverLocationCount(0), serverLocationAtribute(NULL) {
     std::string delimiter = "server";

@@ -2,14 +2,14 @@
 // Created by rmore on 10/05/2023.
 //
 
-#ifndef WEBSERV_WRITE_H
-#define WEBSERV_WRITE_H
+#ifndef WEBSERV_WRITE_HPP
+#define WEBSERV_WRITE_HPP
 
-#include "../utils/Logger.h"
-#include "../domain/Event.h"
-#include "../domain/ErrorState.h"
-#include "../../includes/model/Headers.h"
-#include "../../includes/model/Pages.h"
+#include "../utils/Logger.hpp"
+#include "../domain/Event.hpp"
+#include "../domain/ErrorState.hpp"
+#include "../../includes/model/Headers.hpp"
+#include "../../includes/model/Pages.hpp"
 
 class Write {
 
@@ -55,4 +55,4 @@ private:
 };
 
 
-#endif //WEBSERV_WRITE_H
+#endif //WEBSERV_WRITE_HPP

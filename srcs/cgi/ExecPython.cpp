@@ -1,4 +1,4 @@
-#include "../../includes/cgi/ExecPython.h"
+#include "../../includes/cgi/ExecPython.hpp"
 
 ExecPython::ExecPython(char* const* command, char* const* env): Exec(NULL, NULL, NULL) {
     _command = command;

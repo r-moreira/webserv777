@@ -2,10 +2,10 @@
 // Created by rmore on 13/05/2023.
 //
 
-#ifndef WEBSERV_REQUESTDATA_H
-#define WEBSERV_REQUESTDATA_H
+#ifndef WEBSERV_REQUESTDATA_HPP
+#define WEBSERV_REQUESTDATA_HPP
 
-#include "../webserv.h"
+#include "../webserv.hpp"
 
 class RequestData {
 public:
@@ -105,4 +105,4 @@ public:
 };
 
 
-#endif //WEBSERV_REQUESTDATA_H
+#endif //WEBSERV_REQUESTDATA_HPP

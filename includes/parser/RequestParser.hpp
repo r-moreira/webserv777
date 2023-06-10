@@ -2,11 +2,11 @@
 // Created by rmore on 13/05/2023.
 //
 
-#ifndef WEBSERV_REQUESTPARSER_H
-#define WEBSERV_REQUESTPARSER_H
+#ifndef WEBSERV_REQUESTPARSER_HPP
+#define WEBSERV_REQUESTPARSER_HPP
 
-#include "../webserv.h"
-#include "../model/RequestData.h"
+#include "../webserv.hpp"
+#include "../model/RequestData.hpp"
 
 class RequestParser {
 
@@ -82,4 +82,4 @@ private:
 };
 
 
-#endif //WEBSERV_REQUESTPARSER_H
+#endif //WEBSERV_REQUESTPARSER_HPP

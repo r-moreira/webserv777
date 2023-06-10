@@ -2,13 +2,13 @@
 // Created by rmore on 09/04/2023.
 //
 
-#ifndef WEBSERV_EVENT_H
-#define WEBSERV_EVENT_H
+#ifndef WEBSERV_EVENT_HPP
+#define WEBSERV_EVENT_HPP
 
-#include "../webserv.h"
-#include "../config/Server.h"
-#include "../model/RequestData.h"
-#include "../cgi/Exec.h"
+#include "../webserv.hpp"
+#include "../config/Server.hpp"
+#include "../model/RequestData.hpp"
+#include "../cgi/Exec.hpp"
 
 class Event {
 
@@ -255,4 +255,4 @@ public:
 
     void setRequestLogInfo(const std::string &requestLogInfo);
 };
-#endif //WEBSERV_EVENT_H
+#endif //WEBSERV_EVENT_HPP

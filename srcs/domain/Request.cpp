@@ -2,7 +2,7 @@
 // Created by rmore on 10/04/2023.
 //
 
-#include "../../includes/domain/Request.h"
+#include "../../includes/domain/Request.hpp"
 
 Request::Request(Event &event): _event(event), _read(event) {}
 

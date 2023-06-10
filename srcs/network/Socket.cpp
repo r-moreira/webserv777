@@ -2,7 +2,7 @@
 // Created by rmore on 15/03/2023.
 //
 
-#include "../../includes/network/Socket.h"
+#include "../../includes/network/Socket.hpp"
 
 Socket::Socket() {}
 

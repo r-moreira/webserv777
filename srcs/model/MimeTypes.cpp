@@ -2,7 +2,7 @@
 // Created by rmore on 10/05/2023.
 //
 
-#include "../../includes/model/MimeTypes.h"
+#include "../../includes/model/MimeTypes.hpp"
 
 MimeTypes::MimeTypes() {
     this->_mime_types.insert(std::pair<std::string, std::string>("aac", "audio/aac"));

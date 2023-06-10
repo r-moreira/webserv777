@@ -1,7 +1,7 @@
-#include "../includes/webserv.h"
-#include "../includes/io/Multiplexer.h"
-#include "../includes/parser/ConfigParser.h"
-#include "../includes/utils/Logger.h"
+#include "../includes/webserv.hpp"
+#include "../includes/io/Multiplexer.hpp"
+#include "../includes/parser/ConfigParser.hpp"
+#include "../includes/utils/Logger.hpp"
 
 void start_servers(std::vector<Server> &servers);
 std::vector<Server> servers_builder(std::vector<ConfigParser::ServerType *> serverConfigList);

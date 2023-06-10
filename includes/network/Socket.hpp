@@ -2,11 +2,11 @@
 // Created by rmore on 15/03/2023.
 //
 
-#ifndef WEBSERV_SOCKET_H
-#define WEBSERV_SOCKET_H
+#ifndef WEBSERV_SOCKET_HPP
+#define WEBSERV_SOCKET_HPP
 
-#include "../webserv.h"
-#include "../utils/Logger.h"
+#include "../webserv.hpp"
+#include "../utils/Logger.hpp"
 
 class Socket {
 
@@ -24,4 +24,4 @@ private:
 };
 
 
-#endif //WEBSERV_SOCKET_H
+#endif //WEBSERV_SOCKET_HPP

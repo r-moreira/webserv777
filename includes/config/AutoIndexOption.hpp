@@ -2,8 +2,8 @@
 // Created by rmore on 09/06/2023.
 //
 
-#ifndef WEBSERV_AUTOINDEXOPTION_H
-#define WEBSERV_AUTOINDEXOPTION_H
+#ifndef WEBSERV_AUTOINDEXOPTION_HPP
+#define WEBSERV_AUTOINDEXOPTION_HPP
 
 
 class AutoIndexOption {
@@ -16,4 +16,4 @@ public:
 };
 
 
-#endif //WEBSERV_AUTOINDEXOPTION_H
+#endif //WEBSERV_AUTOINDEXOPTION_HPP

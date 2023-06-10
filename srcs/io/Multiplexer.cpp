@@ -2,7 +2,7 @@
 // Created by rmore on 15/03/2023.
 //
 
-#include "../../includes/io/Multiplexer.h"
+#include "../../includes/io/Multiplexer.hpp"
 
 Multiplexer::Multiplexer(const std::vector<Server> &servers) : _servers(servers) {
     this->_epoll_fd = epoll_create1(0);

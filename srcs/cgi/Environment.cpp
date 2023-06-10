@@ -2,7 +2,7 @@
 // Created by rmore on 25/05/2023.
 //
 
-#include "../../includes/cgi/Environment.h"
+#include "../../includes/cgi/Environment.hpp"
 
 Environment::Environment() {}
 

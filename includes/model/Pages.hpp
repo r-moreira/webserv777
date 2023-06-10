@@ -2,11 +2,11 @@
 // Created by rmore on 10/05/2023.
 //
 
-#ifndef WEBSERV_PAGES_H
-#define WEBSERV_PAGES_H
+#ifndef WEBSERV_PAGES_HPP
+#define WEBSERV_PAGES_HPP
 
-#include "../webserv.h"
-#include "../domain/Event.h"
+#include "../webserv.hpp"
+#include "../domain/Event.hpp"
 
 class Pages {
 public:
@@ -18,4 +18,4 @@ public:
 };
 
 
-#endif //WEBSERV_PAGES_H
+#endif //WEBSERV_PAGES_HPP

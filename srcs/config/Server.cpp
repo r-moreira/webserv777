@@ -2,7 +2,7 @@
 // Created by rmore on 15/03/2023.
 //
 
-#include "../../includes/config/Server.h"
+#include "../../includes/config/Server.hpp"
 
 Server& Server::build(ConfigParser::ServerType *serverParam) {
     _fd = -1;

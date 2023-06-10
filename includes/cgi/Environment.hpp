@@ -2,12 +2,12 @@
 // Created by rmore on 25/05/2023.
 //
 
-#ifndef WEBSERV_ENVIRONMENT_H
-#define WEBSERV_ENVIRONMENT_H
+#ifndef WEBSERV_ENVIRONMENT_HPP
+#define WEBSERV_ENVIRONMENT_HPP
 
-#include "../../includes/webserv.h"
-#include "../../includes/model/RequestData.h"
-#include "../domain/Event.h"
+#include "../../includes/webserv.hpp"
+#include "../../includes/model/RequestData.hpp"
+#include "../domain/Event.hpp"
 
 
 class Environment {
@@ -61,4 +61,4 @@ private:
 };
 
 
-#endif //WEBSERV_ENVIRONMENT_H
+#endif //WEBSERV_ENVIRONMENT_HPP

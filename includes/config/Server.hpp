@@ -2,15 +2,15 @@
 // Created by rmore on 15/03/2023.
 //
 
-#ifndef WEBSERV_SERVER_H
-#define WEBSERV_SERVER_H
+#ifndef WEBSERV_SERVER_HPP
+#define WEBSERV_SERVER_HPP
 
-#include "../webserv.h"
-#include "../network/Socket.h"
-#include "Location.h"
-#include "../parser/ConfigParser.h"
-#include "AutoIndexOption.h"
-#include "../utils/Logger.h"
+#include "../webserv.hpp"
+#include "../network/Socket.hpp"
+#include "Location.hpp"
+#include "../parser/ConfigParser.hpp"
+#include "AutoIndexOption.hpp"
+#include "../utils/Logger.hpp"
 
 class ConfigParser;
 
@@ -98,4 +98,4 @@ public:
 
 std::ostream& operator << (std::ostream& os, const Server& obj);
 
-#endif //WEBSERV_SERVER_H
+#endif //WEBSERV_SERVER_HPP

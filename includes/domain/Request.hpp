@@ -2,15 +2,15 @@
 // Created by rmore on 10/04/2023.
 //
 
-#ifndef WEBSERV_REQUEST_H
-#define WEBSERV_REQUEST_H
+#ifndef WEBSERV_REQUEST_HPP
+#define WEBSERV_REQUEST_HPP
 
-#include "../utils/Logger.h"
-#include "Event.h"
-#include "ErrorState.h"
-#include "../io/Read.h"
-#include "../../includes/parser/RequestParser.h"
-#include "../model/RequestData.h"
+#include "../utils/Logger.hpp"
+#include "Event.hpp"
+#include "ErrorState.hpp"
+#include "../io/Read.hpp"
+#include "../../includes/parser/RequestParser.hpp"
+#include "../model/RequestData.hpp"
 
 class Request {
 
@@ -46,4 +46,4 @@ private:
 };
 
 
-#endif //WEBSERV_REQUEST_H
+#endif //WEBSERV_REQUEST_HPP

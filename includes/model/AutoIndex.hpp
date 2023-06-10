@@ -3,8 +3,8 @@
 
 #include <iostream>
 #include <dirent.h>
-#include "../utils/Logger.h"
-#include "../config/Server.h"
+#include "../utils/Logger.hpp"
+#include "../config/Server.hpp"
 
 class AutoIndex {
 public:

@@ -2,18 +2,18 @@
 // Created by rmore on 10/04/2023.
 //
 
-#ifndef WEBSERV_RESPONSE_H
-#define WEBSERV_RESPONSE_H
+#ifndef WEBSERV_RESPONSE_HPP
+#define WEBSERV_RESPONSE_HPP
 
-#include "../utils/Logger.h"
-#include "Event.h"
-#include "../io/File.h"
-#include "../io/Read.h"
-#include "../io/Write.h"
-#include "../model/AutoIndex.h"
-#include "../cgi/Exec.h"
-#include "../cgi/ExecPython.h"
-#include "../cgi/Environment.h"
+#include "../utils/Logger.hpp"
+#include "Event.hpp"
+#include "../io/File.hpp"
+#include "../io/Read.hpp"
+#include "../io/Write.hpp"
+#include "../model/AutoIndex.hpp"
+#include "../cgi/Exec.hpp"
+#include "../cgi/ExecPython.hpp"
+#include "../cgi/Environment.hpp"
 
 class Response {
 private:
@@ -50,4 +50,4 @@ private:
 };
 
 
-#endif //WEBSERV_RESPONSE_H
+#endif //WEBSERV_RESPONSE_HPP

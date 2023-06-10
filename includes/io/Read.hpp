@@ -2,12 +2,12 @@
 // Created by rmore on 10/05/2023.
 //
 
-#ifndef WEBSERV_READ_H
-#define WEBSERV_READ_H
+#ifndef WEBSERV_READ_HPP
+#define WEBSERV_READ_HPP
 
-#include "../utils/Logger.h"
-#include "../domain/Event.h"
-#include "../domain/ErrorState.h"
+#include "../utils/Logger.hpp"
+#include "../domain/Event.hpp"
+#include "../domain/ErrorState.hpp"
 
 class Read {
 
@@ -27,4 +27,4 @@ public:
 };
 
 
-#endif //WEBSERV_READ_H
+#endif //WEBSERV_READ_HPP

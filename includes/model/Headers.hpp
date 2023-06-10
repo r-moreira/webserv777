@@ -2,13 +2,13 @@
 // Created by rmore on 10/05/2023.
 //
 
-#ifndef WEBSERV_HEADERS_H
-#define WEBSERV_HEADERS_H
+#ifndef WEBSERV_HEADERS_HPP
+#define WEBSERV_HEADERS_HPP
 
-#include "../webserv.h"
-#include "../utils/Logger.h"
-#include "../domain/Event.h"
-#include "MimeTypes.h"
+#include "../webserv.hpp"
+#include "../utils/Logger.hpp"
+#include "../domain/Event.hpp"
+#include "MimeTypes.hpp"
 
 class Headers {
     MimeTypes _mime_types;
@@ -34,4 +34,4 @@ public:
 };
 
 
-#endif //WEBSERV_HEADERS_H
+#endif //WEBSERV_HEADERS_HPP

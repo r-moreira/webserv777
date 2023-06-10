@@ -1,4 +1,4 @@
-#include "../../includes/parser/LocationParser.h"
+#include "../../includes/parser/LocationParser.hpp"
 
 LocationParser::LocationParser() {
     _location = Location();

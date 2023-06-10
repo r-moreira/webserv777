@@ -2,11 +2,11 @@
 // Created by rmore on 08/05/2023.
 //
 
-#ifndef WEBSERV_ERRORSTATE_H
-#define WEBSERV_ERRORSTATE_H
+#ifndef WEBSERV_ERRORSTATE_HPP
+#define WEBSERV_ERRORSTATE_HPP
 
-#include "../utils/Logger.h"
-#include "Event.h"
+#include "../utils/Logger.hpp"
+#include "Event.hpp"
 
 class ErrorState {
 public:
@@ -17,4 +17,4 @@ public:
 };
 
 
-#endif //WEBSERV_ERRORSTATE_H
+#endif //WEBSERV_ERRORSTATE_HPP
