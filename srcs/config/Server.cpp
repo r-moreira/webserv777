@@ -76,7 +76,7 @@ void Server::addServerNametoHost(std::string name) {
 		std::ofstream outfile("/etc/hosts", std::ios::app);
 
 		if (!outfile) {
-            Logger::warning("Could not open file /etc/hosts. Try with sudo if you want to resolve server hosts");
+            Logger::warning("Could not open /etc/hosts to setup server_name: " + name + ". Try with sudo if you want to resolve server hosts");
 			return;
 		}
 		if (fileToString("/etc/hosts", contents) == -1) {
