@@ -36,11 +36,13 @@ public:
     void define_response_state();
 
 private:
-    std::string path_to_root();
+    void _request_logger();
 
-    bool is_directory(const std::string& path);
+    std::string _path_to_root();
 
-    bool is_index_exists_in_directory(const std::string& path, const std::string& root, const std::string& index);
+    bool _is_directory(const std::string& path);
+
+    bool _is_index_exists_in_directory(const std::string& path, const std::string& root, const std::string& index);
 };
 
 

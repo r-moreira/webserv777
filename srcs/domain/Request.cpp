@@ -43,6 +43,8 @@ void Request::parse_request() {
 
             Logger::trace("Remaining Bytes: " + ITOSTR(this->_event.getRequestReadBytes()));
             Logger::trace("Remaining Buffer: |" + this->_event.getRemainingReadBuffer() + "|");
+
+            _request_logger();
             return;
         }
 
@@ -50,6 +52,8 @@ void Request::parse_request() {
             Logger::warning("Parsing failed:");
             Logger::trace("Request:\n" + _event.getRequest().inspect());
             ErrorState::throw_error_state(this->_event, Event::HttpStatus::BAD_REQUEST);
+
+            _request_logger();
             return;
         }
 
@@ -217,14 +221,14 @@ void Request::define_response_state() {
         return;
     }
 
-    std::string file_path = path_to_root();
+    std::string file_path = _path_to_root();
     this->_event.setFilePath(file_path);
 
      bool is_auto_index = this->_event.getLocation().getAutoIndexOption() != AutoIndexOption::NONE
         ? this->_event.getLocation().getAutoIndexOption() == AutoIndexOption::ON
         : this->_event.getServer().getAutoIndexOption() == AutoIndexOption::ON;
 
-    bool is_dir = is_directory(file_path);
+    bool is_dir = _is_directory(file_path);
 
     if (is_dir && !is_auto_index) {
          Logger::trace("Redirecting to directory error page");
@@ -259,7 +263,7 @@ void Request::define_response_state() {
     ErrorState::throw_error_state(this->_event, Event::HttpStatus::NOT_IMPLEMENTED);
 }
 
-bool Request::is_directory(const std::string& path) {
+bool Request::_is_directory(const std::string& path) {
     struct stat s;
 
     if (stat(path.c_str(), &s) == 0) {
@@ -271,7 +275,7 @@ bool Request::is_directory(const std::string& path) {
     return false;
 }
 
-std::string Request::path_to_root() {
+std::string Request::_path_to_root() {
     Logger::trace("Path to root");
 
     std::string request_uri = this->_event.getRequest().getUri();
@@ -293,7 +297,7 @@ std::string Request::path_to_root() {
     std::string request_without_slash = request_uri.length() > 1 && request_uri[request_uri.length() - 1] == '/' ?
                                     request_uri.substr(0, request_uri.length() - 1) : request_uri;
 
-    if (request_without_slash == location_path && is_index_exists_in_directory(location_path, location_root, index)) {
+    if (request_without_slash == location_path && _is_index_exists_in_directory(location_path, location_root, index)) {
         request_uri = request_uri + index;
     }
 
@@ -308,7 +312,7 @@ std::string Request::path_to_root() {
     return request_uri;
 }
 
-bool Request::is_index_exists_in_directory(const std::string& path, const std::string& root, const std::string& index) {
+bool Request::_is_index_exists_in_directory(const std::string& path, const std::string& root, const std::string& index) {
     std::string rooted_location_path = path;
     rooted_location_path.replace(0, path.length(), root);
 
@@ -322,4 +326,22 @@ bool Request::is_index_exists_in_directory(const std::string& path, const std::s
         }
     }
     return false;
+}
+
+void Request::_request_logger() {
+    std::stringstream log;
+
+    if (this->_event.getRequest().getMethod() == "GET") {
+        log << GREEN << "GET " << RESET;
+    } else if (this->_event.getRequest().getMethod() == "POST") {
+        log << BLUE << "POST " << RESET;
+    } else if (this->_event.getRequest().getMethod() == "DELETE") {
+        log << RED << "DELETE " << RESET;
+    } else {
+        log << YELLOW << this->_event.getRequest().getMethod() << " " << RESET;
+    }
+
+    log << this->_event.getRequest().getUri();
+
+    Logger::info(log.str());
 }
