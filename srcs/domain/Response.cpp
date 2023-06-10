@@ -110,13 +110,8 @@ void Response::send_cgi_response() {
 
         this->_event.setCgiPath(strdup(_event.getLocation().getCgiPath().c_str()));
 
-        // if python
         char *const cmd[] = {(char *) "python3",  this->_event.getCgiPath(), NULL};
         this->_event.setCgi(new ExecPython(cmd, this->_event.getEnvp()));
-
-        // else
-        //char *const cmd[] = {(char *) "pega da config",  this->_event.getCgiPath(), NULL};
-        //this->_event.setCgi(new Exec("path_cgi_bin", cmd, this->_event.getEnvp()));
 
         if (this->_event.getRequest().getMethod() == "POST") {
             this->_event.setRemainingFileBytes(this->_event.getRequest().getBodyRemainingBytes());
