@@ -78,7 +78,7 @@ void Request::choose_server(std::vector<Server> servers) {
     }
 
     std::stringstream log;
-    log << BLUE << "Choosed server =\n"<< this->_event.getServer() << RESET << std::endl << std::endl;
+    log << "Choosed server =\n"<< this->_event.getServer() << std::endl << std::endl;
     Logger::trace(log.str());
 
     this->_event.setEventSubStatus(Event::SubStatus::ChoosingLocation);
@@ -115,7 +115,7 @@ void Request::choose_location() {
     }
 
     std::stringstream log;
-    log << YELLOW << "Choosed location >\n" << this->_event.getLocation() << RESET << std::endl;
+    log << "Choosed location >\n" << this->_event.getLocation() << std::endl;
     Logger::trace(log.str());
 
     this->_event.setEventSubStatus(Event::SubStatus::ValidatingConstraints);

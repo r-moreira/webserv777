@@ -33,6 +33,11 @@ void Logger::info(const std::string &message) {
 }
 
 void Logger::error(const std::string &message) {
+    if (DISABLE_BROKEN_PIPE_ERROR_LOG) {
+        if (message.find("Broken pipe") != std::string::npos) {
+            return;
+        }
+    }
     _log(message, ERROR);
 }
 
