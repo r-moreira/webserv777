@@ -76,6 +76,9 @@ html_format_error = """
 </html>
 """
 
+while True:
+    continue
+
 print("Content-Type: text/html\n\n")
 
 if method == 'GET':

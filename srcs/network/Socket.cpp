@@ -53,7 +53,7 @@ int Socket::setupServer(int port) {
         exit(EXIT_FAILURE);
     }
 
-    Logger::info("Server started to listen on port" + ITOSTR(port));
+    Logger::info("Server started to listen on port: " + ITOSTR(port));
 
     set_non_blocking(server_fd);
     return server_fd;

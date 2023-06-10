@@ -21,7 +21,9 @@ Server& Server::build(ConfigParser::ServerType *serverParam) {
         i += 1;
         _error_pages.insert(std::pair<int, std::string>(key, serverParam->errorPage[i]));
     }
-    _limit_except = serverParam->limitExcept;
+    if (!serverParam->limitExcept.empty()) {
+        _limit_except = serverParam->limitExcept;
+    }
     _autoindex = serverParam->auto_index;
     _upload_lock = serverParam->uploadLock;
     for (size_t i = 0; i < serverParam->locations.size(); i++) {

@@ -30,6 +30,7 @@ std::string Pages::get_default_error_page(Event::HttpStatus::event_http_status s
         case Event::HttpStatus::CLIENT_CLOSED_REQUEST: return error499;
         case Event::HttpStatus::INTERNAL_SERVER_ERROR: return error500;
         case Event::HttpStatus::NOT_IMPLEMENTED: return error501;
+        case Event::HttpStatus::LOOP_DETECTED: return error508;
         default: return error418;
     }
 }

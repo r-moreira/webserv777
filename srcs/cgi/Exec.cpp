@@ -17,7 +17,7 @@ int Exec::pipe_init() {
 
 
 
-void Exec::is_infity_loop() {
+int Exec::is_infity_loop() {
     clock_t start = clock();
 
     while (true) {
@@ -26,7 +26,7 @@ void Exec::is_infity_loop() {
             if (waitpid(_pid, &_status, WNOHANG) == 0) {
                 _httpStatusCode = 508;
                 kill(_pid, SIGSEGV);
-                return ;
+                return 1;
             }
             kill(_pid, SIGSEGV);
             break;
@@ -35,6 +35,7 @@ void Exec::is_infity_loop() {
             break;
         }
     }
+    return 0;
 }
 
 void Exec::_handleScript(int std_out_from_server) {
@@ -45,7 +46,9 @@ void Exec::_handleScript(int std_out_from_server) {
     } else if (!_pid) {
         script_exec(std_out_from_server, _pipeFd[1]);
     } else {
-        is_infity_loop();
+        if (is_infity_loop()) {
+            return ;
+        }
         if (WEXITSTATUS(_status) != 0) {
             _httpStatusCode = 500;
             kill(_pid, SIGSEGV);

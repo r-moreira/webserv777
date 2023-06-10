@@ -29,8 +29,8 @@ int main(int argc, char **argv) {
 
     ConfigParser configParser(argv[1]);
 
-    //std::vector<Server> servers = servers_builder(configParser.getServers());
-    std::vector<Server> servers = servers_builder();
+    std::vector<Server> servers = servers_builder(configParser.getServers());
+    //std::vector<Server> servers = servers_builder();
     start_servers(servers);
 
     Multiplexer multiplexer(servers);
