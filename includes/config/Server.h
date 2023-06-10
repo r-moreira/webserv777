@@ -89,6 +89,10 @@ public:
     bool isUploadLock() const;
 
     void setUploadLock(bool uploadLock);
+
+    void addServerNametoHost(std::string name);
+
+    int fileToString(const std::string& filename, std::string& fileContents);
 };
 
 std::ostream& operator << (std::ostream& os, const Server& obj);
