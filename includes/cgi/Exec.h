@@ -23,7 +23,7 @@ private:
 
     int pipe_init();
     void _handleScript(int std_out_from_server);
-    void is_infity_loop();
+    int is_infity_loop();
     virtual void script_exec(int stdOut, int stdIn);
 public:
     Exec(char * path_bin, char* const* command, char* const* env);

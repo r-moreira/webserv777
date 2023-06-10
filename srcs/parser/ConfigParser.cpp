@@ -1,9 +1,9 @@
 #include "../../includes/parser/ConfigParser.h"
 
-ConfigParser::ConfigParser(std::string fileName): serverLocationCount(0), serverLocationAtribute(new LocationParser()) {
-    ServerType* server = new ServerType();
+ConfigParser::ConfigParser(std::string fileName): serverLocationCount(0), serverLocationAtribute(NULL) {
     std::string delimiter = "server";
     int serverCount = 0;
+    ServerType* server = new ServerType();
     std::ifstream iss(fileName.data());
 
     std::string word;
@@ -12,10 +12,11 @@ ConfigParser::ConfigParser(std::string fileName): serverLocationCount(0), server
         if (!is_comment(word)) {
             if (word == delimiter or word == (delimiter + " {")) {
                 serverCount++;
-                if (serverLocationCount) {
+                if (serverLocationAtribute) {
                     server->locations.push_back(serverLocationAtribute);
                 }
                 serverLocationCount = 0;
+                serverLocationAtribute = NULL;
             }
             else if (serverCount) {
                 if (serverCount > 1) {
@@ -30,11 +31,18 @@ ConfigParser::ConfigParser(std::string fileName): serverLocationCount(0), server
             }
         }
     }
-    if (serverCount == 1) {
-        servers.push_back(server);
-    }
+    endCheck(server, serverCount);
+}
+
+void ConfigParser::endCheck(ServerType *server, int serverCount) {
     if (serverLocationCount) {
         server->locations.push_back(serverLocationAtribute);
+    }
+    if (server->locations.empty()) {
+        server->locations.push_back(new LocationParser());
+    }
+    if (serverCount == 1) {
+        servers.push_back(server);
     }
 }
 
@@ -110,11 +118,11 @@ void ConfigParser::parcerLocation(ServerType* server, std::string atribute) {
     int isContains = contains(delimiter, atribute);
     if (isContains || serverLocationCount) {
         if (isContains) {
-            if (serverLocationCount) {
+            if (serverLocationAtribute) {
                 server->locations.push_back(serverLocationAtribute);
-                serverLocationAtribute = new LocationParser();
                 serverLocationCount--;
             }
+            serverLocationAtribute = new LocationParser();
             serverLocationCount++;
         }
         serverLocationAtribute->addNewAtribute(atribute);

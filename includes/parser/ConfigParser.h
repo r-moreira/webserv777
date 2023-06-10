@@ -41,6 +41,7 @@ private:
     void parcerUploadPath(ServerType *server, std::string atribute);
     void parcerAutoIndex(ServerType *server, std::string atribute);
     void setServerAtributes(ServerType *server, std::string atribute);
+    void endCheck(ServerType *server, int serverCount);
 public:
     ConfigParser(std::string fileName);
     std::vector<ServerType *> getServers();
